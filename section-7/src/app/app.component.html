@@ -1,0 +1,20 @@
+<main>
+  <app-learning-resources/>
+
+  <hr />
+
+  <app-auth />
+  <p
+    *appAuth="'admin'"
+    class="protected-content admin"
+  >This should be visible to admins only</p>
+  <p
+    *appAuth="'user'"
+    class="protected-content authenticated"
+  >This should be visible to regular users only</p>
+  <p
+    *appAuth="'guest'"
+    class="protected-content unauthenticated"
+  >This should be visible to guests only</p>
+
+</main>
