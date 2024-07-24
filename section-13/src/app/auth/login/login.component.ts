@@ -1,9 +1,18 @@
 import { Component } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
+  imports: [FormsModule]
 })
-export class LoginComponent {}
+export class LoginComponent {
+  onFormSubmit(form: NgForm) {
+    console.log(form)
+    const enteredEmail = form.form.value.email
+    const enteredPassword = form.form.value.password
+
+  }
+}
