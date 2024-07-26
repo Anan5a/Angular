@@ -1,6 +1,12 @@
-import { Component } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { of } from 'rxjs';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { debounceTime, of } from 'rxjs';
 
 function mustContainQuestionMark(control: AbstractControl) {
   if (control.value.includes('?')) {
@@ -16,73 +22,71 @@ function myAsyncValidator(control: AbstractControl) {
   return of({ notUnique: true });
 }
 
-
 @Component({
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
-  imports: [ReactiveFormsModule]
+  imports: [ReactiveFormsModule],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   form = new FormGroup({
     email: new FormControl('', {
       validators: [Validators.email, Validators.required, myAsyncValidator],
-
     }),
-    password: new FormControl('', [Validators.required, Validators.minLength(6), mustContainQuestionMark]),
-  })
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(6),
+      mustContainQuestionMark,
+    ]),
+  });
+  private destroyRef = inject(DestroyRef);
 
   get emailIsInvalid() {
-    return this.form.controls.email.touched && this.form.controls.email.dirty && this.form.controls.email.invalid
+    return (
+      this.form.controls.email.touched &&
+      this.form.controls.email.dirty &&
+      this.form.controls.email.invalid
+    );
   }
   get passwordIsInvalid() {
-    return this.form.controls.password.touched && this.form.controls.password.dirty && this.form.controls.password.invalid
+    return (
+      this.form.controls.password.touched &&
+      this.form.controls.password.dirty &&
+      this.form.controls.password.invalid
+    );
+  }
+  ngOnInit(): void {
+    const savedFormData = window.localStorage.getItem('saved-login-form');
+    if (savedFormData) {
+      const loadedFormData = JSON.parse(savedFormData);
+      const savedEmail = loadedFormData.email;
+      this.form.patchValue({
+        email: savedEmail,
+      });
+    }
+
+    const subscription = this.form.valueChanges
+      .pipe(debounceTime(200))
+      .subscribe({
+        next: (value) => {
+          window.localStorage.setItem(
+            'saved-login-form',
+            JSON.stringify({ email: value.email })
+          );
+        },
+      });
+    this.destroyRef.onDestroy(() => subscription.unsubscribe());
   }
 
   onSubmit() {
-    console.log(this.form)
-    const enteredEmail = this.form.value.email
-    const enteredPassword = this.form.value.password
-    console.log(enteredEmail, enteredPassword)
+    console.log(this.form);
+    const enteredEmail = this.form.value.email;
+    const enteredPassword = this.form.value.password;
+    console.log(enteredEmail, enteredPassword);
     this.form.reset();
-
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import { afterNextRender, Component, DestroyRef, inject, viewChild } from '@angular/core';
 // import { FormsModule, NgForm } from '@angular/forms';
@@ -110,7 +114,6 @@ export class LoginComponent {
 //         }, 1)
 //       }
 
-
 //       const subscription = this.form()?.valueChanges?.pipe(debounceTime(300)).subscribe({
 //         next: (value) => {
 //           window.localStorage.setItem(
@@ -134,7 +137,6 @@ export class LoginComponent {
 
 //     console.log(enteredEmail, enteredPassword)
 //     form.form.reset();
-
 
 //   }
 // }
