@@ -1,6 +1,12 @@
 <div>
-  <a>
-    <img [src]="imagePath()" [alt]="user().name" />
+  <a
+    [routerLink]="['/users',user().id,'tasks']"
+    routerLinkActive="selected"
+  >
+    <img
+      [src]="imagePath()"
+      [alt]="user().name"
+    />
     <span>{{ user().name }}</span>
   </a>
 </div>

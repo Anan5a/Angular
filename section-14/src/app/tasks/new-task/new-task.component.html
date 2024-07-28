@@ -2,7 +2,12 @@
 <form (ngSubmit)="onSubmit()">
   <p>
     <label for="title">Title</label>
-    <input type="text" id="title" name="title" [(ngModel)]="enteredTitle" />
+    <input
+      type="text"
+      id="title"
+      name="title"
+      [(ngModel)]="enteredTitle"
+    />
   </p>
 
   <p>
@@ -26,7 +31,7 @@
   </p>
 
   <p class="actions">
-    <a>Cancel</a>
+    <a routerLink="../">Cancel</a>
     <button type="submit">Create</button>
   </p>
 </form>
