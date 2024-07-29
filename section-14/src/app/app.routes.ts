@@ -1,9 +1,6 @@
 import { NotFoundComponent } from "./not-found/not-found.component";
-import { NewTaskComponent } from "./tasks/new-task/new-task.component";
 import { NoTaskComponent } from "./tasks/no-task/no-task.component";
-import { TasksComponent } from "./tasks/tasks.component";
 import { UserTasksComponent } from "./users/user-tasks/user-tasks.component";
-import { routes as userRoutes } from "./users/user.routes";
 
 export const Routes = [
   {
@@ -13,7 +10,8 @@ export const Routes = [
   {
     path: 'users/:userId',
     component: UserTasksComponent,
-    children: userRoutes
+    // children: userRoutes,
+    loadChildren: () => import('./users/user.routes').then((module) => module.routes),//lazy loading whole child group
   },
   {
     path: '**',//catch all!

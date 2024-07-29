@@ -1,6 +1,6 @@
 import { Routes } from "@angular/router";
-import { TasksComponent } from "../tasks/tasks.component";
 import { NewTaskComponent } from "../tasks/new-task/new-task.component";
+import { TasksComponent } from "../tasks/tasks.component";
 
 export const routes: Routes =
   [
@@ -12,6 +12,7 @@ export const routes: Routes =
     {
       path: 'tasks',
       component: TasksComponent,
+      // loadComponent: () => import('../tasks/tasks.component').then(module => module.TasksComponent),//lazy loading!
     },
     {
       path: 'tasks/new',
