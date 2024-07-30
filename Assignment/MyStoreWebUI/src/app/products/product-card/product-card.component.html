@@ -1,0 +1,16 @@
+<div class="product-card">
+  <div class="product-image-wrapper">
+    <img
+      [src]="product.image"
+      alt="{{product.title}}"
+      class="product-image"
+    />
+    <div class="product-info">
+      <h2 class="product-title">{{product.title}}</h2>
+      <div class="button-group">
+        <button (click)="addToCart()">Add to Cart</button>
+        <button (click)="viewDetails()">View Details</button>
+      </div>
+    </div>
+  </div>
+</div>
