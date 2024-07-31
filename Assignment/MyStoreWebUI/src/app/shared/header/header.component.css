@@ -1,5 +1,5 @@
 header {
-  background-color: #333;
+  background-color: #e67e22;
   color: #fff;
 }
 
@@ -31,6 +31,7 @@ header {
 
 .nav-list li {
   margin: 0;
+  font-size: 1rem;
 }
 
 .nav-list a {
@@ -41,6 +42,9 @@ header {
 }
 
 .nav-list a:hover {
+  background-color: #7c756f;
+}
+.nav-list .active {
   background-color: #575757;
 }
 

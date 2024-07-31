@@ -1,7 +1,21 @@
+
 <app-header></app-header>
 
 
 <main>
-  <app-products />
+@if (error()) {
+<app-error
+  title="An error occured"
+  [message]="error()"
+/>
+}
+  @if (loadingSpinnerService.isLoading()) {
+  <app-loading-spinner />
+  }
+  <!-- <app-products /> -->
+  <!-- <app-signup /> -->
+  <app-login />
+  <!-- <app-product /> -->
   <!-- <router-outlet></router-outlet> -->
+
 </main>

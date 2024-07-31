@@ -1,6 +1,6 @@
 .product-card {
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 0.2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   max-width: 300px;
@@ -25,13 +25,6 @@
 .product-info {
   padding: 16px;
   height: 30%;
-  /* background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0.7) 100%
-  );
-  position: absolute;
-  bottom: 20px; */
 }
 
 .product-title {
@@ -39,25 +32,8 @@
   margin-bottom: 12px;
   color: #252323;
 }
-
-.button-group {
-  display: flex;
-  gap: 8px;
-}
-
-.button-group button {
-  background-color: #007bff;
-  border: none;
-  color: white;
-  padding: 10px 16px;
-  font-size: 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.button-group button:hover {
-  background-color: #0056b3;
+.product-info a {
+  text-decoration: none;
 }
 
 @media screen and (max-width: 600px) {

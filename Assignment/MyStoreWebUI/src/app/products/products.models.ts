@@ -1,4 +1,4 @@
-export interface Product {
+export interface ProductModel {
   id: number
   title: string
   description: string
@@ -7,10 +7,10 @@ export interface Product {
   weight: number
   createdAt: string
   modifiedAt: string
-  imageUrls?: string[]
+  imageUrls: string[]
 };
 
-export interface UpdateProduct {
+export interface UpdateProductModel {
   title: string
   description: string
   sku: string
@@ -18,7 +18,7 @@ export interface UpdateProduct {
   weight: number
 };
 
-export interface CreateProduct {
+export interface CreateProductModel {
   title: string;
   description: string;
   sku: string;

@@ -1,0 +1,63 @@
+<div
+  id="signup-form"
+  class="form form-container"
+>
+  <h2>Signup</h2>
+  <form
+    [formGroup]="formGroup"
+    (submit)="onSubmitForm()"
+  >
+    <div class="form-group">
+      <input
+        type="text"
+        placeholder="Name"
+        required
+        name="name"
+        formControlName="name"
+        class="invalid"
+      >
+      <span
+        class="invalid-message"
+        *ngIf="nameIsInvalid"
+      >Invalid name</span>
+    </div>
+    <div class="form-group">
+      <input
+        type="email"
+        placeholder="Email"
+        required
+        name="email"
+        formControlName="email"
+      >
+      <span
+        class="invalid-message"
+        *ngIf="emailIsInvalid"
+      >Invalid email address</span>
+
+    </div>
+    <div class="form-group">
+      <input
+        type="password"
+        placeholder="Password"
+        required
+        name="password"
+        formControlName="password"
+      >
+      <span
+        class="invalid-message"
+        *ngIf="passwordIsInvalid"
+      >Invalid password format</span>
+
+    </div>
+    <div class="form-button-container">
+      <button
+        class="btn"
+        type="submit"
+        [disabled]="!formGroup.valid"
+      >Signup</button>
+    </div>
+
+
+
+  </form>
+</div>

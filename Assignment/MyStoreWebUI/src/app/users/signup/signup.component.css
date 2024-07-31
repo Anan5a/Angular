@@ -1,0 +1,39 @@
+.form-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  margin: 10% auto;
+}
+
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.form h2 {
+  margin-top: 0;
+  font-size: 2rem;
+  text-align: center;
+}
+
+.form-group {
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form input {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 0.4rem;
+  font-size: 1rem;
+}
+.form-button-container {
+  display: flex;
+}
+.form-button-container .btn {
+  margin-left: auto;
+}

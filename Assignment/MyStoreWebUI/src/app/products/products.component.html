@@ -1,8 +1,10 @@
 <div class="product-list">
-  @for (product of products; track product.title) {
+  @for (product of products(); track product.id) {
   <app-product-card [product]="product" />
   }@empty {
+  @if (!loadingSpinnerService.isLoading()) {
   <h2>No product available!</h2>
+  }
   }
 
 </div>

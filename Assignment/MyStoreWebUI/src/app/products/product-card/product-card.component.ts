@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { ProductModel } from '../products.models';
 
 @Component({
   selector: 'app-product-card',
@@ -8,7 +9,7 @@ import { Component, Input } from '@angular/core';
   styleUrl: './product-card.component.css'
 })
 export class ProductCardComponent {
-  @Input() product: { image: string, title: string } = { image: '', title: '' };
+  @Input() product!: ProductModel
 
   addToCart() {
     console.log('Added to cart:', this.product.title);

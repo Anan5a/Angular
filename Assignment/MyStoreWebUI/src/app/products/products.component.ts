@@ -1,5 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { ProductCardComponent } from "./product-card/product-card.component";
+import { LoadingSpinnerComponent } from '../shared/loading-spinner/loading-spinner.component';
+import { LoadingSpinnerService } from '../shared/loading-spinner/loading-spinner.service';
+import { ProductsService } from './products.service';
+import { RedirectCommand, UrlTree } from '@angular/router';
 
 @Component({
   selector: 'app-products',
@@ -8,12 +12,25 @@ import { ProductCardComponent } from "./product-card/product-card.component";
   templateUrl: './products.component.html',
   styleUrl: './products.component.css'
 })
-export class ProductsComponent {
-  products = [
-    { image: 'pexels-alexazabache-3766111.jpg', title: 'Product 1' },
-    { image: 'pexels-alexazabache-3766180.jpg', title: 'Product 2' },
-    { image: 'pexels-binoid-cbd-1990665-3612193.jpg', title: 'Product 3' },
-    { image: 'pexels-olenkabohovyk-3819969.jpg', title: 'Product 4' },
-    { image: 'pexels-alexazabache-3766180.jpg', title: 'Product 5' },
-  ];
+export class ProductsComponent implements OnInit {
+
+   loadingSpinnerService = inject(LoadingSpinnerService)
+  private productsService = inject(ProductsService)
+  private destroyRef = inject(DestroyRef)
+  errorMessage = signal('')
+
+  ngOnInit(): void {
+    const subscription = this.productsService.loadAllProducts().subscribe({
+      next: (products) => {
+      },
+      error: (error) => {
+        this.errorMessage.set(error.message)
+      },
+      complete: () => {
+        this.loadingSpinnerService.setState(false)
+      }
+    })
+    this.destroyRef.onDestroy(() => subscription.unsubscribe())
+  }
+  products = this.productsService.products
 }
