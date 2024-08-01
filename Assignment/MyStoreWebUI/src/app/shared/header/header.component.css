@@ -44,7 +44,7 @@ header {
 .nav-list a:hover {
   background-color: #7c756f;
 }
-.nav-list .active {
+.active {
   background-color: #575757;
 }
 

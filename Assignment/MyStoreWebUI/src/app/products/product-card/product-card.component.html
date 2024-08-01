@@ -1,5 +1,5 @@
 <div class="product-card">
-  <a href="">
+  <a [routerLink]="[product.id]">
     <div class="product-image-wrapper">
       <img
         [src]="product.imageUrls[0]"
@@ -9,20 +9,34 @@
     </div>
   </a>
   <div class="product-info">
-    <a href="">
+    <a [routerLink]="['products',product.id]">
       <h3 class="product-title">{{ product.title }}</h3>
     </a>
     <div class="button-group">
       <button
         class="btn"
         (click)="addToCart()"
+        [class.red]="inCart()!=undefined"
         title="Add to Cart"
-      ><i class="fa-solid fa-cart-plus"></i></button>
+      ><i class="fa-solid fa-cart-plus"><sup
+            style="color: white; font-size: 0.8rem;"
+          >{{inCart()?.quantity}}</sup></i></button>
       <button
         class="btn"
-        (click)="viewDetails()"
+        (click)="addtoWishList()"
         title="Add to wishlist"
+        [class.red]="inWishList()"
       ><i class="fa-solid fa-heart"></i></button>
+      <button
+        class="btn"
+        *ngIf="isAdmin()"
+        title="Delete product"
+      ><i class="fa-solid fa-trash"></i></button>
+      <button
+        class="btn"
+        *ngIf="isAdmin()"
+        title="Edit product"
+      ><i class="fa-solid fa-pen"></i></button>
     </div>
   </div>
 </div>

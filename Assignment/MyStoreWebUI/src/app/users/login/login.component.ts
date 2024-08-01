@@ -1,15 +1,15 @@
 import { NgIf } from '@angular/common';
 import { Component, DestroyRef, inject } from '@angular/core';
 import { AuthService } from '../auth.service';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router, RedirectCommand } from '@angular/router';
+import { FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router, RedirectCommand, RouterLink } from '@angular/router';
 import { LoadingSpinnerService } from '../../shared/loading-spinner/loading-spinner.service';
-import { CreateUserRequestModel, UserLoginRequestModel } from '../users.models';
+import { UserLoginRequestModel } from '../users.models';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [NgIf],
+  imports: [NgIf, FormsModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -18,6 +18,7 @@ export class LoginComponent {
   private destroyRef = inject(DestroyRef)
   private router = inject(Router)
   private loadingSpinnerService = inject(LoadingSpinnerService)
+  hideForm = false
 
   formGroup: FormGroup = new FormGroup({
     email: new FormControl('', { validators: [Validators.required, Validators.email] }),
@@ -43,16 +44,16 @@ export class LoginComponent {
   }
 
   onSubmitForm() {
-    console.log(this.formGroup)
     if (!this.formGroup.valid) {
-      console.log(this.formGroup)
       return;
     }
     const subscription = this.authService.login(this.formGroup.value as UserLoginRequestModel).subscribe({
       next: (response) => {
         //don't really care about the response here, already stored in the service
-        console.log(response)
-        return new RedirectCommand(this.router.parseUrl('/'))
+        this.hideForm = !this.hideForm
+        setTimeout(() => {
+          this.router.navigate(['/'])
+        }, 1000)
       },
     })
     this.destroyRef.onDestroy(() => subscription.unsubscribe())

@@ -3,7 +3,11 @@
   class="form form-container"
 >
   <h2>Login</h2>
-  <form>
+  <form
+    [formGroup]="formGroup"
+    (submit)="onSubmitForm()"
+    [class.hidden]="hideForm"
+  >
     <div class="form-group">
       <input
         type="email"
@@ -40,4 +44,10 @@
       >Login</button>
     </div>
   </form>
+  <div
+    class="form-group"
+    [class.hidden]="!hideForm"
+  >
+    <p>Login successful! Redirecting to <a [routerLink]="['/']">Homepage</a></p>
+  </div>
 </div>

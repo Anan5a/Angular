@@ -3,13 +3,13 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { CreateUserRequestModel } from '../users.models';
 import { NgIf } from '@angular/common';
 import { AuthService } from '../auth.service';
-import { RedirectCommand, Router } from '@angular/router';
+import { RedirectCommand, Router, RouterLink } from '@angular/router';
 import { LoadingSpinnerService } from '../../shared/loading-spinner/loading-spinner.service';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, NgIf],
+  imports: [FormsModule, ReactiveFormsModule, NgIf, RouterLink],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
@@ -19,6 +19,7 @@ export class SignupComponent implements OnInit {
   private destroyRef = inject(DestroyRef)
   private router = inject(Router)
   private loadingSpinnerService = inject(LoadingSpinnerService)
+  hideForm = false
 
   formGroup: FormGroup = new FormGroup({
     name: new FormControl('', { validators: [Validators.required, Validators.minLength(5)] }),
@@ -51,9 +52,7 @@ export class SignupComponent implements OnInit {
     );
   }
   onSubmitForm() {
-    console.log(this.formGroup)
     if (!this.formGroup.valid) {
-      console.log(this.formGroup)
       return;
     }
     const subscription = this.authService.signup(this.formGroup.value as CreateUserRequestModel).subscribe({
@@ -62,7 +61,8 @@ export class SignupComponent implements OnInit {
       },
       complete: () => {
         //send to login route
-        return new RedirectCommand(this.router.parseUrl('/login'))
+        this.hideForm = true
+        // return new RedirectCommand(this.router.parseUrl('/login'))
       }
     })
     this.destroyRef.onDestroy(() => subscription.unsubscribe())

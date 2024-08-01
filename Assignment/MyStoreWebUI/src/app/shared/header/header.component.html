@@ -12,11 +12,53 @@
       class="nav-list"
       #menuList
     >
-      <li class="active"><a href="#">Home</a></li>
-      <li><a href="#">Products</a></li>
-      <li><a href="#">Login/Signup</a></li>
-      <li><a href="#">New Product</a></li>
-      <li><a href="#">Logout</a></li>
+      <!-- <li><a
+          [routerLink]="['/']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact:true}"
+        >Home</a></li> -->
+      <li><a
+          [routerLink]="
+          ['/products']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact:true}"
+        >Products</a></li>
+      <li *ngIf="isAuthenticated()"><a
+          [routerLink]="
+                ['user','wishlist']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact:true}"
+        >Wishlist <sup>({{wishList().length}})</sup> </a></li>
+      <li *ngIf="isAuthenticated()"><a
+          [routerLink]="
+                  ['user','cart']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact:true}"
+        >Cart<sup>({{cart().length}})</sup></a></li>
+
+      <li *ngIf="!isAuthenticated()"><a
+          [routerLink]="['/user/login']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact:true}"
+        >Login</a></li>
+      <li *ngIf="!isAuthenticated()"><a
+          [routerLink]="['/user/signup']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact:true}"
+        >Signup</a></li>
+      <li *ngIf="isAdmin()"><a
+          [routerLink]="['products','new']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact:true}"
+        >New Product</a></li>
+      <li *ngIf="isAuthenticated()"><a
+          [routerLink]="['user','profile']"
+          routerLinkActive="active"
+        >{{user() != null ? user()?.user?.name : ''}}</a></li>
+      <li *ngIf="isAuthenticated()"><a
+          (click)="logoutUser()"
+          href="#"
+        >Logout</a></li>
     </ul>
   </nav>
 </header>

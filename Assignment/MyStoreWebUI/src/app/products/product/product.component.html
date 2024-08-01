@@ -1,41 +1,35 @@
-<div class="product-detail">
-  <div class="product-images">
-    <img
-      id="main-image"
-      src="pexels-olenkabohovyk-3819969.jpg"
-      alt="Product Image"
-    >
-    <div class="thumbnails">
+@if (product) {
+  <div class="product-detail">
+    <div class="product-images">
       <img
-        src="pexels-alexazabache-3766111.jpg"
-        alt="Thumbnail 1"
+        id="main-image"
+        [src]="product.imageUrls[0]"
+        [alt]="product.title"
       >
-      <img
-        src="pexels-alexazabache-3766111.jpg"
-        alt="Thumbnail 2"
-      >
-      <img
-        src="pexels-alexazabache-3766111.jpg"
-        alt="Thumbnail 3"
-      >
+      <div class="thumbnails">
+
+        @for (thumbnail of product.imageUrls; track thumbnail) {
+        <img
+          [src]="thumbnail"
+          [alt]="'Thumbnail '+$index+1"
+        >
+        }
+      </div>
+    </div>
+    <div class="product-info">
+      <h1>{{product.title}}</h1>
+      <div class="sku">
+        <p>SKU: {{product.sku}}</p>
+      </div>
+      <p class="price">${{product.price}}</p>
+
+      <div class="button-group">
+        <button class="btn add-to-cart">Add to Cart</button>
+        <button class="btn wishlist">Add to Wishlist</button>
+      </div>
+      <p class="long-description">
+        {{product.description}}
+      </p>
     </div>
   </div>
-  <div class="product-info">
-    <h1>Product Name</h1>
-    <!-- <div class="rating">
-      <span>★★★★☆</span> <a href="#reviews">(100 reviews)</a>
-    </div> -->
-    <p class="price">$99.99</p>
-    <!-- <p class="short-description">
-      A brief description of the product highlighting key features.
-    </p> -->
-    <div class="button-group">
-      <button class="btn add-to-cart">Add to Cart</button>
-      <button class="btn wishlist">Add to Wishlist</button>
-    </div>
-    <p class="long-description">
-      A detailed description of the product, including specifications, usage
-      instructions, and other relevant information.
-    </p>
-  </div>
-</div>
+}

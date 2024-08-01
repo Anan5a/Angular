@@ -26,3 +26,8 @@ export interface CreateProductModel {
   weight: number;
   images: File[];
 }
+
+export interface CartModel {
+  product: ProductModel
+  quantity: number
+}
