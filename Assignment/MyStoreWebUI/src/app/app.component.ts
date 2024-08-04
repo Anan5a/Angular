@@ -10,11 +10,12 @@ import { LoadingSpinnerService } from './shared/loading-spinner/loading-spinner.
 import { ErrorComponent } from "./shared/error/error.component";
 import { ErrorService } from './shared/error/error.service';
 import { Subscription } from 'rxjs';
+import { CartComponent } from "./products/cart/cart.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, ProductsComponent, ProductComponent, SignupComponent, LoginComponent, LoadingSpinnerComponent, ErrorComponent],
+  imports: [RouterOutlet, HeaderComponent, ProductsComponent, ProductComponent, SignupComponent, LoginComponent, LoadingSpinnerComponent, ErrorComponent, CartComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

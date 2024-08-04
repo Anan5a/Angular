@@ -12,6 +12,7 @@
 .product-images {
   flex: 1;
   margin-right: 2rem;
+  height: fit-content;
 }
 .sku{
   font-size: 1rem;
