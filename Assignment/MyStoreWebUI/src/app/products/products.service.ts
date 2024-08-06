@@ -91,20 +91,25 @@ export class ProductsService {
     return this._productsCart().length;
   }
 
-  removeFromCart(product: ProductModel) {
+  removeFromCart(product: ProductModel, removeAll: boolean = false) {
     const currentItems = [...this._productsCart()]
+    let updatedItems: CartModel[] = [];
 
-    const updatedItems = currentItems.reduce<CartModel[]>((accumulator, item) => {
-      if (item.product.id === product.id) {
-        item.quantity--;
-        if (item.quantity > 0) {
+    if (removeAll) {
+      updatedItems = currentItems.filter((item) => item.product.id !== product.id)
+    } else {
+      updatedItems = currentItems.reduce<CartModel[]>((accumulator, item) => {
+        if (item.product.id === product.id) {
+          item.quantity--;
+          if (item.quantity > 0) {
+            accumulator.push(item);
+          }
+        } else {
           accumulator.push(item);
         }
-      } else {
-        accumulator.push(item);
-      }
-      return accumulator;
-    }, []);
+        return accumulator;
+      }, []);
+    }
 
     this._productsCart.set(updatedItems)
     this.store(this.keyCart, this._productsCart())
@@ -112,7 +117,7 @@ export class ProductsService {
   }
 
   hasInCart(product: ProductModel) {
-    return computed(() =>  this._productsCart().find((item) => item.product.id === product.id) )
+    return computed(() => this._productsCart().find((item) => item.product.id === product.id))
   }
 
 
@@ -147,8 +152,47 @@ export class ProductsService {
     return computed(() => this._productsWishlist().find((item) => item.id === product.id) ? true : false)
 
   }
+  createProduct(formData: FormData) {
+    const url = ApiBaseUrl + '/Product';
+    const errorMessage = 'Failed to create product!';
+    return this._postData<FormData, ProductModel>(url, formData, errorMessage);
+  }
 
 
+  deleteProduct(product: ProductModel) {
+    const url = ApiBaseUrl + `/Product/${product.id}`;
+    const errorMessage = 'Failed to delete product!';
+    return this._deleteData(url, errorMessage).pipe(
+      tap({
+        next: (res) => {
+          //reload product list
+          this.loadAllProducts().subscribe()
+        }
+      })
+    );
+  }
+
+  private _postData<T1, T2>(url: string, requestData: T1, errorMessage: string) {
+    return this.httpClient.post<T2>(url, requestData).pipe(
+      catchError((error) => {
+        this.errorService.serverError.set(error.error)
+        this.errorService.showError(errorMessage);
+        return throwError(() => new Error(errorMessage))
+      })
+    )
+  }
+
+
+
+  private _deleteData(url: string, errorMessage: string) {
+    return this.httpClient.delete(url).pipe(
+      catchError((error) => {
+        this.errorService.serverError.set(error.error)
+        this.errorService.showError(errorMessage);
+        return throwError(() => new Error(errorMessage))
+      })
+    )
+  }
 
   private fetchData<T1>(url: string, errorMessage: string) {
     return this.httpClient.get<T1>(url).pipe(

@@ -1,10 +1,21 @@
 <div class="cart-item">
-    <img src="product1.jpg" alt="Product 1" />
-    <div class="item-details">
-      <h2>Product 1</h2>
-      <p>$10.00</p>
-      <input type="number" value="1" min="1" />
-    </div>
-    <button class="btn remove-btn">Remove</button>
+  <img
+    [src]="cartItem().product.imageUrls[0]"
+    [alt]="cartItem().product.title"
+  />
+  <div class="item-details">
+    <h2>{{cartItem().product.title}}</h2>
+    <p>${{cartItem().product.price}}</p>
+    <input
+      type="number"
+      [value]="cartItem().quantity"
+      min="1"
+      #numberOfItem
+      (change)="updateQty()"
+    />
   </div>
-  
+  <button
+    class="btn remove-btn"
+    (click)="removeFromCart()"
+  >Remove</button>
+</div>

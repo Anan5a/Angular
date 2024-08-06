@@ -1,29 +1,29 @@
 <div class="cart-container">
   <div class="cart-items">
-    <!-- <app-cart-item />
-    <app-cart-item />
-    <app-cart-item />
-    <app-cart-item />
-    <app-cart-item />
-    <app-cart-item />
-    <app-cart-item /> -->
+    @for (cartItem of cartItems(); track cartItem.product.id) {
+    <app-cart-item [cartItem]="cartItem" />
+    }@empty {
+    <h2 class="center">No product available! Add some items to cart</h2>
 
-    <!-- Add more products as needed -->
+    }
   </div>
+  @if (cartItems().length >0) {
   <div class="cart-summary">
+
     <h2>Summary</h2>
     <div class="summary-item">
       <span>Subtotal</span>
-      <span>$30.00</span>
+      <span>${{cartPrice().subTotal}}</span>
     </div>
     <div class="summary-item">
       <span>Tax</span>
-      <span>$2.70</span>
+      <span>${{cartPrice().tax}}</span>
     </div>
     <div class="summary-item total">
       <span>Total</span>
-      <span>$32.70</span>
+      <span>${{cartPrice().total}}</span>
     </div>
     <button class="checkout-btn">Proceed to Checkout</button>
   </div>
+  }
 </div>

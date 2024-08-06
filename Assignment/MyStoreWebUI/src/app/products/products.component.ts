@@ -14,7 +14,7 @@ import { RedirectCommand, UrlTree } from '@angular/router';
 })
 export class ProductsComponent implements OnInit {
 
-   loadingSpinnerService = inject(LoadingSpinnerService)
+  loadingSpinnerService = inject(LoadingSpinnerService)
   private productsService = inject(ProductsService)
   private destroyRef = inject(DestroyRef)
   errorMessage = signal('')

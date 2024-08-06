@@ -57,7 +57,10 @@ input .ng-invalid {
   outline: none;
   border: 1px solid #e25c3b;
 }
-
+.center {
+  margin: auto;
+  text-align: center;
+}
 .invalid-message {
   font-size: 1rem;
   color: #d35400;

@@ -1,6 +1,6 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { ProductModel } from '../products.models';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { AuthService } from '../../users/auth.service';
 import { ProductsService } from '../products.service';
@@ -12,10 +12,13 @@ import { ProductsService } from '../products.service';
   templateUrl: './product-card.component.html',
   styleUrl: './product-card.component.css'
 })
-export class ProductCardComponent  {
+export class ProductCardComponent {
+
   @Input() product!: ProductModel
   private authService = inject(AuthService)
   private productsService = inject(ProductsService)
+  private destroyRef = inject(DestroyRef)
+  private router = inject(Router)
 
   isAdmin = this.authService.isAdmin
 
@@ -29,7 +32,6 @@ export class ProductCardComponent  {
 
   addToCart() {
     this.productsService.addToCart(this.product)
-    console.log('Added to cart:', this.product.title);
   }
 
   addtoWishList() {
@@ -40,9 +42,15 @@ export class ProductCardComponent  {
       this.productsService.addToWishList(this.product)
 
     }
-
-
-    console.log('Added to wishlist:', this.product.title);
   }
-
+  deleteProduct() {
+    if (window.confirm("This product will be deleted forever. Are you sure?")) {
+      const sub = this.productsService.deleteProduct(this.product).subscribe({
+        next: () => {
+          console.log("Product deleted: " + this.product.title)
+        }
+      })
+      this.destroyRef.onDestroy(() => sub.unsubscribe)
+    }
+  }
 }

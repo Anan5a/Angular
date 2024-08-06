@@ -41,6 +41,16 @@ export const routes: Routes = [
         loadComponent: () => import('./users/signup/signup.component').then(m => m.SignupComponent),
         canActivate: [isNotAuthenticatedGuard]
       },
+      {
+        path: 'cart',
+        loadComponent: () => import('./products/cart/cart.component').then(m => m.CartComponent),
+        canActivate: [isAuthenticatedGuard]
+      },
+      {
+        path: 'wishlist',
+        loadComponent: () => import('./products/wish-list/wish-list.component').then(m => m.WishListComponent),
+        canActivate: [isAuthenticatedGuard]
+      },
     ]
   },
   {

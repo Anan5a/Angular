@@ -24,8 +24,8 @@
       <p class="price">${{product.price}}</p>
 
       <div class="button-group">
-        <button class="btn add-to-cart">Add to Cart</button>
-        <button class="btn wishlist">Add to Wishlist</button>
+        <button class="btn add-to-cart" (click)="addToCart()">Add to Cart</button>
+        <button class="btn wishlist" (click)="addtoWishList()">{{ inWishList() ? 'Remove from Wishlist' : 'Add to Wishlist'}}</button>
       </div>
       <p class="long-description">
         {{product.description}}

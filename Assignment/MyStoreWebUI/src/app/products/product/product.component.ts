@@ -22,6 +22,16 @@ export class ProductComponent implements OnInit {
 
   product!: ProductModel
 
+
+
+
+  get inWishList() {
+    return this.productsService.hasInWishList(this.product)
+  }
+  get inCart() {
+    return this.productsService.hasInCart(this.product)
+  }
+
   ngOnInit(): void {
     const subscription = this.productsService.loadProduct(this.productId).subscribe({
       next: (product) => {
@@ -37,5 +47,23 @@ export class ProductComponent implements OnInit {
       }
     })
     this.destroyRef.onDestroy(() => subscription.unsubscribe())
+  }
+
+
+
+
+
+
+  addToCart() {
+    this.productsService.addToCart(this.product)
+  }
+
+  addtoWishList() {
+    if (this.inWishList()) {
+      this.productsService.removeFromWishList(this.product)
+    } else {
+      this.productsService.addToWishList(this.product)
+
+    }
   }
 }

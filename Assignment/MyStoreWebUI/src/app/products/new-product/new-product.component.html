@@ -1,1 +1,117 @@
-<p>new-product works!</p>
+<div
+  id="signup-form"
+  class="form form-container"
+>
+  <h2>New Product</h2>
+
+  <form
+    [formGroup]="formGroup"
+    (submit)="onSubmitForm()"
+    [class.hidden]="hideForm"
+  >
+
+
+    <!-- New Fields -->
+    <div class="form-group">
+      <input
+        type="text"
+        placeholder="Title"
+        required
+        name="title"
+        formControlName="title"
+      >
+      <span
+        class="invalid-message"
+        *ngIf="titleIsInvalid"
+      >Invalid title</span>
+    </div>
+
+    <div class="form-group">
+      <textarea
+        placeholder="Description"
+        required
+        name="description"
+        formControlName="description"
+        rows="6"
+      ></textarea>
+      <span
+        class="invalid-message"
+        *ngIf="descriptionIsInvalid"
+      >Invalid description</span>
+    </div>
+
+    <div class="form-group">
+      <input
+        type="text"
+        placeholder="SKU"
+        required
+        name="sku"
+        formControlName="sku"
+      >
+      <span
+        class="invalid-message"
+        *ngIf="skuIsInvalid"
+      >Invalid SKU</span>
+    </div>
+
+    <div class="form-group">
+      <input
+        type="number"
+        placeholder="Price"
+        required
+        name="price"
+        formControlName="price"
+        step="0.01"
+      >
+      <span
+        class="invalid-message"
+        *ngIf="priceIsInvalid"
+      >Invalid price</span>
+    </div>
+
+    <div class="form-group">
+      <input
+        type="number"
+        placeholder="Weight"
+        required
+        name="weight"
+        formControlName="weight"
+        step="0.01"
+      >
+      <span
+        class="invalid-message"
+        *ngIf="weightIsInvalid"
+      >Invalid weight</span>
+    </div>
+
+    <div class="form-group">
+      <input
+        type="file"
+        (change)="onFilesSelected($event)"
+        name="images"
+        multiple
+      >
+      <span
+        class="invalid-message"
+        *ngIf="imagesAreInvalid"
+      >Invalid images</span>
+    </div>
+
+    <div class="form-button-container">
+      <button
+        class="btn"
+        type="submit"
+        [disabled]="!formGroup.valid"
+      >Create</button>
+    </div>
+  </form>
+
+
+  <div
+    class="form-group"
+    [class.hidden]="!hideForm"
+  >
+    <p>New product has been created successfully! <a
+        [routerLink]="['/']">Listing</a></p>
+  </div>
+</div>

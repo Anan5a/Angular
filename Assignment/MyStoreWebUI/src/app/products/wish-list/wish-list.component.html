@@ -1,0 +1,10 @@
+<div class="product-list">
+  @for (product of products(); track product.id) {
+  <app-product-card [product]="product" />
+  }@empty {
+  @if (!loadingSpinnerService.isLoading()) {
+  <h2 class="center">Add some products to your wishlist!</h2>
+  }
+  }
+
+</div>

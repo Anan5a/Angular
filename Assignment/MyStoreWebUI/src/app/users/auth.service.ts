@@ -19,15 +19,19 @@ export class AuthService {
     return this._user.asReadonly()
   }
   get isAuthenticated() {
-    return computed(()=>this._user() !== null)
+    return computed(() => this._user() !== null)
   }
   get isAdmin() {
-    return computed(()=>this.isAuthenticated() && this._user()?.user.role?.roleName === 'Admin')
+    return computed(() => this.isAuthenticated() && this._user()?.user.role?.roleName === 'Admin')
   }
   logout() {
     //erase tokens
     this.eraseUser()
   }
+  token() {
+    return this.user()?.token
+  }
+
   signup(formData: CreateUserRequestModel) {
     const url = ApiBaseUrl + '/User';
     const errorMessage = 'Failed to create user!';
