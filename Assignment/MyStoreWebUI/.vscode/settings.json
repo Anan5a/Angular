@@ -1,0 +1,34 @@
+{
+  "sqltools.connections": [
+    {
+      "mssqlOptions": {
+        "appName": "SQLTools",
+        "useUTC": true,
+        "encrypt": true
+      },
+      "previewLimit": 50,
+      "server": "127.0.0.1",
+      "port": 1433,
+      "driver": "MSSQL",
+      "name": "MS-Sql-1",
+      "database": "msdb",
+      "username": "sa",
+      "password": "Pass-1234"
+    },
+    {
+      "mssqlOptions": {
+        "appName": "SQLTools",
+        "useUTC": true,
+        "encrypt": true
+      },
+      "previewLimit": 50,
+      "server": "127.0.0.1",
+      "port": 1433,
+      "driver": "MSSQL",
+      "name": "MSsql-MyStore",
+      "database": "MyStore",
+      "username": "sa",
+      "password": "Pass-1234"
+    }
+  ]
+}
