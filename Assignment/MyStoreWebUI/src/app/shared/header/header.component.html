@@ -52,9 +52,8 @@
           [routerLinkActiveOptions]="{exact:true}"
         >New Product</a></li>
       <li *ngIf="isAuthenticated()"><a
-          [routerLink]="['user','profile']"
-          routerLinkActive="active"
-        >{{user() != null ? user()?.user?.name : ''}}</a></li>
+
+        >Welcome, {{user() != null ? user()?.user?.name?.substring(0,5) + '...' : ''}}</a></li>
       <li *ngIf="isAuthenticated()"><a
           (click)="logoutUser()"
           href="#"

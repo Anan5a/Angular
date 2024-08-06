@@ -15,17 +15,17 @@ export class CartComponent implements OnInit {
   //cart from service
   private productsService = inject(ProductsService)
   private loadingSpinnerService = inject(LoadingSpinnerService)
-  
+
   CART_TAX_RATE = 0.10;
   //calculate prices etc
   cartItems = this.productsService.cart
   cartPrice = computed(() => {
-    const subTotal = this.cartItems().reduce<number>((accumulator, item) => {
+    const subTotal = parseFloat((this.cartItems().reduce<number>((accumulator, item) => {
       accumulator += item.product.price * item.quantity;
       return accumulator;
-    }, 0)
-    const tax = subTotal * this.CART_TAX_RATE;
-    return { subTotal, tax, total: subTotal + tax } as CartPriceModel
+    }, 0)).toFixed(2))
+    const tax = parseFloat((subTotal * this.CART_TAX_RATE).toFixed(2));
+    return { subTotal, tax, total: parseFloat((subTotal + tax).toFixed(2)) } as CartPriceModel
   })
 
   ngOnInit(): void {
