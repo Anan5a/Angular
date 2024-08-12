@@ -1,22 +1,22 @@
 import { Component } from '@angular/core';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { CategoryModel } from '../expense.models';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { NewCategoryComponent } from '../category/new-category-dialog.component';
-import { CategoryModel } from '../expense.models';
 
 @Component({
-  selector: 'app-new-expense',
+  selector: 'app-new-category',
   standalone: true,
   imports: [MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatChipsModule, MatIconModule],
-  templateUrl: './new-expense.component.html',
-  styleUrl: './new-expense.component.scss'
+  templateUrl: './new-category-dialog.component.html',
+  styleUrl: './category.component.scss'
 })
-export class NewExpenseComponent {
+export class NewCategoryComponent {
+
   categoryData!: CategoryModel
   constructor(
     private matDialogRef: MatDialogRef<NewCategoryComponent>
@@ -25,7 +25,8 @@ export class NewExpenseComponent {
   onNoCreate() {
     this.matDialogRef.close()
   }
-  onCreateExpense() {
+  onCreateCat() {
     this.matDialogRef.close(this.categoryData)
   }
+
 }

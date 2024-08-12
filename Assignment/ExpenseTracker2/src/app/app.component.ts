@@ -10,6 +10,11 @@ import { MatListModule } from '@angular/material/list';
 import { map } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { LoginComponent } from "./auth/login/login.component";
+import { SignupComponent } from "./auth/signup/signup.component";
+import { CategoryComponent } from "./expense/category/category.component";
+import { ExpenseComponent } from "./expense/expense.component";
+import { FabService } from './fab.service';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +26,7 @@ import { LoginComponent } from "./auth/login/login.component";
     MatMenuModule,
     MatListModule,
     MatTooltipModule,
-    RouterOutlet, LoginComponent],
+    RouterOutlet, LoginComponent, SignupComponent, CategoryComponent, ExpenseComponent,NgIf],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -32,7 +37,11 @@ export class AppComponent {
     map(result => result.matches)
   );
 
-  constructor(private breakpointObserver: BreakpointObserver) { }
+  isFabVisible = this.fabService.isVisible
+  icon = this.fabService.icon
+  action = this.fabService.action
+
+  constructor(private breakpointObserver: BreakpointObserver,private fabService:FabService) { }
 
 
 }

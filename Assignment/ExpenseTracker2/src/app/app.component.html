@@ -49,6 +49,7 @@
       <mat-menu #menu="matMenu">
         <button mat-menu-item>Profile</button>
         <button mat-menu-item>Settings</button>
+        <button mat-menu-item>Category</button>
         <button mat-menu-item>Income</button>
         <button mat-menu-item>Budgeting</button>
         <button mat-menu-item>Logout</button>
@@ -57,17 +58,22 @@
 
     <!-- Main content here -->
     <button
+      *ngIf="isFabVisible()"
       mat-fab
       color="accent"
       class="fab-bottom-right"
       matTooltip="Add new expenses"
     >
-      <mat-icon>add</mat-icon>
+      <mat-icon>{{icon()}}</mat-icon>
     </button>
     <div class="content">
       <!-- testing components here -->
 
-      <app-login></app-login>
+      <!-- <app-login></app-login> -->
+      <!-- <app-signup></app-signup> -->
+      <!-- <app-category></app-category> -->
+
+      <app-expense></app-expense>
 
 
       <!-- <router-outlet></router-outlet> -->

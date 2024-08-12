@@ -15,7 +15,9 @@ mat-form-field {
   flex-wrap: wrap;
   justify-content: space-evenly;
 }
-
+mat-card {
+  flex: 1 1 250px;
+}
 .card {
   max-width: 250px;
   width: 250px;
