@@ -8,6 +8,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { map } from 'rxjs';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { LoginComponent } from "./auth/login/login.component";
 
 @Component({
   selector: 'app-root',
@@ -18,7 +20,8 @@ import { map } from 'rxjs';
     MatIconModule,
     MatMenuModule,
     MatListModule,
-    RouterOutlet],
+    MatTooltipModule,
+    RouterOutlet, LoginComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

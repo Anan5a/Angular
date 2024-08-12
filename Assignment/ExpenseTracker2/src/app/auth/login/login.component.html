@@ -1,0 +1,44 @@
+<!-- app.component.html -->
+<mat-card class="form-card">
+  <mat-card-header>
+    <mat-card-title class="center">Login</mat-card-title>
+  </mat-card-header>
+
+  <form action="">
+    <mat-card-content>
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          placeholder="Enter your email"
+        >
+        <mat-icon matSuffix>email</mat-icon>
+        <mat-hint>Hint: user&#64;example.com</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          placeholder="Enter your Password"
+        >
+        <mat-icon matSuffix>password</mat-icon>
+
+      </mat-form-field>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button
+        mat-raised-button
+        color="primary"
+        class="right"
+      >Submit</button>
+    </mat-card-actions>
+  </form>
+</mat-card>

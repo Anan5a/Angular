@@ -18,6 +18,14 @@
         mat-list-item
         routerLink="/services"
       >Services</a>
+      <a
+        mat-list-item
+        routerLink="/"
+      >Login</a>
+      <a
+        mat-list-item
+        routerLink="/"
+      >Signup</a>
     </mat-nav-list>
   </mat-sidenav>
 
@@ -41,6 +49,8 @@
       <mat-menu #menu="matMenu">
         <button mat-menu-item>Profile</button>
         <button mat-menu-item>Settings</button>
+        <button mat-menu-item>Income</button>
+        <button mat-menu-item>Budgeting</button>
         <button mat-menu-item>Logout</button>
       </mat-menu>
     </mat-toolbar>
@@ -50,94 +60,17 @@
       mat-fab
       color="accent"
       class="fab-bottom-right"
+      matTooltip="Add new expenses"
     >
-      <mat-icon>edit</mat-icon>
+      <mat-icon>add</mat-icon>
     </button>
     <div class="content">
-      <h2>Should be visible!!</h2>
-      <h2>sdhbcjesdjb</h2>
-      <h2>sdhbcjesdjb</h2>
-      <h2>sdhbcjesdjb</h2>
-      <h2>sdhbcjesdjb</h2>
-      <h2>sdhbcjesdjb</h2>
-      <h2>sdhbcjesdjb</h2>
-      <h2>sdhbcjesdjb</h2>
-      <h2>sdhbcjesdjb</h2>
-      <h2>sdhbcjesdjb</h2>
+      <!-- testing components here -->
 
-      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ducimus quas
-        numquam vero, neque, est qui, ad rem odit praesentium minima doloribus
-        ut esse? Qui tenetur molestiae sint quisquam vitae doloribus!Lorem ipsum
-        dolor sit amet consectetur adipisicing elit. Aspernatur
-        incidunt sapiente quisquam commodi facere? Deserunt vero minima deleniti
-        itaque, mollitia consectetur sed vel, rerum architecto provident
-        obcaecati
-        dolor nihil esse.Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Aspernatur
-        incidunt sapiente quisquam commodi facere? Deserunt vero minima deleniti
-        itaque, mollitia consectetur sed vel, rerum architecto provident
-        obcaecati
-        dolor nihil esse.Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Aspernatur
-        incidunt sapiente quisquam commodi facere? Deserunt vero minima deleniti
-        itaque, mollitia consectetur sed vel, rerum architecto provident
-        obcaecati
-        dolor nihil esse.</p>
-      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ducimus quas
-        numquam vero, neque, est qui, ad rem odit praesentium minima doloribus
-        ut esse? Qui tenetur molestiae sint quisquam vitae doloribus!Lorem ipsum
-        dolor sit amet consectetur adipisicing elit. Aspernatur
-        incidunt sapiente quisquam commodi facere? Deserunt vero minima deleniti
-        itaque, mollitia consectetur sed vel, rerum architecto provident
-        obcaecati
-        dolor nihil esse.Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Aspernatur
-        incidunt sapiente quisquam commodi facere? Deserunt vero minima deleniti
-        itaque, mollitia consectetur sed vel, rerum architecto provident
-        obcaecati
-        dolor nihil esse.Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Aspernatur
-        incidunt sapiente quisquam commodi facere? Deserunt vero minima deleniti
-        itaque, mollitia consectetur sed vel, rerum architecto provident
-        obcaecati
-        dolor nihil esse.</p>
-      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ducimus quas
-        numquam vero, neque, est qui, ad rem odit praesentium minima doloribus
-        ut esse? Qui tenetur molestiae sint quisquam vitae doloribus!Lorem ipsum
-        dolor sit amet consectetur adipisicing elit. Aspernatur
-        incidunt sapiente quisquam commodi facere? Deserunt vero minima deleniti
-        itaque, mollitia consectetur sed vel, rerum architecto provident
-        obcaecati
-        dolor nihil esse.Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Aspernatur
-        incidunt sapiente quisquam commodi facere? Deserunt vero minima deleniti
-        itaque, mollitia consectetur sed vel, rerum architecto provident
-        obcaecati
-        dolor nihil esse.Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Aspernatur
-        incidunt sapiente quisquam commodi facere? Deserunt vero minima deleniti
-        itaque, mollitia consectetur sed vel, rerum architecto provident
-        obcaecati
-        dolor nihil esse.</p>
-      <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ducimus quas
-        numquam vero, neque, est qui, ad rem odit praesentium minima doloribus
-        ut esse? Qui tenetur molestiae sint quisquam vitae doloribus!Lorem ipsum
-        dolor sit amet consectetur adipisicing elit. Aspernatur
-        incidunt sapiente quisquam commodi facere? Deserunt vero minima deleniti
-        itaque, mollitia consectetur sed vel, rerum architecto provident
-        obcaecati
-        dolor nihil esse.Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Aspernatur
-        incidunt sapiente quisquam commodi facere? Deserunt vero minima deleniti
-        itaque, mollitia consectetur sed vel, rerum architecto provident
-        obcaecati
-        dolor nihil esse.Lorem ipsum dolor sit amet consectetur adipisicing
-        elit. Aspernatur
-        incidunt sapiente quisquam commodi facere? Deserunt vero minima deleniti
-        itaque, mollitia consectetur sed vel, rerum architecto provident
-        obcaecati
-        dolor nihil esse.</p>
-      <router-outlet></router-outlet>
+      <app-login></app-login>
+
+
+      <!-- <router-outlet></router-outlet> -->
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
