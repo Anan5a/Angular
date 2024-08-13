@@ -8,6 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { NewCategoryComponent } from './new-category-dialog.component';
+import { ExpenseService } from '../expense.service';
 
 @Component({
   selector: 'app-category',
@@ -23,6 +24,7 @@ export class CategoryComponent {
 
   constructor(
     // private matDialogRef: MatDialogRef<NewCategoryComponent>
+    private expenseService:ExpenseService
   ) { }
 
 
@@ -30,9 +32,10 @@ export class CategoryComponent {
     const dialogRef = this.dialog.open(NewCategoryComponent, {});
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      console.log(result)
-      if (result !== undefined) {
+
+      if (result !== undefined && typeof (result) == 'object') {
+        this.expenseService.addNewCategory(result)
+        console.log(this.expenseService.categories())
       }
     });
   }

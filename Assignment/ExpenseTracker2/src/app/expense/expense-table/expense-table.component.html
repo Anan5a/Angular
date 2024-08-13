@@ -5,7 +5,7 @@
   >
 
     <!-- Position Column -->
-    <ng-container matColumnDef="category">
+    <ng-container matColumnDef="categoryId">
       <th
         mat-header-cell
         *matHeaderCellDef
@@ -13,7 +13,7 @@
       <td
         mat-cell
         *matCellDef="let expense"
-      > {{expense.category.title}}</td>
+      > {{expense.categoryId}}</td>
     </ng-container>
 
     <!-- Name Column -->

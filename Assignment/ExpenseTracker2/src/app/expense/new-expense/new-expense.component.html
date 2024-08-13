@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>New Expense</h2>
 <mat-dialog-content class="mat-typography">
   <!-- add cat form -->
-  <form action="">
+  <form [formGroup]="form">
     <mat-form-field
       appearance="outline"
       class="full-width"
@@ -10,7 +10,7 @@
       <input
         matInput
         placeholder="Where you spent the money"
-        #name
+        formControlName="name"
       >
       <mat-hint>Example: Food</mat-hint>
     </mat-form-field>
@@ -20,11 +20,11 @@
       appearance="outline"
       class="full-width"
     >
-      <mat-label>Name</mat-label>
+      <mat-label>Category</mat-label>
       <input
         matInput
         placeholder="Enter category name"
-        #name
+        formControlName="category"
       >
       <mat-hint>Example: Food</mat-hint>
     </mat-form-field>
@@ -33,10 +33,13 @@
       appearance="outline"
       class="full-width"
     >
-      <mat-label>Budget</mat-label>
+      <mat-label>Expense</mat-label>
       <input
         matInput
-        placeholder="Enter budget for this category"
+        type="number"
+        min="0"
+        placeholder="Enter How much did you spend"
+        formControlName="expense"
       >
       <mat-hint>Example: 200</mat-hint>
 
@@ -55,7 +58,7 @@
   <button
     mat-button
     [mat-dialog-close]="true"
-    cdkFocusInitial
+    [disabled]="form.invalid"
     (click)="onCreateExpense()"
     color="primary"
   >Create</button>

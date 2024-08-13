@@ -1,7 +1,7 @@
 export interface ExpenseModel {
   id: number
   title?: string
-  category: CategoryModel
+  categoryId: number
   amount: number
   dateTime: string
 }
@@ -16,8 +16,15 @@ export interface CategoryModel {
   title: string
   budget: BudgetModel
   dateTime: string
-
 }
 export interface BudgetModel {
   maxSpend: number
+}
+
+/////data model
+//object for each user
+export interface ExpenseDataModel {
+  expenses: ExpenseModel[]
+  incomes: IncomeModel[]
+  categories: CategoryModel[]
 }

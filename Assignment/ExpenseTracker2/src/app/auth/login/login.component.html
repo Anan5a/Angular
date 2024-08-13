@@ -4,7 +4,13 @@
     <mat-card-title class="center">Login</mat-card-title>
   </mat-card-header>
 
-  <form action="">
+  <form
+    [formGroup]="form"
+    (submit)="formOnSubmit()"
+  >
+    <h3 *ngIf="formErrorMessage()!==null">
+      <mat-error>{{formErrorMessage()}}</mat-error>
+    </h3>
     <mat-card-content>
       <mat-form-field
         appearance="outline"
@@ -14,8 +20,11 @@
         <input
           matInput
           placeholder="Enter your email"
+          formControlName="email"
         >
         <mat-icon matSuffix>email</mat-icon>
+        <mat-error *ngIf="form.value.email">A valid email address is
+          required</mat-error>
         <mat-hint>Hint: user&#64;example.com</mat-hint>
       </mat-form-field>
 
@@ -27,9 +36,12 @@
         <input
           matInput
           placeholder="Enter your Password"
+          type="password"
+          formControlName="password"
         >
         <mat-icon matSuffix>password</mat-icon>
-
+        <mat-error *ngIf="form.value.password">A valid password must contain
+          atleast 6 character</mat-error>
       </mat-form-field>
     </mat-card-content>
 
@@ -38,6 +50,7 @@
         mat-raised-button
         color="primary"
         class="right"
+        [disabled]="!form.valid"
       >Submit</button>
     </mat-card-actions>
   </form>

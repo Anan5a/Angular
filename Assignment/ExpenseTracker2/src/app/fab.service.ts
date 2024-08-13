@@ -4,7 +4,7 @@ import { Injectable, signal, WritableSignal } from '@angular/core';
   providedIn: 'root'
 })
 export class FabService {
-  isVisible = signal(false)
+  isVisible = signal(true)
   icon = signal('add')
   action: WritableSignal<Function|undefined> = signal(() => console.log("Action to be performed"))
 

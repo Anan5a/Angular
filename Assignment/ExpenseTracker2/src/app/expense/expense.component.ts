@@ -21,20 +21,16 @@ import { FabService } from '../fab.service';
   styleUrl: './expense.component.scss'
 })
 export class ExpenseComponent {
-  categoryData!: CategoryModel
-  readonly dialog = inject(MatDialog);
-
 
   constructor(
     // private matDialogRef: MatDialogRef<NewCategoryComponent>
+    private readonly dialog: MatDialog
   ) {
   }
 
 
 
   openDialog() {
-
-
     const dialogRef = this.dialog.open(NewExpenseComponent, {});
 
     dialogRef.afterClosed().subscribe(result => {

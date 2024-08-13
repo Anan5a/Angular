@@ -15,6 +15,8 @@ import { CategoryComponent } from "./expense/category/category.component";
 import { ExpenseComponent } from "./expense/expense.component";
 import { FabService } from './fab.service';
 import { NgIf } from '@angular/common';
+import { NewExpenseComponent } from './expense/new-expense/new-expense.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +28,7 @@ import { NgIf } from '@angular/common';
     MatMenuModule,
     MatListModule,
     MatTooltipModule,
-    RouterOutlet, LoginComponent, SignupComponent, CategoryComponent, ExpenseComponent,NgIf],
+    RouterOutlet, LoginComponent, SignupComponent, CategoryComponent, ExpenseComponent, NgIf],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -41,7 +43,16 @@ export class AppComponent {
   icon = this.fabService.icon
   action = this.fabService.action
 
-  constructor(private breakpointObserver: BreakpointObserver,private fabService:FabService) { }
+  constructor(private breakpointObserver: BreakpointObserver, private fabService: FabService, private readonly dialog: MatDialog
+  ) { }
 
 
+
+  openNewExpenseDialog() {
+
+
+    const dialogRef = this.dialog.open(NewExpenseComponent, {});
+
+    dialogRef.afterClosed().subscribe(result => { });
+  }
 }

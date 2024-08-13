@@ -1,95 +1,106 @@
-import { HttpClient } from '@angular/common/http';
 import { computed, Injectable, signal } from '@angular/core';
-import { ErrorService } from '../shared/error/error.service';
-import { CreateUserRequestModel, UserLoginRequestModel, UserLoginResponseModel, UserResponseModel } from './users.models';
-import { catchError, tap, throwError } from 'rxjs';
-import { ApiBaseUrl } from '../../constants';
+import { UserModel } from './users.models';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private _user = signal<UserLoginResponseModel | null>(null);
+  private _user = signal<UserModel | null>(null);
 
-  constructor(private httpClient: HttpClient, private errorService: ErrorService) {
+  private __userList = signal<UserModel[]>([]);
+
+  private storageKey = 'UserAuthData'
+  private currentUserKey = 'CurrentUser'
+
+  constructor() {
+    this.getLocalUserList()
+    this.getCurrentUser()
   }
 
   get user() {
-    this.getLocalUser()
+    this.getCurrentUser()
     return this._user.asReadonly()
   }
   get isAuthenticated() {
     return computed(() => this._user() !== null)
   }
-  get isAdmin() {
-    return computed(() => this.isAuthenticated() && this._user()?.user.role?.roleName === 'Admin')
-  }
+
   logout() {
     //erase tokens
-    this.eraseUser()
-  }
-  token() {
-    return this.user()?.token
+    this._user.set(null)
+    this.eraseCurrentUser()
   }
 
-  signup(formData: CreateUserRequestModel) {
-    const url = ApiBaseUrl + '/User';
-    const errorMessage = 'Failed to create user!';
 
-    return this._postData<CreateUserRequestModel, UserResponseModel>(url, formData, errorMessage)
+  signup(name: string, email: string, password: string) {
+    const model: UserModel = {
+      id: Date.now(),
+      createdAt: (new Date()).toISOString(),
+      modifiedAt: '',
+      email,
+      name,
+      password
+    }
+    return this.storeUser(model)
+  }
+  login(email: string, password: string) {
+    //find user by email
+    const user = this.__userList().find((user) => user.email === email)
+    if (!user) {
+      return null
+    }
+    if (user && user.password === password) {
+      //set user
+      //store current user for persistence
+      window.localStorage.setItem(this.currentUserKey, JSON.stringify(user))
+      this._user.set(user)
+
+      return user
+    } else {
+      return false
+    }
 
   }
-  login(formData: UserLoginRequestModel) {
-    const url = ApiBaseUrl + '/User/login';
-    const errorMessage = 'Failed to login user!';
-    return this._postData<UserLoginRequestModel, UserLoginResponseModel>(url, formData, errorMessage).pipe(
-      tap({
-        next: (response) => {
-          this._user.set(response)
-          this.storeUser()
-        }
-      })
-    )
-
-
-  }
-  private _postData<T1, T2>(url: string, requestData: T1, errorMessage: string) {
-    return this.httpClient.post<T2>(url, requestData).pipe(
-      catchError((error) => {
-        this.errorService.serverError.set(error.error)
-        this.errorService.showError(errorMessage);
-        return throwError(() => new Error(errorMessage))
-      })
-    )
+  private _postData() {
+    return
   }
 
-  private _fetchUser(url: string, errorMessage: string) {
-    return this.httpClient.get<UserResponseModel[]>(url).pipe(
-      catchError((error) => {
-        this.errorService.serverError.set(error.error)
-        this.errorService.showError(errorMessage);
-        return throwError(() => new Error(errorMessage))
-      })
-    )
+  private _fetchUser() {
+    return
   }
 
-  private storeUser() {
+  private storeUser(user: UserModel) {
     //stores the user in the localstorage
-    window.localStorage.setItem('user-auth-data', JSON.stringify(this._user()))
+    const newlist = [...this.__userList(), user]
+    this.__userList.set(newlist)
+    window.localStorage.setItem(this.storageKey, JSON.stringify(this.__userList()))
   }
-  private eraseUser() {
+  private eraseCurrentUser() {
     //removes the user in the localstorage
-    window.localStorage.removeItem('user-auth-data')
+    window.localStorage.removeItem(this.currentUserKey)
   }
-  private getLocalUser() {
-    const storedJson = window.localStorage.getItem('user-auth-data')
+  private getLocalUserList(): UserModel[] | null {
+    const storedJson = window.localStorage.getItem(this.storageKey)
+    if (storedJson !== null) {
+      //try decoding json
+      const decodedJson = JSON.parse(storedJson);
+      if (decodedJson) {
+        //set _user
+        this.__userList.set(decodedJson);
+        return decodedJson as UserModel[];
+      }
+    }
+    return null;
+  }
+  private getCurrentUser(): UserModel | null {
+    const storedJson = window.localStorage.getItem(this.currentUserKey)
     if (storedJson !== null) {
       //try decoding json
       const decodedJson = JSON.parse(storedJson);
       if (decodedJson) {
         //set _user
         this._user.set(decodedJson);
-        return decodedJson as UserLoginRequestModel;
+        return decodedJson as UserModel;
       }
     }
     return null;

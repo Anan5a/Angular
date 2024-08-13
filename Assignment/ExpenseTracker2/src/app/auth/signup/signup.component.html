@@ -4,7 +4,10 @@
     <mat-card-title class="center">Signup</mat-card-title>
   </mat-card-header>
 
-  <form action="">
+  <form
+    [formGroup]="form"
+    (submit)="formOnSubmit()"
+  >
     <mat-card-content>
       <mat-form-field
         appearance="outline"
@@ -14,8 +17,11 @@
         <input
           matInput
           placeholder="Enter your full name"
+          formControlName="name"
         >
         <mat-icon matSuffix>person</mat-icon>
+        <mat-error *ngIf="form.value.name">Name is required, and it must be
+          at-least 6 character long</mat-error>
         <mat-hint>Hint: Your full name</mat-hint>
       </mat-form-field>
       <mat-form-field
@@ -26,8 +32,11 @@
         <input
           matInput
           placeholder="Enter your email"
+          formControlName="email"
         >
         <mat-icon matSuffix>email</mat-icon>
+        <mat-error *ngIf="form.value.email">A valid email address is
+          required</mat-error>
         <mat-hint>Hint: user&#64;example.com</mat-hint>
       </mat-form-field>
 
@@ -38,10 +47,13 @@
         <mat-label>Password</mat-label>
         <input
           matInput
+          type="password"
           placeholder="Enter strong Password"
+          formControlName="password"
         >
         <mat-icon matSuffix>password</mat-icon>
-
+        <mat-error *ngIf="form.value.password">A valid password must contain
+          atleast 6 character</mat-error>
       </mat-form-field>
       <mat-form-field
         appearance="outline"
@@ -50,10 +62,13 @@
         <mat-label>Verify Password</mat-label>
         <input
           matInput
+          type="password"
           placeholder="Retype your Password"
+          formControlName="c_password"
         >
         <mat-icon matSuffix>password</mat-icon>
-
+        <mat-error *ngIf="form.value.c_password">Passwords does
+          not match.</mat-error>
       </mat-form-field>
     </mat-card-content>
 
@@ -62,6 +77,7 @@
         mat-raised-button
         color="primary"
         class="right"
+        [disabled]="!form.valid"
       >Submit</button>
     </mat-card-actions>
   </form>

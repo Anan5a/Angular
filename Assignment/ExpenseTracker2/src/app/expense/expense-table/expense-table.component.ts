@@ -11,10 +11,10 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
   styleUrl: './expense-table.component.scss'
 })
 export class ExpenseTableComponent implements AfterViewInit {
-  tmpExpenses: ExpenseModel[] = Array.from({ length: 100 }, (_, i) => { return { amount: 100 * Math.random(), category: { title: "myCat" + (i % 10) } as CategoryModel, id: (new Date()).getMilliseconds(), title: 'Expense ' + i, dateTime: (new Date()).toDateString() } })
+  tmpExpenses: ExpenseModel[] = Array.from({ length: 100 }, (_, i) => { return { amount: 100 * Math.random(), categoryId: 121, id: (new Date()).getMilliseconds(), title: 'Expense ' + i, dateTime: (new Date()).toDateString() } })
 
   dataSource = new MatTableDataSource<ExpenseModel>(this.tmpExpenses);
-  displayedColumns: string[] = ['category', 'title', 'amount', 'date'];
+  displayedColumns: string[] = ['categoryId', 'title', 'amount', 'date'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
