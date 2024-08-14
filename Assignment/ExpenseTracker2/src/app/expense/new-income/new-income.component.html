@@ -1,1 +1,52 @@
-<p>new-income works!</p>
+<h2 mat-dialog-title>New Income</h2>
+<mat-dialog-content class="mat-typography">
+  <!-- add cat form -->
+  <form [formGroup]="form">
+    <mat-form-field
+      appearance="outline"
+      class="full-width"
+    >
+      <mat-label>Title</mat-label>
+      <input
+        matInput
+        placeholder="Source of the income"
+        formControlName="name"
+      >
+      <mat-hint>Example: Salary</mat-hint>
+    </mat-form-field>
+
+
+    <mat-form-field
+      appearance="outline"
+      class="full-width"
+    >
+      <mat-label>Amount</mat-label>
+      <input
+        matInput
+        type="number"
+        min="0"
+        placeholder="Enter the amount."
+        formControlName="income"
+      >
+      <mat-hint>Example: 200</mat-hint>
+
+    </mat-form-field>
+
+  </form>
+
+
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button
+    mat-button
+    mat-dialog-close
+  >Cancel</button>
+  <button
+    mat-button
+    [mat-dialog-close]="true"
+    [disabled]="form.invalid"
+    (click)="onCreateIncome()"
+    color="primary"
+  >Create</button>
+</mat-dialog-actions>

@@ -60,6 +60,56 @@ export class ExpenseService {
   get incomes() {
     return this._incomes.asReadonly()
   }
+
+  getCategoryData(catId: number) {
+    //return list of items of a specific category
+    //find the category
+    const category = this.categories().find((cat) => cat.id === catId)
+    if (!category) {
+      return null
+    }
+    const catItems = this.expenses().filter(expense => expense.categoryId === category.id)
+    return { ...category, categoryObjects: [...catItems] }
+  }
+
+  getRangeExpenseData(date1?: string, date2?: string) {
+    //return items of a specific date/period or range
+    if (!date1 && !date2) {
+      //return all expenses
+      return this.expenses()
+    }
+    if (date1 && !date2) {
+      //return items of date
+      const parsedDate = new Date(date1)
+
+      return this.expenses().filter((expense) => {
+        const _parsedDate = new Date(expense.dateTime)
+        return _parsedDate.getDate() == parsedDate.getDate() && _parsedDate.getMonth() == parsedDate.getMonth() && _parsedDate.getUTCFullYear() == parsedDate.getUTCFullYear()
+      })
+
+    }
+    if (date1 && date2) {
+      const parsedDate1 = new Date(date1)
+      const parsedDate2 = new Date(date1)
+
+      return this.expenses().filter((expense) => {
+        const _parsedDate = new Date(expense.dateTime)
+        return _parsedDate >= parsedDate1 || _parsedDate <= parsedDate2
+      })
+    }
+    return null
+
+  }
+
+  getRangeIncomeData(date1?: string, date2?: string,) {
+    //return income items of a specific date/period
+  }
+
+
+
+
+
+
   addNewIncome(income: IncomeModel) {
     this._incomes.update((incomes) => { incomes.push(income); return incomes; })
     this.storeAllData()

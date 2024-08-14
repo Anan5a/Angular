@@ -17,6 +17,7 @@ import { FabService } from './fab.service';
 import { NgIf } from '@angular/common';
 import { NewExpenseComponent } from './expense/new-expense/new-expense.component';
 import { MatDialog } from '@angular/material/dialog';
+import { DashboardComponent } from "./dashboard/dashboard.component";
 
 @Component({
   selector: 'app-root',
@@ -28,7 +29,7 @@ import { MatDialog } from '@angular/material/dialog';
     MatMenuModule,
     MatListModule,
     MatTooltipModule,
-    RouterOutlet, LoginComponent, SignupComponent, CategoryComponent, ExpenseComponent, NgIf],
+    RouterOutlet, LoginComponent, SignupComponent, CategoryComponent, ExpenseComponent, NgIf, DashboardComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -49,8 +50,6 @@ export class AppComponent {
 
 
   openNewExpenseDialog() {
-
-
     const dialogRef = this.dialog.open(NewExpenseComponent, {});
 
     dialogRef.afterClosed().subscribe(result => { });

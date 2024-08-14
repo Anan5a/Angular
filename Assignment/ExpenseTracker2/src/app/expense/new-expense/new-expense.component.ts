@@ -25,7 +25,6 @@ export class NewExpenseComponent {
     expense: new FormControl('', { validators: [Validators.required] }),
   })
 
-  categoryData!: CategoryModel
   constructor(
     private matDialogRef: MatDialogRef<NewCategoryComponent>,
     private expenseService: ExpenseService

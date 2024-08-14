@@ -1,1 +1,68 @@
-<p>dashboard works!</p>
+<div class="flex-container button-container">
+  <button
+    mat-fab
+    extended
+    class="fab"
+    (click)="null"
+  >
+    <mat-icon>add</mat-icon>
+    New Expense
+  </button>
+  <button
+    mat-fab
+    extended
+    class="fab"
+    (click)="null"
+  >
+    <mat-icon>add</mat-icon>
+    New Category
+  </button>
+  <button
+    mat-fab
+    extended
+    class="fab"
+    (click)="null"
+  >
+    <mat-icon>add</mat-icon>
+    New Income
+  </button>
+</div>
+<div class="flex-container">
+  <!-- chart container -->
+  <div
+    class="chart-container"
+    style="flex: 2;"
+  >
+
+    <app-line-chart
+      chartTitle="Expense vs Income"
+      chartSubTitle="example subtitle"
+    ></app-line-chart>
+  </div>
+  <div
+    class="chart-container"
+    style="flex: 1;"
+  >
+
+    <app-pie-chart
+      chartTitle="Expense breakdown"
+      chartSubTitle="Where you spent your money"
+    ></app-pie-chart>
+  </div>
+
+</div>
+<div
+  class="flex-container"
+  style="margin-top: 1rem;"
+>
+  <!-- chart container -->
+  <div
+    class="chart-container"
+    style="flex: 1;"
+  >
+    <app-bar-chart
+      chartTitle="Expense breakdown"
+      chartSubTitle="Where you spent your money"
+    ></app-bar-chart>
+  </div>
+</div>
