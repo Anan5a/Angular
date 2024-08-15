@@ -19,12 +19,10 @@ import { ExpenseService } from '../expense.service';
 })
 export class CategoryComponent {
 
-  categoryData!: CategoryModel
   readonly dialog = inject(MatDialog);
 
   constructor(
-    // private matDialogRef: MatDialogRef<NewCategoryComponent>
-    private expenseService:ExpenseService
+    
   ) { }
 
 
@@ -32,11 +30,6 @@ export class CategoryComponent {
     const dialogRef = this.dialog.open(NewCategoryComponent, {});
 
     dialogRef.afterClosed().subscribe(result => {
-
-      if (result !== undefined && typeof (result) == 'object') {
-        this.expenseService.addNewCategory(result)
-        console.log(this.expenseService.categories())
-      }
     });
   }
 }

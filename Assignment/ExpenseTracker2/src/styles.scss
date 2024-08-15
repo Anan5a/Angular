@@ -3,6 +3,7 @@
 body {
   margin: 0;
   box-sizing: border-box;
+  max-width: 1300px;
 }
 html,
 body {
@@ -23,6 +24,9 @@ body {
   flex-wrap: wrap;
   width: 100%;
 
+}
+.full-width{
+  width: 100%;
 }
 // p {
 //   font-size: 1.3rem;

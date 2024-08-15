@@ -40,7 +40,6 @@ export class NewIncomeComponent {
       dateTime: (new Date()).toISOString()
     } as IncomeModel
     this.expenseService.addNewIncome(expense)
-    console.log(this.expenseService.expenses())
     this.matDialogRef.close()
   }
 }

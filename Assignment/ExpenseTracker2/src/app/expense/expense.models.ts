@@ -4,6 +4,7 @@ export interface ExpenseModel {
   categoryId: number
   amount: number
   dateTime: string
+  catStr?: string
 }
 export interface IncomeModel {
   id: number

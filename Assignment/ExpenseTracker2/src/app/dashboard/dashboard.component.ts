@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -12,6 +12,10 @@ import { ExpenseTableComponent } from '../expense/expense-table/expense-table.co
 import { PieChartComponent } from "./pie-chart/pie-chart.component";
 import { LineChartComponent } from "./line-chart/line-chart.component";
 import { BarChartComponent } from "./bar-chart/bar-chart.component";
+import { BarChartStruct, ChartingService, LineChartStruct, PieChartStruct } from './charting.service';
+import { NewExpenseComponent } from '../expense/new-expense/new-expense.component';
+import { NewCategoryComponent } from '../expense/category/new-category-dialog.component';
+import { NewIncomeComponent } from '../expense/new-income/new-income.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,6 +24,69 @@ import { BarChartComponent } from "./bar-chart/bar-chart.component";
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
+
+
+  linechartData = signal<LineChartStruct | null>(null)
+  piechartData = signal<PieChartStruct | null>(null)
+  barchartData = signal<BarChartStruct | null>(null)
+  //chart data
+  catType = signal<"monthly" | "yearly" | "daily">("daily")
+  dateFrom = signal<string>("")
+  dateTo = signal<string>("")
+  xAxisTitle__Line = signal("Days")
+  xAxisTitle__Bar = signal("Months")
+  yAxisTitle__Bar = signal("Savings")
+
+  ///
+
+
+
+
+  constructor(private chartingService: ChartingService, private readonly dialog: MatDialog) { }
+
+
+  ngOnInit(): void {
+    this.linechartData.set(this.chartingService.getLineChartData(
+      "Expense vs Income",
+      "Your expense and income comparison over time",
+      this.xAxisTitle__Line(),
+      "Expense and Income",
+      this.catType(),
+      this.dateFrom(),
+      this.dateTo()
+    ))
+    this.piechartData.set(this.chartingService.getPieChartData(
+      "Expense Breakdown",
+      "Where you spent your money",
+      this.catType(),
+      this.dateFrom(),
+      this.dateTo()
+    ))
+
+    this.barchartData.set(this.chartingService.getBarChartData(
+      "Savings Breakdown",
+      "How much you saved over the months",
+      this.xAxisTitle__Bar(),
+      this.yAxisTitle__Bar()
+    ))
+  }
+
+
+  openNewExpenseDialog() {
+    const dialogRef = this.dialog.open(NewExpenseComponent, {});
+
+    dialogRef.afterClosed().subscribe(result => { });
+  }
+  openNewCategoryDialog() {
+    const dialogRef = this.dialog.open(NewCategoryComponent, {});
+
+    dialogRef.afterClosed().subscribe(result => { });
+  }
+  openNewIncomeialog() {
+    const dialogRef = this.dialog.open(NewIncomeComponent, {});
+
+    dialogRef.afterClosed().subscribe(result => { });
+  }
 
 }

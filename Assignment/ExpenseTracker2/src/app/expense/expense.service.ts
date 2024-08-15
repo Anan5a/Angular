@@ -25,8 +25,8 @@ export class ExpenseService {
   ) {
     if (authService.isAuthenticated()) {
       this.storageKey = this.storageKey + authService.user()?.id
-      this.loadAllData()
     }
+    this.loadAllData()
   }
 
   get categories() {
@@ -71,10 +71,14 @@ export class ExpenseService {
     const catItems = this.expenses().filter(expense => expense.categoryId === category.id)
     return { ...category, categoryObjects: [...catItems] }
   }
+  getCategoryById(catId: number) {
+
+    return this.categories().find((cat) => cat.id === catId)
+  }
 
   getRangeExpenseData(date1?: string, date2?: string) {
     //return items of a specific date/period or range
-    if (!date1 && !date2) {
+    if ((!date1 && !date2)) {
       //return all expenses
       return this.expenses()
     }
@@ -103,6 +107,34 @@ export class ExpenseService {
 
   getRangeIncomeData(date1?: string, date2?: string,) {
     //return income items of a specific date/period
+    if (!date1 && !date2) {
+      //return all expenses
+      return this.incomes()
+    }
+    if (date1 && !date2) {
+      //return items of date
+      const parsedDate = new Date(date1)
+
+      return this.incomes().filter((income) => {
+        const _parsedDate = new Date(income.dateTime)
+        return _parsedDate.getDate() == parsedDate.getDate() && _parsedDate.getMonth() == parsedDate.getMonth() && _parsedDate.getUTCFullYear() == parsedDate.getUTCFullYear()
+      })
+
+    }
+    if (date1 && date2) {
+      const parsedDate1 = new Date(date1)
+      const parsedDate2 = new Date(date1)
+
+      return this.incomes().filter((income) => {
+        const _parsedDate = new Date(income.dateTime)
+        return _parsedDate >= parsedDate1 || _parsedDate <= parsedDate2
+      })
+    }
+    return null
+
+
+
+
   }
 
 

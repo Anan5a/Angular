@@ -2,6 +2,8 @@ import { Component, input, OnInit } from '@angular/core';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 import Exporting from 'highcharts/modules/exporting';
+import { PieChartStruct } from '../charting.service';
+import { LEFT_ARROW } from '@angular/cdk/keycodes';
 
 
 Exporting(Highcharts);
@@ -14,51 +16,32 @@ Exporting(Highcharts);
   styleUrl: './pie-chart.component.scss'
 })
 export class PieChartComponent implements OnInit {
-  chartTitle = input.required<string>()
-  chartSubTitle = input.required<string>()
+  pieChartData = input.required<PieChartStruct | null>()
 
-  chart_data = [
-    {
-      name: 'Water',
-      y: 55.02
-    },
-    {
-      name: 'Fat',
-      sliced: true,
-      selected: true,
-      y: 26.71
-    },
-    {
-      name: 'Carbohydrates',
-      y: 1.09
-    },
-    {
-      name: 'Protein',
-      y: 15.5
-    },
-    {
-      name: 'Ash',
-      y: 1.68
-    }
-  ]
 
   isHighcharts = typeof Highcharts === 'object';
+
   Highcharts: typeof Highcharts = Highcharts;
   chartOptions!: Highcharts.Options
   ngOnInit(): void {
+
+
+    console.log(this.pieChartData())
+
     this.chartOptions = {
       chart: {
         type: 'pie'
       },
       title: {
-        text: 'Egg Yolk Composition'
+        text: this.pieChartData()?.title,
+        align: 'left'
       },
       tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
       },
       subtitle: {
-        text:
-          'Source:<a href="https://www.mdpi.com/2072-6643/11/3/684/htm" target="_default">MDPI</a>'
+        text: this.pieChartData()?.subtitle,
+        align: 'left'
       },
       legend: {
         layout: 'vertical',
@@ -86,7 +69,6 @@ export class PieChartComponent implements OnInit {
             }
           },
           showInLegend: true
-
         }
       },
       credits: {
@@ -96,28 +78,7 @@ export class PieChartComponent implements OnInit {
         {
           type: 'pie',
           name: 'Percentage',
-          data: [
-            {
-              name: 'Water',
-              y: 55.02
-            },
-            {
-              name: 'Fat',
-              y: 26.71
-            },
-            {
-              name: 'Carbohydrates',
-              y: 1.09
-            },
-            {
-              name: 'Protein',
-              y: 15.5
-            },
-            {
-              name: 'Ash',
-              y: 1.68
-            }
-          ]
+          data: this.pieChartData()?.data
         }
       ]
     }

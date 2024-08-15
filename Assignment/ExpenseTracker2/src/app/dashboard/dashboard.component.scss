@@ -8,16 +8,19 @@
   min-width: 40%;
   height: 400px;
   overflow: hidden;
-
 }
-.flex-container{
+.flex-container {
   gap: 1rem;
+}
+
+.mt-1rem{
+  margin-top: 1rem;
 }
 @media only screen and (max-width: 600px) {
   .button-container .fab {
     margin: 16px;
   }
-  .chart-container{
+  .chart-container {
     min-width: 100%;
   }
 }

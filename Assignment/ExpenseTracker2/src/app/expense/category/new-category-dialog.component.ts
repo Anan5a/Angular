@@ -8,6 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ExpenseService } from '../expense.service';
 
 @Component({
   selector: 'app-new-category',
@@ -23,7 +24,8 @@ export class NewCategoryComponent {
   })
 
   constructor(
-    private matDialogRef: MatDialogRef<NewCategoryComponent>
+    private matDialogRef: MatDialogRef<NewCategoryComponent>,
+    private expenseService:ExpenseService
   ) { }
 
   onNoCreate() {
@@ -40,6 +42,8 @@ export class NewCategoryComponent {
       id: Date.now(),
       title: this.form.controls['name'].value || ''
     }
+    this.expenseService.addNewCategory(categoryData)
+
     this.matDialogRef.close(categoryData)
   }
 

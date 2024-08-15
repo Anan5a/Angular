@@ -1,7 +1,8 @@
-import { Component, input, OnInit } from '@angular/core';
+import { Component, input, OnInit, signal } from '@angular/core';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 import Exporting from 'highcharts/modules/exporting';
+import { LineChartStruct } from '../charting.service';
 
 
 Exporting(Highcharts);
@@ -10,46 +11,47 @@ Exporting(Highcharts);
   selector: 'app-line-chart',
   standalone: true,
   imports: [HighchartsChartModule],
-  templateUrl:'./line-chart.component.html',
+  templateUrl: './line-chart.component.html',
   styleUrl: './line-chart.component.scss'
 })
 export class LineChartComponent implements OnInit {
-  chartTitle = input.required<string>()
-  chartSubTitle = input.required<string>()
 
+  lineChartData = input.required<LineChartStruct | null>()
 
 
   isHighcharts = typeof Highcharts === 'object';
   Highcharts: typeof Highcharts = Highcharts;
   chartOptions!: Highcharts.Options
   ngOnInit(): void {
+    console.log(this.lineChartData())
+
+
     this.chartOptions = {
       chart: {
         type: 'line',
       },
       title: {
-        text: this.chartTitle(),
+        text: this.lineChartData()?.title,
         align: 'left'
       },
 
       subtitle: {
-        text: this.chartSubTitle(),
+        text: this.lineChartData()?.subtitle,
         align: 'left'
       },
 
       yAxis: {
         title: {
-          text: 'Expense vs Income'
+          text: this.lineChartData()?.yAxisTitle
         }
       },
 
       xAxis: {
-        categories: ['Jan', 'Jan', 'Jan', 'Jan', 'Jan', 'Jan', 'Jan',],
+        categories: this.lineChartData()?.categories as [],
         title: {
-          text: 'Months'
+          text: this.lineChartData()?.xAxisTitle
         }
       },
-
       legend: {
         layout: 'horizontal',
         align: 'center',
@@ -61,25 +63,14 @@ export class LineChartComponent implements OnInit {
           dataLabels: {
             enabled: false
           },
-          enableMouseTracking: false
+          enableMouseTracking: false,
+          connectNulls: true,
+
         },
 
       },
 
-      series: [
-        {
-          name: 'Manufacturing',
-          data: [
-            24916 * Math.random(), 24916 * Math.random(), 24916 * Math.random(), 24916 * Math.random(), 24916 * Math.random(), 24916 * Math.random(), 24916 * Math.random(),
-          ]
-        } as Highcharts.SeriesOptionsType,
-        {
-          name: 'Another',
-          data: [
-            24916 * Math.random(), 24916 * Math.random(), 24916 * Math.random(), 24916 * Math.random(), 24916 * Math.random(), 24916 * Math.random(), 24916 * Math.random(),
-          ]
-        } as Highcharts.SeriesOptionsType
-      ],
+      series: this.lineChartData()?.series as Highcharts.SeriesOptionsType[],
 
 
       credits: {

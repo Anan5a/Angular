@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
-import Exporting from 'highcharts/modules/exporting';
+import { BarChartStruct } from '../charting.service';
 
 
 @Component({
@@ -12,8 +12,8 @@ import Exporting from 'highcharts/modules/exporting';
   styleUrl: './bar-chart.component.scss'
 })
 export class BarChartComponent {
-  chartTitle = input.required<string>()
-  chartSubTitle = input.required<string>()
+  barChartData = input.required<BarChartStruct | null>()
+
 
 
 
@@ -21,34 +21,38 @@ export class BarChartComponent {
   Highcharts: typeof Highcharts = Highcharts;
   chartOptions!: Highcharts.Options
   ngOnInit(): void {
+
+    console.log(this.barChartData()?.series)
+
+
+
     this.chartOptions = {
       chart: {
         type: 'column',
       },
       title: {
-        text: this.chartTitle(),
+        text: this.barChartData()?.title,
         align: 'left'
       },
 
       subtitle: {
-        text: this.chartSubTitle(),
+        text: this.barChartData()?.subtitle,
         align: 'left'
       },
       xAxis: {
-        categories: ['Jan', 'Jan', 'Jan', 'Jan', 'Jan', 'Jan', 'Jan',],
+        categories: this.barChartData()?.categories,
+
         crosshair: true,
-        accessibility: {
-          description: 'Countries'
+        title: {
+          text: this.barChartData()?.xAxisTitle || ''
         }
       },
       yAxis: {
-        min: 0,
         title: {
-          text: '1000 metric tons (MT)'
+          text: this.barChartData()?.yAxisTitle
         }
       },
       tooltip: {
-        valueSuffix: ' (1000 MT)'
       },
       plotOptions: {
         column: {
@@ -57,16 +61,7 @@ export class BarChartComponent {
         }
       },
 
-      series: [
-        {
-          name: 'Corn',
-          data: [387749 * Math.random(), 387749 * Math.random(), 387749 * Math.random(), 387749 * Math.random(), 387749 * Math.random(), 387749 * Math.random(), 387749 * Math.random(), ]
-        } as Highcharts.SeriesOptionsType,
-        {
-          name: 'Wheat',
-          data: [387749 * Math.random(), 387749 * Math.random(), 387749 * Math.random(), 387749 * Math.random(), 387749 * Math.random(), 387749 * Math.random(), 387749 * Math.random(),]
-        } as Highcharts.SeriesOptionsType
-      ],
+      series: this.barChartData()?.series as Highcharts.SeriesOptionsType[],
 
       credits: {
         enabled: false // Disable credits

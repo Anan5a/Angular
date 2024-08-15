@@ -38,7 +38,6 @@ export class NewExpenseComponent {
       amount: parseFloat(this.form.controls['expense'].value || '0'), categoryId: 1, dateTime: (new Date()).toISOString(), id: Date.now(), title: this.form.controls['name'].value
     } as ExpenseModel
     this.expenseService.addNewExpense(expense)
-    console.log(this.expenseService.expenses())
     this.matDialogRef.close()
   }
 }
