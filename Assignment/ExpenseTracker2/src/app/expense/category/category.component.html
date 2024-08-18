@@ -12,111 +12,30 @@
 
 
 <div class="card-container">
+  @for (category of categoryMap(); track category.id) {
 
   <mat-card
-    class="card"
+    class="card mat-mdc-elevation-specific mat-elevation-z10"
     appearance="outlined"
   >
     <mat-card-header>
-      <mat-card-title>Chihuahua</mat-card-title>
+      <mat-card-title>{{category.title}}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <mat-chip>$200/$2000</mat-chip>
+      <p>
+        <b>{{((category.totalExpense!/category.budget?.maxSpend!)*100).toFixed(1)}}%</b>
+        of the budget is used.
+      </p>
+      <mat-chip>{{category.totalExpense}}/{{category.budget?.maxSpend}}
+        <mat-progress-bar
+          mode="determinate"
+          [value]="(category.totalExpense!/category.budget?.maxSpend!)*100"
+        ></mat-progress-bar>
+      </mat-chip>
     </mat-card-content>
   </mat-card>
-  <mat-card
-    class="card"
-    appearance="outlined"
-  >
-    <mat-card-header>
-      <mat-card-title>Chihuahua</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-chip>$200/$2000</mat-chip>
-    </mat-card-content>
-  </mat-card><mat-card
-    class="card"
-    appearance="outlined"
-  >
-    <mat-card-header>
-      <mat-card-title>Chihuahua</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-chip>$200/$2000</mat-chip>
-    </mat-card-content>
-  </mat-card><mat-card
-    class="card"
-    appearance="outlined"
-  >
-    <mat-card-header>
-      <mat-card-title>Chihuahua</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-chip>$200/$2000</mat-chip>
-    </mat-card-content>
-  </mat-card><mat-card
-    class="card"
-    appearance="outlined"
-  >
-    <mat-card-header>
-      <mat-card-title>Chihuahua</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-chip>$200/$2000</mat-chip>
-    </mat-card-content>
-  </mat-card>
-  <mat-card
-    class="card"
-    appearance="outlined"
-  >
-    <mat-card-header>
-      <mat-card-title>Chihuahua</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-chip>$200/$2000</mat-chip>
-    </mat-card-content>
-  </mat-card>
-  <mat-card
-    class="card"
-    appearance="outlined"
-  >
-    <mat-card-header>
-      <mat-card-title>Chihuahua</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-chip>$200/$2000</mat-chip>
-    </mat-card-content>
-  </mat-card><mat-card
-    class="card"
-    appearance="outlined"
-  >
-    <mat-card-header>
-      <mat-card-title>Chihuahua</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-chip>$200/$2000</mat-chip>
-    </mat-card-content>
-  </mat-card><mat-card
-    class="card"
-    appearance="outlined"
-  >
-    <mat-card-header>
-      <mat-card-title>Chihuahua</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-chip>$200/$2000</mat-chip>
-    </mat-card-content>
-  </mat-card><mat-card
-    class="card"
-    appearance="outlined"
-  >
-    <mat-card-header>
-      <mat-card-title>Chihuahua</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-chip>$200/$2000</mat-chip>
-    </mat-card-content>
-  </mat-card>
+  }@empty {
+  <h2 class="center">No category added</h2>
+  }
+
 </div>
-
-

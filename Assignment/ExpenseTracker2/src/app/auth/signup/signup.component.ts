@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '../auth.service';
 import { NgIf } from '@angular/common';
+import { Router, RouterLink } from '@angular/router';
 
 
 
@@ -29,7 +30,7 @@ function passwordMatchValidator(): ValidatorFn {
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, ReactiveFormsModule, NgIf],
+  imports: [MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, ReactiveFormsModule, NgIf, RouterLink],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss'
 })
@@ -43,12 +44,9 @@ export class SignupComponent {
     {
       validators: passwordMatchValidator()
     })
+  emailExists = false
 
-  constructor(private authService: AuthService) { }
-
-
-
-
+  constructor(private authService: AuthService, private router: Router) { }
 
   formOnSubmit() {
     if (!this.form.valid) {
@@ -56,12 +54,19 @@ export class SignupComponent {
     }
     //create user
 
-    this.authService.signup(
+    const signupState = this.authService.signup(
       this.form.controls['name'].value!,
       this.form.controls['email'].value!,
       this.form.controls['password'].value!
     )
-    //redirect to login, maybe
 
+    if (signupState == null) {
+      //already exists
+      this.emailExists = true
+      return
+    }
+
+    //redirect to login
+    this.router.navigate(['/login'])
   }
 }

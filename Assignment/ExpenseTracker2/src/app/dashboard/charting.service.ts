@@ -127,7 +127,7 @@ export class ChartingService {
       return null
     }
     //here we need actual expense categories
-    const categoriesIds = expenseData.map(expense => expense.categoryId)
+    const categoriesIds = [...(new Set(expenseData.map(expense => expense.categoryId)))]
 
     let expenseList: SeriesTypeDataPie[] = []
     //fill the data
@@ -142,7 +142,6 @@ export class ChartingService {
       //map and decode categories
 
       expenseList = categoriesIds.map((catId, index) => {
-
         return { name: this.decodeCatId(catId), y: _explist[index]! }
       })
 

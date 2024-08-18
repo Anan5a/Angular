@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -18,6 +18,7 @@ import { NgIf } from '@angular/common';
 import { NewExpenseComponent } from './expense/new-expense/new-expense.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DashboardComponent } from "./dashboard/dashboard.component";
+import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -29,7 +30,7 @@ import { DashboardComponent } from "./dashboard/dashboard.component";
     MatMenuModule,
     MatListModule,
     MatTooltipModule,
-    RouterOutlet, LoginComponent, SignupComponent, CategoryComponent, ExpenseComponent, NgIf, DashboardComponent],
+    RouterOutlet, LoginComponent, SignupComponent, CategoryComponent, ExpenseComponent, NgIf, DashboardComponent, RouterLink],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -44,14 +45,23 @@ export class AppComponent {
   icon = this.fabService.icon
   action = this.fabService.action
 
-  constructor(private breakpointObserver: BreakpointObserver, private fabService: FabService, private readonly dialog: MatDialog
+  constructor(private breakpointObserver: BreakpointObserver, private fabService: FabService, private readonly dialog: MatDialog, private authService: AuthService, private router: Router
   ) { }
 
-
+  get isAuthenticated() {
+    return this.authService.isAuthenticated
+  }
 
   openNewExpenseDialog() {
     const dialogRef = this.dialog.open(NewExpenseComponent, {});
 
     dialogRef.afterClosed().subscribe(result => { });
+  }
+
+
+
+  logout() {
+    this.authService.logout()
+    this.router.navigate(['/login'])
   }
 }

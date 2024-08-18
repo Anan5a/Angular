@@ -16,6 +16,7 @@ import { BarChartStruct, ChartingService, LineChartStruct, PieChartStruct } from
 import { NewExpenseComponent } from '../expense/new-expense/new-expense.component';
 import { NewCategoryComponent } from '../expense/category/new-category-dialog.component';
 import { NewIncomeComponent } from '../expense/new-income/new-income.component';
+import { ExpenseService } from '../expense/expense.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -43,10 +44,11 @@ export class DashboardComponent implements OnInit {
 
 
 
-  constructor(private chartingService: ChartingService, private readonly dialog: MatDialog) { }
+  constructor(private chartingService: ChartingService, private readonly dialog: MatDialog, private expenseService: ExpenseService) { }
 
 
   ngOnInit(): void {
+    this.expenseService.loadAllData()
     this.linechartData.set(this.chartingService.getLineChartData(
       "Expense vs Income",
       "Your expense and income comparison over time",

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, inject, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -12,22 +12,39 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { ExpenseTableComponent } from './expense-table/expense-table.component';
 import { FabService } from '../fab.service';
+import { PieChartComponent } from "../dashboard/pie-chart/pie-chart.component";
+import { ChartingService, PieChartStruct } from '../dashboard/charting.service';
 
 @Component({
   selector: 'app-expense',
   standalone: true,
-  imports: [MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatChipsModule, MatIconModule, MatTableModule, MatPaginatorModule, ExpenseTableComponent],
+  imports: [MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatChipsModule, MatIconModule, MatTableModule, MatPaginatorModule, ExpenseTableComponent, PieChartComponent],
   templateUrl: './expense.component.html',
   styleUrl: './expense.component.scss'
 })
-export class ExpenseComponent {
+export class ExpenseComponent implements OnInit {
+  piechartData = signal<PieChartStruct | null>(null)
+  //chart data
+  catType = signal<"monthly" | "yearly" | "daily">("daily")
+  dateFrom = signal<string>("")
+  dateTo = signal<string>("")
 
   constructor(
     // private matDialogRef: MatDialogRef<NewCategoryComponent>
-    private readonly dialog: MatDialog
+    private readonly dialog: MatDialog,
+    private chartingService:ChartingService
   ) {
   }
 
+  ngOnInit(): void {
+    this.piechartData.set(this.chartingService.getPieChartData(
+      "Expense Breakdown",
+      "Where you spent your money",
+      this.catType(),
+      this.dateFrom(),
+      this.dateTo()
+    ))
+  }
 
 
   openDialog() {

@@ -1,9 +1,9 @@
 /* app.component.css */
 .form-card {
-  max-width: 600px;
+  max-width: 400px;
   margin: 20px auto;
   padding: 20px;
-  width: 400px;
+  width: 100%;
 }
 
 mat-card-title {
@@ -14,6 +14,6 @@ mat-card-title {
 .full-width {
   width: 100%;
 }
-mat-form-field{
+mat-form-field {
   margin-bottom: 1rem;
 }

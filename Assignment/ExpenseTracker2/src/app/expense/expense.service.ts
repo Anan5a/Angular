@@ -25,8 +25,8 @@ export class ExpenseService {
   ) {
     if (authService.isAuthenticated()) {
       this.storageKey = this.storageKey + authService.user()?.id
+      this.loadAllData()
     }
-    this.loadAllData()
   }
 
   get categories() {
@@ -72,7 +72,6 @@ export class ExpenseService {
     return { ...category, categoryObjects: [...catItems] }
   }
   getCategoryById(catId: number) {
-
     return this.categories().find((cat) => cat.id === catId)
   }
 
@@ -105,6 +104,13 @@ export class ExpenseService {
 
   }
 
+  getCategoryExpensesMap() {
+    //this maps expenses and limits of each category
+    const allCategory = this.categories()
+    const catMap = allCategory.map(category => this.getCategoryData(category.id))
+    return catMap;
+  }
+
   getRangeIncomeData(date1?: string, date2?: string,) {
     //return income items of a specific date/period
     if (!date1 && !date2) {
@@ -131,16 +137,7 @@ export class ExpenseService {
       })
     }
     return null
-
-
-
-
   }
-
-
-
-
-
 
   addNewIncome(income: IncomeModel) {
     this._incomes.update((incomes) => { incomes.push(income); return incomes; })
@@ -154,7 +151,7 @@ export class ExpenseService {
   }
 
 
-  private loadAllData() {
+  loadAllData() {
     const storedJson = window.localStorage.getItem(this.storageKey)
     if (storedJson !== null) {
       //try decoding json

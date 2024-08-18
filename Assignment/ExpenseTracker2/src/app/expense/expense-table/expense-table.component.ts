@@ -5,18 +5,23 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { ExpenseService } from '../expense.service';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { DatePipe } from '@angular/common';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-expense-table',
   standalone: true,
-  imports: [MatTableModule, MatPaginatorModule, DatePipe],
+  imports: [MatTableModule, MatPaginatorModule, DatePipe, MatFormFieldModule, MatInputModule, FormsModule, MatIconModule],
   templateUrl: './expense-table.component.html',
   styleUrl: './expense-table.component.scss'
 })
-export class ExpenseTableComponent implements OnInit {
-  expenses = signal<ExpenseModel[]>([])
+export class ExpenseTableComponent implements OnInit, AfterViewInit {
 
-  dataSource = new MatTableDataSource<ExpenseModel>();
+  dataSource = new MatTableDataSource<ExpenseModel>(this.expenseService.expenses());
+
+  searchText: string = '';
 
   displayedColumns: string[] = ['category', 'title', 'amount', 'dateTime'];
 
@@ -25,12 +30,23 @@ export class ExpenseTableComponent implements OnInit {
   constructor(private expenseService: ExpenseService) { }
 
   ngOnInit(): void {
-    this.expenses.set(this.expenseService.expenses())
-    this.dataSource.data = this.expenses()
+    this.dataSource.filterPredicate = this.customFilter;
+  }
+
+  ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
   }
+  customFilter = (data: ExpenseModel, filter: string) => {
+    console.log("filtering: " + filter)
+    return data.title != undefined ? data.title.toLowerCase()?.indexOf(filter) >= 0 : false;
+  };
 
   decodeCatId(id: number) {
     return this.expenseService.getCategoryById(id)?.title || '[!]'
+  }
+
+  applyFilter() {
+    this.dataSource.filter = this.searchText;
+
   }
 }

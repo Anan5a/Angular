@@ -9,6 +9,9 @@
     (submit)="formOnSubmit()"
   >
     <mat-card-content>
+      <h4 *ngIf="emailExists"><mat-error>The email already
+          exists!</mat-error></h4>
+
       <mat-form-field
         appearance="outline"
         class="full-width"
@@ -73,6 +76,8 @@
     </mat-card-content>
 
     <mat-card-actions>
+      <p><a [routerLink]="['/login']">I have an account</a></p>
+
       <button
         mat-raised-button
         color="primary"

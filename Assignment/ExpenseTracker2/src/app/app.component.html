@@ -19,12 +19,14 @@
         routerLink="/services"
       >Services</a>
       <a
+        *ngIf="!isAuthenticated()"
         mat-list-item
-        routerLink="/"
+        [routerLink]="['/login']"
       >Login</a>
       <a
+        *ngIf="!isAuthenticated()"
         mat-list-item
-        routerLink="/"
+        [routerLink]="['/signup']"
       >Signup</a>
     </mat-nav-list>
   </mat-sidenav>
@@ -47,12 +49,31 @@
         [matMenuTriggerFor]="menu"
       ><mat-icon>apps</mat-icon> Menu</button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item>Profile</button>
-        <button mat-menu-item>Settings</button>
-        <button mat-menu-item>Category</button>
-        <button mat-menu-item>Income</button>
-        <button mat-menu-item>Budgeting</button>
-        <button mat-menu-item>Logout</button>
+        <!-- <button mat-menu-item>Profile</button> -->
+        <a
+          mat-menu-item
+          [routerLink]="['/dashboard']"
+          routerLinkActive="router-link-active"
+        >Dashboard
+        </a>
+        <a
+          mat-menu-item
+          [routerLink]="['/dashboard','category']"
+          routerLinkActive="router-link-active"
+          *ngIf="isAuthenticated()"
+        >Category
+        </a>
+        <a
+          mat-menu-item
+          [routerLink]="['/dashboard','expense']"
+          routerLinkActive="router-link-active"
+          *ngIf="isAuthenticated()"
+        >Expense</a>
+        <a
+          mat-menu-item
+          (click)="logout()"
+          *ngIf="isAuthenticated()"
+        >Logout</a>
       </mat-menu>
     </mat-toolbar>
 
@@ -75,9 +96,9 @@
       <!-- <app-category></app-category> -->
 
       <!-- <app-expense></app-expense> -->
-      <app-dashboard></app-dashboard>
+      <!-- <app-dashboard></app-dashboard> -->
 
-      <!-- <router-outlet></router-outlet> -->
+      <router-outlet></router-outlet>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

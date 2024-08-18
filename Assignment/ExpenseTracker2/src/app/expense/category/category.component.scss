@@ -13,13 +13,13 @@ mat-form-field {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  justify-content: start;
 }
 mat-card {
   flex: 1 1 250px;
 }
 .card {
-  max-width: 250px;
+  max-width: 350px;
   width: 250px;
 }
 mat-card-title {

@@ -14,19 +14,22 @@
       >
       <mat-hint>Example: Food</mat-hint>
     </mat-form-field>
-
-    <!-- todo: replace with a dropdown -->
     <mat-form-field
       appearance="outline"
       class="full-width"
     >
       <mat-label>Category</mat-label>
-      <input
-        matInput
-        placeholder="Enter category name"
+      <mat-select
         formControlName="category"
+        placeholder="Select a catagory"
       >
-      <mat-hint>Example: Food</mat-hint>
+        @for (category of categories(); track category.id) {
+        <mat-option [value]="category.id">{{category.title}}</mat-option>
+        }@empty {
+        <mat-option disabled>Create a category first</mat-option>
+
+        }
+      </mat-select>
     </mat-form-field>
 
     <mat-form-field

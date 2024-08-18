@@ -11,10 +11,28 @@
 
 
 
-<div class="">
-  <p>Chart here</p>
+<div
+  class="flex-container"
+  style="gap: 1rem;"
+>
+  <div
+    style="flex: 1;"
+    class="full-width"
+  >
+    <app-pie-chart [pieChartData]="piechartData()"></app-pie-chart>
+  </div>
+</div>
+<div
+  class="flex-container mt-1rem"
+  style="gap: 1rem;"
+>
+  <div style="flex: 1;">
+
+    <app-expense-table></app-expense-table>
+  </div>
 
 
-  <app-expense-table></app-expense-table>
+
+
 
 </div>

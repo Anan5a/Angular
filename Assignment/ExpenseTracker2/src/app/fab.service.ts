@@ -1,14 +1,15 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
+import { AuthService } from './auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FabService {
-  isVisible = signal(true)
+  isVisible = signal(this.authService.isAuthenticated())
   icon = signal('add')
-  action: WritableSignal<Function|undefined> = signal(() => console.log("Action to be performed"))
+  action: WritableSignal<Function | undefined> = signal(() => console.log("Action to be performed"))
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
   setFab(isVisible: boolean, icon: string, action?: Function) {
     this.action.set(action)
     this.isVisible.set(isVisible)

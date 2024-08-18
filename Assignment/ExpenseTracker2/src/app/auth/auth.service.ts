@@ -1,4 +1,4 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { UserModel } from './users.models';
 
 @Injectable({
@@ -32,20 +32,30 @@ export class AuthService {
   }
 
 
+
   signup(name: string, email: string, password: string) {
+    const vemail = email.replaceAll(' ', '')
+    //check if email exist
+    if (this.emailExists(vemail) != undefined) {
+      return null;
+    }
+
     const model: UserModel = {
       id: Date.now(),
       createdAt: (new Date()).toISOString(),
       modifiedAt: '',
-      email,
+      email: vemail,
       name,
       password
     }
-    return this.storeUser(model)
+    this.storeUser(model)
+    return true
   }
   login(email: string, password: string) {
+    const vemail = email.replaceAll(' ', '')
+
     //find user by email
-    const user = this.__userList().find((user) => user.email === email)
+    const user = this.__userList().find((user) => user.email === vemail)
     if (!user) {
       return null
     }
@@ -54,21 +64,15 @@ export class AuthService {
       //store current user for persistence
       window.localStorage.setItem(this.currentUserKey, JSON.stringify(user))
       this._user.set(user)
-
       return user
     } else {
       return false
     }
 
   }
-  private _postData() {
-    return
+  private emailExists(email: string) {
+    return this.__userList().find(user => user.email === email)
   }
-
-  private _fetchUser() {
-    return
-  }
-
   private storeUser(user: UserModel) {
     //stores the user in the localstorage
     const newlist = [...this.__userList(), user]

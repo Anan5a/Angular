@@ -20,7 +20,7 @@ import { ExpenseService } from '../expense.service';
 })
 export class NewIncomeComponent {
   form = new FormGroup({
-    name: new FormControl('', { validators: [] }),
+    name: new FormControl('', { validators: [Validators.required] }),
     income: new FormControl('', { validators: [Validators.required] }),
   })
 
