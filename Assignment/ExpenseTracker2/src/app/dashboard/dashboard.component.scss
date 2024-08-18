@@ -1,5 +1,6 @@
 .button-container {
   margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 .button-container .fab {
   margin: 0 16px;
@@ -18,10 +19,10 @@
 }
 @media only screen and (max-width: 600px) {
   .button-container .fab {
-    margin: 16px;
+    margin: 8px;
   }
   .button-container {
-    justify-content: space-between;
+    justify-content: flex-start;
   }
   .chart-container {
     min-width: 100%;
