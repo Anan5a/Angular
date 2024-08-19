@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
@@ -29,9 +29,6 @@ import { ExpenseService } from '../expense/expense.service';
 export class DashboardComponent implements OnInit {
 
 
-  linechartData = signal<LineChartStruct | null>(null)
-  piechartData = signal<PieChartStruct | null>(null)
-  barchartData = signal<BarChartStruct | null>(null)
   //chart data
   catType = signal<"monthly" | "yearly" | "daily">("daily")
   dateFrom = signal<string>("")
@@ -40,6 +37,32 @@ export class DashboardComponent implements OnInit {
   xAxisTitle__Bar = signal("Months")
   yAxisTitle__Bar = signal("Savings")
 
+  linechartData = this.chartingService.getLineChartData(
+    "Expense vs Income",
+    "Your expense and income comparison over time",
+    this.xAxisTitle__Line(),
+    "Expense and Income",
+    this.catType(),
+    this.dateFrom(),
+    this.dateTo()
+  );
+  piechartData = computed(() => {
+    return this.chartingService.getPieChartData(
+      "Expense Breakdown",
+      "Where you spent your money",
+      this.catType(),
+      this.dateFrom(),
+      this.dateTo()
+    )()
+  })
+  barchartData = computed(() => {
+    return this.chartingService.getBarChartData(
+      "Savings Breakdown",
+      "How much you saved over the months",
+      this.xAxisTitle__Bar(),
+      this.yAxisTitle__Bar()
+    )()
+  })
   ///
 
 
@@ -49,31 +72,7 @@ export class DashboardComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.expenseService.loadAllData()
 
-    this.linechartData.set(this.chartingService.getLineChartData(
-      "Expense vs Income",
-      "Your expense and income comparison over time",
-      this.xAxisTitle__Line(),
-      "Expense and Income",
-      this.catType(),
-      this.dateFrom(),
-      this.dateTo()
-    ))
-    this.piechartData.set(this.chartingService.getPieChartData(
-      "Expense Breakdown",
-      "Where you spent your money",
-      this.catType(),
-      this.dateFrom(),
-      this.dateTo()
-    ))
-
-    this.barchartData.set(this.chartingService.getBarChartData(
-      "Savings Breakdown",
-      "How much you saved over the months",
-      this.xAxisTitle__Bar(),
-      this.yAxisTitle__Bar()
-    ))
   }
 
 

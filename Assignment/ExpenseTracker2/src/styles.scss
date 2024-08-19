@@ -23,10 +23,12 @@ body {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-
 }
-.full-width{
+.full-width {
   width: 100%;
+}
+[routerLink] {
+  cursor: pointer;
 }
 // p {
 //   font-size: 1.3rem;

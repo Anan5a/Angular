@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { BudgetModel, ExpenseModel } from '../expense.models';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -31,27 +31,20 @@ export class CategoryComponent implements OnInit {
 
   readonly dialog = inject(MatDialog);
 
-  categoryMap = signal<CategoryMap[]>([])
-
-
-
+  categoryMap = this.expenseService.getCategoryExpensesMap()
+  computedCategoryMap = computed(() => {
+    return this.categoryMap().map((cat, i) => {
+      const expenses = (cat?.categoryObjects.map(expense => expense.amount))
+      const totalExpense = expenses?.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+      return { totalExpense, ...cat }
+    })
+  })
 
   constructor(
     private expenseService: ExpenseService
   ) { }
 
   ngOnInit(): void {
-    const categoryMap = this.expenseService.getCategoryExpensesMap()
-
-
-    const expenseCategory = categoryMap.map((cat, i) => {
-      const expenses = (cat?.categoryObjects.map(expense => expense.amount))
-
-      const totalExpense = expenses?.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-
-      return { totalExpense, ...cat }
-    })
-    this.categoryMap.set(expenseCategory)
   }
 
   openDialog() {

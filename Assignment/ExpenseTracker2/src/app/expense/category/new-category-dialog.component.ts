@@ -32,9 +32,7 @@ export class NewCategoryComponent implements AfterViewInit {
   ) { }
 
   ngAfterViewInit(): void {
-    console.log(this._editData)
     this.form.setValue({ name: this._editData?.title || '', budget: this._editData?.budget?.maxSpend.toString() || '' })
-  console.log(this.form.value)
   }
 
 

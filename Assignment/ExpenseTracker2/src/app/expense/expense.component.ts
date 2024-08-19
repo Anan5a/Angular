@@ -22,28 +22,24 @@ import { ChartingService, PieChartStruct } from '../dashboard/charting.service';
   templateUrl: './expense.component.html',
   styleUrl: './expense.component.scss'
 })
-export class ExpenseComponent implements OnInit {
-  piechartData = signal<PieChartStruct | null>(null)
+export class ExpenseComponent {
   //chart data
   catType = signal<"monthly" | "yearly" | "daily">("daily")
   dateFrom = signal<string>("")
   dateTo = signal<string>("")
 
+  piechartData = this.chartingService.getPieChartData(
+    "Expense Breakdown",
+    "Where you spent your money",
+    this.catType(),
+    this.dateFrom(),
+    this.dateTo()
+  )
   constructor(
     // private matDialogRef: MatDialogRef<NewCategoryComponent>
     private readonly dialog: MatDialog,
-    private chartingService:ChartingService
+    private chartingService: ChartingService
   ) {
-  }
-
-  ngOnInit(): void {
-    this.piechartData.set(this.chartingService.getPieChartData(
-      "Expense Breakdown",
-      "Where you spent your money",
-      this.catType(),
-      this.dateFrom(),
-      this.dateTo()
-    ))
   }
 
 

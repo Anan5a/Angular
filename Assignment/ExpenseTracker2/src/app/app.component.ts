@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -51,6 +51,7 @@ export class AppComponent {
   get isAuthenticated() {
     return this.authService.isAuthenticated
   }
+
 
   openNewExpenseDialog() {
     const dialogRef = this.dialog.open(NewExpenseComponent, {});

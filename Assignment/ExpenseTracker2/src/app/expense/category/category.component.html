@@ -12,12 +12,13 @@
 
 
 <div class="card-container">
-  @for (category of categoryMap(); track category.id) {
+  @for (category of computedCategoryMap(); track category.id) {
 
   <mat-card
     class="card mat-mdc-elevation-specific mat-elevation-z10"
     appearance="outlined"
     (click)="openEditDialog(category)"
+    style="cursor: pointer;"
   >
     <mat-card-header>
       <mat-card-title>{{category.title}}</mat-card-title>

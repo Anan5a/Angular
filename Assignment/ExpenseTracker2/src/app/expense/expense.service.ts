@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { CategoryModel, ExpenseDataModel, ExpenseModel, IncomeModel } from './expense.models';
 import { AuthService } from '../auth/auth.service';
 
@@ -82,67 +82,74 @@ export class ExpenseService {
   }
 
   getRangeExpenseData(date1?: string, date2?: string) {
-    //return items of a specific date/period or range
-    if ((!date1 && !date2)) {
-      //return all expenses
-      return this.expenses()
-    }
-    if (date1 && !date2) {
-      //return items of date
-      const parsedDate = new Date(date1)
+    return computed(() => {
+      //return items of a specific date/period or range
+      const expenses = this.expenses()
+      if ((!date1 && !date2)) {
+        //return all expenses
+        return expenses
+      }
+      if (date1 && !date2) {
+        //return items of date
+        const parsedDate = new Date(date1)
 
-      return this.expenses().filter((expense) => {
-        const _parsedDate = new Date(expense.dateTime)
-        return _parsedDate.getDate() == parsedDate.getDate() && _parsedDate.getMonth() == parsedDate.getMonth() && _parsedDate.getUTCFullYear() == parsedDate.getUTCFullYear()
-      })
+        return expenses.filter((expense) => {
+          const _parsedDate = new Date(expense.dateTime)
+          return _parsedDate.getDate() == parsedDate.getDate() && _parsedDate.getMonth() == parsedDate.getMonth() && _parsedDate.getUTCFullYear() == parsedDate.getUTCFullYear()
+        })
 
-    }
-    if (date1 && date2) {
-      const parsedDate1 = new Date(date1)
-      const parsedDate2 = new Date(date1)
+      }
+      if (date1 && date2) {
+        const parsedDate1 = new Date(date1)
+        const parsedDate2 = new Date(date1)
 
-      return this.expenses().filter((expense) => {
-        const _parsedDate = new Date(expense.dateTime)
-        return _parsedDate >= parsedDate1 || _parsedDate <= parsedDate2
-      })
-    }
-    return null
+        return expenses.filter((expense) => {
+          const _parsedDate = new Date(expense.dateTime)
+          return _parsedDate >= parsedDate1 || _parsedDate <= parsedDate2
+        })
+      }
+      return null
+    })
 
   }
 
   getCategoryExpensesMap() {
     //this maps expenses and limits of each category
-    const allCategory = this.categories()
-    const catMap = allCategory.map(category => this.getCategoryData(category.id))
-    return catMap;
+    return computed(() => {
+      const allCategory = this.categories()
+      const catMap = allCategory.map(category => this.getCategoryData(category.id))
+      return catMap;
+    })
   }
 
   getRangeIncomeData(date1?: string, date2?: string,) {
-    //return income items of a specific date/period
-    if (!date1 && !date2) {
-      //return all expenses
-      return this.incomes()
-    }
-    if (date1 && !date2) {
-      //return items of date
-      const parsedDate = new Date(date1)
+    return computed(() => {
+      //return income items of a specific date/period
+      if (!date1 && !date2) {
+        //return all expenses
+        return this.incomes()
+      }
+      if (date1 && !date2) {
+        //return items of date
+        const parsedDate = new Date(date1)
 
-      return this.incomes().filter((income) => {
-        const _parsedDate = new Date(income.dateTime)
-        return _parsedDate.getDate() == parsedDate.getDate() && _parsedDate.getMonth() == parsedDate.getMonth() && _parsedDate.getUTCFullYear() == parsedDate.getUTCFullYear()
-      })
+        return this.incomes().filter((income) => {
+          const _parsedDate = new Date(income.dateTime)
+          return _parsedDate.getDate() == parsedDate.getDate() && _parsedDate.getMonth() == parsedDate.getMonth() && _parsedDate.getUTCFullYear() == parsedDate.getUTCFullYear()
+        })
 
-    }
-    if (date1 && date2) {
-      const parsedDate1 = new Date(date1)
-      const parsedDate2 = new Date(date1)
+      }
+      if (date1 && date2) {
+        const parsedDate1 = new Date(date1)
+        const parsedDate2 = new Date(date1)
 
-      return this.incomes().filter((income) => {
-        const _parsedDate = new Date(income.dateTime)
-        return _parsedDate >= parsedDate1 || _parsedDate <= parsedDate2
-      })
-    }
-    return null
+        return this.incomes().filter((income) => {
+          const _parsedDate = new Date(income.dateTime)
+          return _parsedDate >= parsedDate1 || _parsedDate <= parsedDate2
+        })
+      }
+      return null
+    })
   }
 
   addNewIncome(income: IncomeModel) {

@@ -67,6 +67,8 @@ export class SignupComponent {
     }
 
     //redirect to login
-    this.router.navigate(['/login'])
+    this.authService.login(this.form.controls['email'].value!,
+      this.form.controls['password'].value!)
+    this.router.navigate(['/'])
   }
 }
