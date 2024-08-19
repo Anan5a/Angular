@@ -11,6 +11,14 @@ import { NewCategoryComponent } from './new-category-dialog.component';
 import { ExpenseService } from '../expense.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
+export type CategoryMap = {
+  categoryObjects?: ExpenseModel[] | undefined;
+  id?: number | undefined;
+  title?: string | undefined;
+  budget?: BudgetModel | undefined;
+  dateTime?: string | undefined;
+  totalExpense: number | undefined;
+}
 @Component({
   selector: 'app-category',
   standalone: true,
@@ -23,14 +31,7 @@ export class CategoryComponent implements OnInit {
 
   readonly dialog = inject(MatDialog);
 
-  categoryMap = signal<{
-    categoryObjects?: ExpenseModel[] | undefined;
-    id?: number | undefined;
-    title?: string | undefined;
-    budget?: BudgetModel | undefined;
-    dateTime?: string | undefined;
-    totalExpense: number | undefined;
-  }[]>([])
+  categoryMap = signal<CategoryMap[]>([])
 
 
 
@@ -60,6 +61,14 @@ export class CategoryComponent implements OnInit {
     });
   }
 
+  openEditDialog(category: CategoryMap) {
+    const dialogRef = this.dialog.open(NewCategoryComponent, {
+      data: { ...category }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+    });
+  }
 
 
 }

@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>New category</h2>
+<h2 mat-dialog-title>{{_editData?'Update':'New'}} category</h2>
 <mat-dialog-content class="mat-typography">
   <!-- add cat form -->
   <form [formGroup]="form">
@@ -45,9 +45,8 @@
   <button
     mat-button
     [mat-dialog-close]="true"
-    
     (click)="onCreateCat()"
     [disabled]="form.invalid"
     color="primary"
-  >Create</button>
+  >{{_editData?'Update':'Create'}}</button>
 </mat-dialog-actions>

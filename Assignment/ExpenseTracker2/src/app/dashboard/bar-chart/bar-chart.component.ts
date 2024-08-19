@@ -22,7 +22,6 @@ export class BarChartComponent {
   chartOptions!: Highcharts.Options
   ngOnInit(): void {
 
-    console.log(this.barChartData()?.series)
 
 
 

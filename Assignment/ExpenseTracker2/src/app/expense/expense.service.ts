@@ -33,7 +33,13 @@ export class ExpenseService {
     return this._categories.asReadonly()
   }
   addNewCategory(cat: CategoryModel) {
-    this._categories.update((categories) => { categories.push(cat); return categories; })
+    this._categories.update((categories) => {
+      //check if an old id exists, and remove
+      const filtered = categories.filter(category => category.id !== cat.id)
+
+      filtered.push(cat);
+      return filtered;
+    })
     this.storeAllData()
   }
   removeCategory(category: CategoryModel) {

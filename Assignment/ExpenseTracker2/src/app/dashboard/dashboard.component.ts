@@ -18,6 +18,7 @@ import { NewCategoryComponent } from '../expense/category/new-category-dialog.co
 import { NewIncomeComponent } from '../expense/new-income/new-income.component';
 import { ExpenseService } from '../expense/expense.service';
 
+
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -49,6 +50,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.expenseService.loadAllData()
+
     this.linechartData.set(this.chartingService.getLineChartData(
       "Expense vs Income",
       "Your expense and income comparison over time",

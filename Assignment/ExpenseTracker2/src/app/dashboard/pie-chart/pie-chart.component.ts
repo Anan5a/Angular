@@ -25,9 +25,6 @@ export class PieChartComponent implements OnInit {
   chartOptions!: Highcharts.Options
   ngOnInit(): void {
 
-
-    console.log(this.pieChartData())
-
     this.chartOptions = {
       chart: {
         type: 'pie'

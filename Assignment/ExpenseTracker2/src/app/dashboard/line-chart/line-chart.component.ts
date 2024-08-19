@@ -23,7 +23,6 @@ export class LineChartComponent implements OnInit {
   Highcharts: typeof Highcharts = Highcharts;
   chartOptions!: Highcharts.Options
   ngOnInit(): void {
-    console.log(this.lineChartData())
 
 
     this.chartOptions = {
