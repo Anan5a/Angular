@@ -65,6 +65,13 @@
         </a>
         <a
           mat-menu-item
+          [routerLink]="['/dashboard','income']"
+          routerLinkActive="router-link-active"
+          *ngIf="isAuthenticated()"
+        >Income
+        </a>
+        <a
+          mat-menu-item
           [routerLink]="['/dashboard','expense']"
           routerLinkActive="router-link-active"
           *ngIf="isAuthenticated()"

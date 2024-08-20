@@ -17,12 +17,13 @@ import { NewExpenseComponent } from '../expense/new-expense/new-expense.componen
 import { NewCategoryComponent } from '../expense/category/new-category-dialog.component';
 import { NewIncomeComponent } from '../expense/new-income/new-income.component';
 import { ExpenseService } from '../expense/expense.service';
+import { IncomeTableComponent } from "../expense/income-table/income-table.component";
 
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatChipsModule, MatIconModule, MatTableModule, MatPaginatorModule, ExpenseTableComponent, PieChartComponent, LineChartComponent, BarChartComponent],
+  imports: [MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatChipsModule, MatIconModule, MatTableModule, MatPaginatorModule, ExpenseTableComponent, PieChartComponent, LineChartComponent, BarChartComponent, IncomeTableComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -36,33 +37,6 @@ export class DashboardComponent implements OnInit {
   xAxisTitle__Line = signal("Days")
   xAxisTitle__Bar = signal("Months")
   yAxisTitle__Bar = signal("Savings")
-
-  linechartData = this.chartingService.getLineChartData(
-    "Expense vs Income",
-    "Your expense and income comparison over time",
-    this.xAxisTitle__Line(),
-    "Expense and Income",
-    this.catType(),
-    this.dateFrom(),
-    this.dateTo()
-  );
-  piechartData = computed(() => {
-    return this.chartingService.getPieChartData(
-      "Expense Breakdown",
-      "Where you spent your money",
-      this.catType(),
-      this.dateFrom(),
-      this.dateTo()
-    )()
-  })
-  barchartData = computed(() => {
-    return this.chartingService.getBarChartData(
-      "Savings Breakdown",
-      "How much you saved over the months",
-      this.xAxisTitle__Bar(),
-      this.yAxisTitle__Bar()
-    )()
-  })
   ///
 
 
@@ -72,6 +46,32 @@ export class DashboardComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.expenseService.setFilterDateRange(this.dateFrom(), this.dateTo())
+
+
+
+
+
+    this.chartingService.setLineChartParams(
+      "Expense vs Income",
+      "Your expense and income comparison over time",
+      this.xAxisTitle__Line(),
+      "Expense and Income",
+      this.catType(),
+    )
+    this.chartingService.setPieChartParams(
+      "Expense Breakdown",
+      "Where you spent your money",
+      this.catType()
+    )
+    this.chartingService.setBarChartParams(
+      "Savings Breakdown",
+      "How much you saved over the months",
+      this.xAxisTitle__Bar(),
+      this.yAxisTitle__Bar()
+    )
+
+
 
   }
 

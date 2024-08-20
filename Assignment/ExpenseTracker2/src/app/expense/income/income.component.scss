@@ -1,0 +1,32 @@
+mat-card-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+.full-width {
+  width: 100%;
+}
+mat-form-field {
+  margin-bottom: 1rem;
+}
+.card-container {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.card {
+  max-width: 250px;
+  width: 250px;
+}
+mat-card-title {
+  text-wrap: wrap;
+}
+.button-container{
+  display: flex;
+  margin-bottom: 2rem;
+}
+.mt-1rem{
+  margin-top: 1rem;
+}

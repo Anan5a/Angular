@@ -17,7 +17,6 @@
   <mat-card
     class="card mat-mdc-elevation-specific mat-elevation-z10"
     appearance="outlined"
-    (click)="openEditDialog(category)"
     style="cursor: pointer;"
   >
     <mat-card-header>
@@ -34,6 +33,11 @@
           [value]="(category.totalExpense!/category.budget?.maxSpend!)*100"
         ></mat-progress-bar>
       </mat-chip>
+      <button
+        mat-button
+        color="primary"
+        (click)="openEditDialog(category)"
+      ><mat-icon>edit</mat-icon></button>
     </mat-card-content>
   </mat-card>
   }@empty {

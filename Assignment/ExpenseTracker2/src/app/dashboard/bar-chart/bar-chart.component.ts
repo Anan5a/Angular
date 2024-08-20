@@ -1,7 +1,7 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, effect, input } from '@angular/core';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
-import { BarChartStruct } from '../charting.service';
+import { BarChartStruct, ChartingService } from '../charting.service';
 
 
 @Component({
@@ -12,7 +12,7 @@ import { BarChartStruct } from '../charting.service';
   styleUrl: './bar-chart.component.scss'
 })
 export class BarChartComponent {
-  barChartData = input.required<BarChartStruct | null>()
+  barChartData = this.chartingService.getBarChartData;
 
 
 
@@ -20,10 +20,19 @@ export class BarChartComponent {
   isHighcharts = typeof Highcharts === 'object';
   Highcharts: typeof Highcharts = Highcharts;
   chartOptions!: Highcharts.Options
+
+
+
+  constructor(private chartingService: ChartingService) {
+    effect(() => {
+      this.updateChartOptions()
+    })
+  }
+
   ngOnInit(): void {
-
-
-
+    console.log(this.barChartData())
+  }
+  private updateChartOptions() {
 
     this.chartOptions = {
       chart: {
@@ -71,6 +80,5 @@ export class BarChartComponent {
 
 
     };
-
   }
 }

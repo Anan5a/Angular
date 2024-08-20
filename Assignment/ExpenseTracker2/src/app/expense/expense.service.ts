@@ -17,6 +17,8 @@ export class ExpenseService {
   private _categories = signal<CategoryModel[]>([])
   private __expenseDataModel = signal<ExpenseDataModel | null>(null)
 
+  private _filterDateRange = signal<{ start: undefined | string, end: undefined | string }>({ start: undefined, end: undefined })
+
   private storageKey = 'ExpenseDataModel-'
 
 
@@ -52,8 +54,16 @@ export class ExpenseService {
   get expenses() {
     return this._expenses.asReadonly()
   }
+
+  setFilterDateRange(date1?: string, date2?: string) {
+    this._filterDateRange.set({ start: date1, end: date2 })
+  }
   addNewExpense(expense: ExpenseModel) {
-    this._expenses.update((expenses) => { expenses.push(expense); return expenses; })
+    this._expenses.update((expenses) => {
+      const filtered = expenses.filter(exp => exp.id !== expense.id)
+      filtered.push(expense);
+      return filtered;
+    })
     this.storeAllData()
   }
   removeExpense(expense: ExpenseModel) {
@@ -81,17 +91,20 @@ export class ExpenseService {
     return this.categories().find((cat) => cat.id === catId)
   }
 
-  getRangeExpenseData(date1?: string, date2?: string) {
+  get getRangeExpenseData() {
     return computed(() => {
+      // console.log('recompute: getRangeExpenseData')
       //return items of a specific date/period or range
       const expenses = this.expenses()
-      if ((!date1 && !date2)) {
+      const { start, end } = this._filterDateRange()
+
+      if ((!start && !end)) {
         //return all expenses
         return expenses
       }
-      if (date1 && !date2) {
+      if (start && !end) {
         //return items of date
-        const parsedDate = new Date(date1)
+        const parsedDate = new Date(start)
 
         return expenses.filter((expense) => {
           const _parsedDate = new Date(expense.dateTime)
@@ -99,9 +112,9 @@ export class ExpenseService {
         })
 
       }
-      if (date1 && date2) {
-        const parsedDate1 = new Date(date1)
-        const parsedDate2 = new Date(date1)
+      if (start && end) {
+        const parsedDate1 = new Date(start)
+        const parsedDate2 = new Date(start)
 
         return expenses.filter((expense) => {
           const _parsedDate = new Date(expense.dateTime)
@@ -122,16 +135,20 @@ export class ExpenseService {
     })
   }
 
-  getRangeIncomeData(date1?: string, date2?: string,) {
+  get getRangeIncomeData() {
     return computed(() => {
+      // console.log('recompute: getRangeIncomeData')
+
+      const { start, end } = this._filterDateRange()
+      const incomes = this.incomes()
       //return income items of a specific date/period
-      if (!date1 && !date2) {
+      if (!start && !end) {
         //return all expenses
         return this.incomes()
       }
-      if (date1 && !date2) {
+      if (start && !end) {
         //return items of date
-        const parsedDate = new Date(date1)
+        const parsedDate = new Date(start)
 
         return this.incomes().filter((income) => {
           const _parsedDate = new Date(income.dateTime)
@@ -139,9 +156,9 @@ export class ExpenseService {
         })
 
       }
-      if (date1 && date2) {
-        const parsedDate1 = new Date(date1)
-        const parsedDate2 = new Date(date1)
+      if (start && end) {
+        const parsedDate1 = new Date(start)
+        const parsedDate2 = new Date(start)
 
         return this.incomes().filter((income) => {
           const _parsedDate = new Date(income.dateTime)
@@ -153,7 +170,7 @@ export class ExpenseService {
   }
 
   addNewIncome(income: IncomeModel) {
-    this._incomes.update((incomes) => { incomes.push(income); return incomes; })
+    this._incomes.update((incomes) => [...incomes, income])
     this.storeAllData()
   }
   removeIncome(income: IncomeModel) {

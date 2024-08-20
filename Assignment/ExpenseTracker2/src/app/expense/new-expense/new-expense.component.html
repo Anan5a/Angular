@@ -1,7 +1,16 @@
-<h2 mat-dialog-title>New Expense</h2>
+<h2 mat-dialog-title>{{_editData?'Update':'New'}} Expense</h2>
 <mat-dialog-content class="mat-typography">
   <!-- add cat form -->
-  <form [formGroup]="form">
+  <h3
+    *ngIf="emptyIncome"
+    class="center"
+  >
+    <mat-error>Add some income before continuing</mat-error>
+  </h3>
+  <form
+    [formGroup]="form"
+    *ngIf="!emptyIncome"
+  >
     <mat-form-field
       appearance="outline"
       class="full-width"
@@ -61,8 +70,8 @@
   <button
     mat-button
     [mat-dialog-close]="true"
-    [disabled]="form.invalid"
+    [disabled]="form.invalid||emptyIncome"
     (click)="onCreateExpense()"
     color="primary"
-  >Create</button>
+  >{{_editData?'Update':'Create'}}</button>
 </mat-dialog-actions>

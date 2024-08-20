@@ -28,17 +28,10 @@ export class ExpenseComponent {
   dateFrom = signal<string>("")
   dateTo = signal<string>("")
 
-  piechartData = this.chartingService.getPieChartData(
-    "Expense Breakdown",
-    "Where you spent your money",
-    this.catType(),
-    this.dateFrom(),
-    this.dateTo()
-  )
+
   constructor(
     // private matDialogRef: MatDialogRef<NewCategoryComponent>
     private readonly dialog: MatDialog,
-    private chartingService: ChartingService
   ) {
   }
 
@@ -47,10 +40,6 @@ export class ExpenseComponent {
     const dialogRef = this.dialog.open(NewExpenseComponent, {});
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      console.log(result)
-      if (result !== undefined) {
-      }
     });
   }
 }

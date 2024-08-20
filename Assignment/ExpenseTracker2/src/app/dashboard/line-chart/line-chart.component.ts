@@ -1,8 +1,8 @@
-import { Component, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, effect, input, OnInit, signal } from '@angular/core';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 import Exporting from 'highcharts/modules/exporting';
-import { LineChartStruct } from '../charting.service';
+import { ChartingService, LineChartStruct } from '../charting.service';
 
 
 Exporting(Highcharts);
@@ -16,18 +16,28 @@ Exporting(Highcharts);
 })
 export class LineChartComponent implements OnInit {
 
-  lineChartData = input.required<LineChartStruct | null>()
-
+  lineChartData = this.chartingService.getLineChartData
 
   isHighcharts = typeof Highcharts === 'object';
   Highcharts: typeof Highcharts = Highcharts;
   chartOptions!: Highcharts.Options
+
+  constructor(private chartingService: ChartingService) {
+    effect(() => {
+      this.updateChartOptions()
+    })
+  }
+
+
   ngOnInit(): void {
+    this.updateChartOptions()
+  }
 
-
+  private updateChartOptions() {
     this.chartOptions = {
       chart: {
         type: 'line',
+
       },
       title: {
         text: this.lineChartData()?.title,
@@ -81,6 +91,7 @@ export class LineChartComponent implements OnInit {
 
 
     };
+
 
   }
 

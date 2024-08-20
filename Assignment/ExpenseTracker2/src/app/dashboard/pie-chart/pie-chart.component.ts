@@ -1,8 +1,8 @@
-import { Component, input, OnInit } from '@angular/core';
+import { Component, computed, effect, input, OnInit } from '@angular/core';
 import { HighchartsChartModule } from 'highcharts-angular';
 import * as Highcharts from 'highcharts';
 import Exporting from 'highcharts/modules/exporting';
-import { PieChartStruct } from '../charting.service';
+import { ChartingService, PieChartStruct } from '../charting.service';
 import { LEFT_ARROW } from '@angular/cdk/keycodes';
 
 
@@ -16,28 +16,36 @@ Exporting(Highcharts);
   styleUrl: './pie-chart.component.scss'
 })
 export class PieChartComponent implements OnInit {
-  pieChartData = input.required<PieChartStruct | null>()
+  pieChartData = this.chartingService.getPieChartData
 
 
   isHighcharts = typeof Highcharts === 'object';
-
   Highcharts: typeof Highcharts = Highcharts;
   chartOptions!: Highcharts.Options
+
+  constructor(private chartingService: ChartingService) {
+    effect(() => {
+      this.updateChartOptions()
+    })
+  }
+
   ngOnInit(): void {
+  }
+  private updateChartOptions() {
 
     this.chartOptions = {
       chart: {
         type: 'pie'
       },
       title: {
-        text: this.pieChartData()?.title,
+        text: this.pieChartData()?.title || '',
         align: 'left'
       },
       tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
       },
       subtitle: {
-        text: this.pieChartData()?.subtitle,
+        text: this.pieChartData()?.subtitle || '',
         align: 'left'
       },
       legend: {
@@ -75,11 +83,10 @@ export class PieChartComponent implements OnInit {
         {
           type: 'pie',
           name: 'Percentage',
-          data: this.pieChartData()?.data
+          data: this.pieChartData()?.data || []
         }
       ]
     }
-
 
   }
 }

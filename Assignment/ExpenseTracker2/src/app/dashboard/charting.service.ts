@@ -1,4 +1,4 @@
-import { computed, Injectable } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { ExpenseService } from '../expense/expense.service';
 
 
@@ -50,18 +50,65 @@ export class ChartingService {
   private _days = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
   private _years = Array.from({ length: 5 }, (_, i) => (2023 + i).toString());
 
+  //chart param configuration for reactive capability
+  private lineChartParamsSignal = signal<{ title: string, subtitle: string, xAxisTitle: string, yAxisTitle: string, catType: "monthly" | "yearly" | "daily" }>({
+    title: "Expense vs Income",
+    subtitle: "Your expense and income comparison over time",
+    xAxisTitle: 'Days',
+    yAxisTitle: "Expense and Income",
+    catType: 'daily'
+  });
 
+  private pieChartParamsSignal = signal<{
+    title: string;
+    subtitle: string;
+    catType: "monthly" | "yearly" | "daily";
+  }>({
+    title: "Expense Breakdown",
+    subtitle: "Where you spent your money",
+    catType: 'daily',
+  });
+  private barChartParamsSignal = signal<{
+    title: string;
+    subtitle: string;
+    xAxisTitle: string;
+    yAxisTitle: string;
+  }>({
+    title: "Savings Breakdown",
+    subtitle: "How much you saved over the months",
+    xAxisTitle: 'Months',
+    yAxisTitle: 'Savings'
+  });
+
+
+
+
+  //end chart config
   constructor(private expenseService: ExpenseService) { }
 
+  setLineChartParams(title: string, subtitle: string, xAxisTitle: string, yAxisTitle: string, catType: "monthly" | "yearly" | "daily") {
+    this.lineChartParamsSignal.set({ title, subtitle, xAxisTitle, yAxisTitle, catType });
+  }
 
-  getLineChartData(title: string, subtitle: string, xAxisTitle: string, yAxisTitle: string, catType: "monthly" | "yearly" | "daily", date1?: string, date2?: string) {
+  setPieChartParams(title: string, subtitle: string, catType: "monthly" | "yearly" | "daily") {
+    this.pieChartParamsSignal.set({ title, subtitle, catType });
+  }
+  setBarChartParams(title: string, subtitle: string, xAxisTitle: string, yAxisTitle: string) {
+    this.barChartParamsSignal.set({ title, subtitle, xAxisTitle, yAxisTitle });
+  }
+
+
+
+
+
+  get getLineChartData() {
     return computed(() => {
-
+      const { title, subtitle, xAxisTitle, yAxisTitle, catType } = this.lineChartParamsSignal();
       //income vs expense
-      const expenseData = this.expenseService.getRangeExpenseData(date1, date2)()
-      const incomeData = this.expenseService.getRangeIncomeData(date1, date2)()
+      const expenseData = this.expenseService.getRangeExpenseData()
+      const incomeData = this.expenseService.getRangeIncomeData()
 
-      console.log("recomputing linechart...")
+      // console.log("recomputing linechart...")
 
       if (!expenseData?.length && !incomeData?.length) {
         //no data to show
@@ -86,14 +133,14 @@ export class ChartingService {
       //fill the data
       if (expenseData) {
         const _explist: (number | null)[] = Array.from({ length: categories.length }, (_, i) => null)
-        expenseData.forEach((expense, id, list) => {
+        expenseData?.forEach((expense, id, list) => {
           const date = new Date(expense.dateTime)
           if (catType == "monthly") {
             //fill day fields
             _explist[date.getUTCMonth()] = _explist[date.getUTCMonth()]! + expense.amount
           } else if (catType == "daily") {
 
-            _explist[date.getUTCDate()] = _explist[date.getUTCDate()]! + expense.amount
+            _explist[date.getUTCDate() - 1] = _explist[date.getUTCDate() - 1]! + expense.amount
           }
         })
 
@@ -109,7 +156,7 @@ export class ChartingService {
             _inclist[date.getUTCMonth()] = _inclist[date.getUTCMonth()]! + income.amount
           } else if (catType == "daily") {
 
-            _inclist[date.getUTCDate()] = _inclist[date.getUTCDate()]! + income.amount
+            _inclist[date.getUTCDate() - 1] = _inclist[date.getUTCDate() - 1]! + income.amount
           }
         })
 
@@ -126,15 +173,19 @@ export class ChartingService {
 
   }
 
-  getPieChartData(title: string, subtitle: string, catType: "monthly" | "yearly" | "daily", date1?: string, date2?: string) {
+
+  get getPieChartData() {
     return computed(() => {
+      // console.log("recomputing piechart...")
+      const { title, subtitle, catType } = this.pieChartParamsSignal();
+
       //breakdown of expenses
-      const expenseData = this.expenseService.getRangeExpenseData(date1, date2)()
+      const expenseData = this.expenseService.getRangeExpenseData()
       if (!expenseData) {
         //no data to show
         return null
       }
-      //here we need actual expense categories
+      //here we need actual expense categories,unique
       const categoriesIds = [...(new Set(expenseData.map(expense => expense.categoryId)))]
 
       let expenseList: SeriesTypeDataPie[] = []
@@ -154,24 +205,23 @@ export class ChartingService {
         })
 
       }
-
-
       const pieChartData: PieChartStruct = {
         title, subtitle,
         data: expenseList
       }
       return pieChartData
     })
-
-
   }
-  getBarChartData(title: string, subtitle: string, xAxisTitle: string, yAxisTitle: string) {
+  get getBarChartData() {
     return computed(() => {
+      // console.log("recomputing barchart...")
+
       //display savings
       //savings is basically income-expense over a month, so it is always monthly
+      const { title, subtitle, xAxisTitle, yAxisTitle } = this.barChartParamsSignal();
 
-      const expenseData = this.expenseService.getRangeExpenseData()()
-      const incomeData = this.expenseService.getRangeIncomeData()()
+      const expenseData = this.expenseService.getRangeExpenseData()
+      const incomeData = this.expenseService.getRangeIncomeData()
       if (!expenseData && !incomeData) {
         //no data to show
         return null

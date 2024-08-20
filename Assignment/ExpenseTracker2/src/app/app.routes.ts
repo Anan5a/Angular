@@ -6,6 +6,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { SignupComponent } from './auth/signup/signup.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { isAuthenticatedGuard, isNotAuthenticatedGuard } from './auth/auth.guards';
+import { IncomeComponent } from './expense/income/income.component';
 
 export const routes: Routes = [
   {
@@ -30,6 +31,10 @@ export const routes: Routes = [
       {
         path: 'expense',
         component: ExpenseComponent
+      },
+      {
+        path: 'income',
+        component: IncomeComponent
       }
     ]
   },
