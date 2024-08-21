@@ -30,6 +30,7 @@ export class PieChartComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.updateChartOptions()
   }
   private updateChartOptions() {
 

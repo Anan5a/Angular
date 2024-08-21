@@ -32,6 +32,10 @@
         *matCellDef="let income"
       > {{income.source}}</td>
 
+      <td
+        mat-footer-cell
+        *matFooterCellDef
+      > Grand total </td>
 
     </ng-container>
 
@@ -44,6 +48,11 @@
         mat-cell
         *matCellDef="let income"
       > {{income.amount}} </td>
+      <td
+        mat-footer-cell
+        *matFooterCellDef
+      > {{totalCosts}} </td>
+
     </ng-container>
 
     <ng-container matColumnDef="dateTime">
@@ -55,6 +64,11 @@
         mat-cell
         *matCellDef="let income"
       > {{income.dateTime|date}} </td>
+      <td
+        mat-footer-cell
+        *matFooterCellDef
+      >  </td>
+
     </ng-container>
 
     <tr
@@ -65,6 +79,10 @@
     <tr
       mat-row
       *matRowDef="let row; columns: displayedColumns;"
+    ></tr>
+    <tr
+      mat-footer-row
+      *matFooterRowDef="displayedColumns"
     ></tr>
 
 

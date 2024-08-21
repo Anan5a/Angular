@@ -8,3 +8,10 @@
   border-color: currentColor;
   font-weight: bold;
 }
+table {
+  width: 100%;
+  table-layout: fixed;
+}
+tr.mat-mdc-footer-row td {
+  font-weight: bold;
+}

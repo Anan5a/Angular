@@ -30,6 +30,10 @@
         mat-cell
         *matCellDef="let expense"
       > {{decodeCatId(expense.categoryId)}}</td>
+      <td
+        mat-footer-cell
+        *matFooterCellDef
+      ></td>
     </ng-container>
 
     <ng-container matColumnDef="title">
@@ -41,6 +45,10 @@
         mat-cell
         *matCellDef="let expense"
       > {{expense.title}} </td>
+      <td
+        mat-footer-cell
+        *matFooterCellDef
+      > Grand total </td>
     </ng-container>
 
     <ng-container matColumnDef="amount">
@@ -52,6 +60,10 @@
         mat-cell
         *matCellDef="let expense"
       > {{expense.amount}} </td>
+      <td
+        mat-footer-cell
+        *matFooterCellDef
+      > {{totalCosts}} </td>
     </ng-container>
 
     <ng-container matColumnDef="dateTime">
@@ -63,6 +75,10 @@
         mat-cell
         *matCellDef="let expense"
       > {{expense.dateTime|date}} </td>
+      <td
+        mat-footer-cell
+        *matFooterCellDef
+      ></td>
     </ng-container>
     <ng-container matColumnDef="actions">
       <th
@@ -84,6 +100,11 @@
           (click)="onExpenseDelete(expense)"
         ><mat-icon>delete</mat-icon></button>
       </td>
+
+      <td
+        mat-footer-cell
+        *matFooterCellDef
+      > </td>
     </ng-container>
 
     <tr
@@ -93,6 +114,10 @@
     <tr
       mat-row
       *matRowDef="let row; columns: displayedColumns;"
+    ></tr>
+    <tr
+      mat-footer-row
+      *matFooterRowDef="displayedColumns"
     ></tr>
   </table>
 

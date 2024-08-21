@@ -24,12 +24,15 @@ export class IncomeTableComponent implements OnInit, AfterViewInit {
   searchText: string = '';
 
   displayedColumns: string[] = ['source', 'amount', 'dateTime'];
+  totalCosts = 0
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(private expenseService: ExpenseService) {
     effect(() => {
-      this.dataSource.data = [...this.expenseService.incomes()].sort((a, b) => Date.parse(b.dateTime) - Date.parse(a.dateTime))
+      const items = [...this.expenseService.incomes()].sort((a, b) => Date.parse(b.dateTime) - Date.parse(a.dateTime))
+      this.dataSource.data = items
+      this.totalCosts = items.map(t => t.amount).reduce((acc, value) => acc + value, 0);
     })
   }
 
@@ -47,6 +50,7 @@ export class IncomeTableComponent implements OnInit, AfterViewInit {
 
   applyFilter() {
     this.dataSource.filter = this.searchText;
-
   }
+
+
 }

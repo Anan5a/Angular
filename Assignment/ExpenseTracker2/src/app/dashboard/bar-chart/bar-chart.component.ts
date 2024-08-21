@@ -30,7 +30,7 @@ export class BarChartComponent {
   }
 
   ngOnInit(): void {
-    console.log(this.barChartData())
+    this.updateChartOptions()
   }
   private updateChartOptions() {
 

@@ -28,13 +28,16 @@ export class ExpenseTableComponent implements OnInit, AfterViewInit {
   searchText: string = '';
 
   displayedColumns: string[] = ['category', 'title', 'amount', 'dateTime', 'actions'];
-
+  totalCosts = 0
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(private expenseService: ExpenseService, private readonly dialog: MatDialog,
   ) {
     effect(() => {
-      this.dataSource.data = [...this.expenseService.expenses()].sort((a, b) => Date.parse(b.dateTime) - Date.parse(a.dateTime))
+      const items = [...this.expenseService.expenses()].sort((a, b) => Date.parse(b.dateTime) - Date.parse(a.dateTime))
+
+      this.dataSource.data = items
+      this.totalCosts = items.map(t => t.amount).reduce((acc, value) => acc + value, 0);
     })
   }
 
