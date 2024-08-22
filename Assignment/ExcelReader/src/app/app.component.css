@@ -1,0 +1,26 @@
+.sidenav-container {
+  height: 100vh;
+}
+.sidenav {
+  width: 250px;
+}
+
+.content {
+  padding: 16px;
+  margin-top: 64px;
+  margin-bottom: 64px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+.fab-bottom-right {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 1000;
+}
+.fixedToolbar {
+  position: fixed;
+  z-index: 111;
+}

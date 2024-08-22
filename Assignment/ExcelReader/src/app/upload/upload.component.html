@@ -1,1 +1,65 @@
-<p>upload works!</p>
+<h2 class="center">Upload your excel file here.</h2>
+
+<div
+  *ngIf="!responseSuccess"
+  class="center flex-container max-500"
+  style="flex-direction:column;"
+>
+  <mat-form-field
+    appearance="outline"
+    class="full-width max-500"
+  >
+    <h2 *ngIf="errorMessage"><mat-error>{{errorMessage}}</mat-error>
+    </h2>
+    <mat-label>Select an Excel file</mat-label>
+    <div class="file-upload-wrapper">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="triggerFileInput()"
+      >
+        <mat-icon>attach_file_add</mat-icon>
+        Select excel file</button>
+      <input
+        matInput
+        [value]="inputFileName || 'Choose a file...'"
+        readonly
+        placeholder="Choose a file"
+      >
+      <input
+        #fileUpload
+        type="file"
+        class="hidden"
+        (change)="onFileChange($event)"
+        [accept]="accept"
+      >
+    </div>
+    <mat-progress-bar
+      *ngIf="progressActive"
+      mode="indeterminate"
+    ></mat-progress-bar>
+  </mat-form-field>
+
+  <button
+    mat-stroked-button
+    color="primary"
+    class="right"
+    [disabled]="form.invalid"
+    (click)="onClickUpload()"
+  ><mat-icon>upload</mat-icon>Upload</button>
+</div>
+<div
+  *ngIf="responseSuccess"
+  class="center flex-container max-500"
+  style="flex-direction:column;"
+>
+  <h2 style="color: cadetblue;">File uploaded succesfully!</h2>
+  <h3><b>Total rows</b>: {{responseSuccess.totalRows||0}}</h3>
+  <h3><b>Empty rows</b>: {{responseSuccess.skippedRows||0}}</h3>
+  <h3><b>Skipped rows</b>: {{responseSuccess.failedCount||0}}</h3>
+  <h2><a
+      [routerLink]="['/view-list']"
+      routerLinkActive="router-link-active"
+    >List of entries</a>
+  </h2>
+</div>

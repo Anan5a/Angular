@@ -1,2 +1,2 @@
-export const ApiBaseUrl = 'http://localhost:5151/api';
-export const ApiBaseImageUrl = 'http://localhost:5151/';
+export const ApiBaseUrl = 'https://localhost:5150/api';
+export const ApiBaseImageUrl = 'https://localhost:5150/';

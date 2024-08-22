@@ -1,0 +1,54 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    #sidenav
+    [mode]="(isHandset$) ? 'over' : 'side'"
+    [opened]="!(isHandset$ )"
+  >
+
+    <mat-nav-list class="sidenav">
+      <a
+        mat-list-item
+        routerLink="/"
+      >Home</a>
+      <a
+        mat-list-item
+        routerLink="/about"
+      >About</a>
+      <a
+        mat-list-item
+        routerLink="/services"
+      >Services</a>
+      <a
+        mat-list-item
+        [routerLink]="['/upload']"
+      >Upload</a>
+      <a
+        mat-list-item
+        [routerLink]="['/view-list']"
+      >View List</a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar
+      color="primary"
+      class="fixedToolbar"
+    >
+      <button
+        mat-icon-button
+        (click)="sidenav.toggle()"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span routerLink="/">{{title}}</span>
+      <span class="spacer"></span>
+
+    </mat-toolbar>
+
+   
+    <div class="content">
+
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
