@@ -1,6 +1,6 @@
 import { NgIf } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormGroup, FormControl, Validators, ReactiveFormsModule, FormsModule, AbstractControl } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,7 +34,7 @@ export class UploadComponent {
 
   constructor(private networkService: NetworkService) { }
 
-  fileTypeValidator(control: any) {
+  fileTypeValidator(control: AbstractControl) {
     if (control.value && control.value.type) {
       const validTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
       if (!validTypes.includes(control.value.type)) {

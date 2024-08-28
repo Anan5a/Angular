@@ -29,9 +29,15 @@ export class NetworkService {
     return this._postData<FormData, UploadResponseModel>(url, formData, errorMessage);
   }
 
-
-  private _postData<T1, T2>(url: string, requestData: T1, errorMessage: string) {
-    return this.httpClient.post<T2>(url, requestData).pipe(
+  exportAll() {
+    const url = ApiBaseUrl + '/Excel/Export';
+    const errorMessage = 'Failed to export file!';
+    return this._postData<null, any>(url, null, errorMessage, {
+      responseType: 'blob'
+    });
+  }
+  private _postData<T1, T2>(url: string, requestData: T1, errorMessage: string, options = {}) {
+    return this.httpClient.post<T2>(url, requestData, options).pipe(
       catchError((error) => {
         return throwError(() => new Error(error.error?.message || errorMessage))
       })

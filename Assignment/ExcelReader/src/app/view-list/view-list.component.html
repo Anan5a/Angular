@@ -6,21 +6,36 @@
     mode="indeterminate"
   ></mat-progress-bar></h3>
 
-<div
-  class="mat-elevation-z8"
->
+<div class="mat-elevation-z8">
 
-  <div class="flex-container">
-    <mat-form-field appearance="fill">
-      <mat-label>Search names</mat-label>
-      <input
-        matInput
-        (keyup)="applyFilter()"
-        [(ngModel)]="searchText"
-      >
-      <mat-icon matPrefix>search</mat-icon>
+  <div
+    class="flex-container"
+    style="justify-content: space-between;"
+  >
+    <div class="flex-1">
 
-    </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Search names</mat-label>
+        <input
+          matInput
+          (keyup)="applyFilter()"
+          [(ngModel)]="searchText"
+        >
+        <mat-icon matPrefix>search</mat-icon>
+
+      </mat-form-field>
+    </div>
+    <div class="flex-1">
+      <mat-spinner *ngIf="disableExport"></mat-spinner>
+
+      <button
+        mat-raised-button
+        color="primary"
+        class="right"
+        [disabled]="disableExport"
+        (click)="onClickExport()"
+      ><mat-icon>download</mat-icon>Export</button>
+    </div>
   </div>
 
   <table
