@@ -25,7 +25,15 @@
       <a
         mat-list-item
         [routerLink]="['/view-list']"
-      >View List</a>
+      >My Files</a>
+      <a
+        mat-list-item
+        [routerLink]="['/login']"
+      >Login</a>
+      <a
+        mat-list-item
+        [routerLink]="['/signup']"
+      >Signup</a>
     </mat-nav-list>
   </mat-sidenav>
 
@@ -45,8 +53,11 @@
 
     </mat-toolbar>
 
-   
+
     <div class="content">
+      <!-- <app-home></app-home>
+      <app-login></app-login>
+      <app-signup></app-signup> -->
 
       <router-outlet></router-outlet>
     </div>

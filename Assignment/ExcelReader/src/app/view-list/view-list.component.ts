@@ -1,37 +1,50 @@
 import { AfterViewInit, Component, effect, OnInit, signal, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { UserModel } from '../app.models';
+import { FileMetadataResponse, UserModel } from '../app.models';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { NetworkService } from '../network.service';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
-import { NgIf } from '@angular/common';
+import { DatePipe, NgIf } from '@angular/common';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
+import { UserService } from '../services/user.service';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @Component({
   selector: 'app-view-list',
   standalone: true,
-  imports: [MatTableModule, MatInputModule, MatProgressSpinnerModule, FormsModule, MatPaginatorModule, MatIconModule, MatProgressBarModule, MatButtonModule, NgIf],
+  imports: [MatTableModule, MatInputModule, MatProgressSpinnerModule, FormsModule, MatPaginatorModule, MatIconModule, MatProgressBarModule, MatButtonModule, NgIf, DatePipe, MatButtonToggleModule],
   templateUrl: './view-list.component.html',
   styleUrl: './view-list.component.css'
 })
 export class ViewListComponent implements OnInit, AfterViewInit {
+  onDelete() {
+    throw new Error('Method not implemented.');
+  }
+  onDownload() {
+    throw new Error('Method not implemented.');
+  }
+  onEdit() {
+    throw new Error('Method not implemented.');
+  }
+  onShare() {
+    throw new Error('Method not implemented.');
+  }
   disableExport = false;
 
-  dataSource = new MatTableDataSource<UserModel>([]);
+  dataSource = new MatTableDataSource<FileMetadataResponse>([]);
 
-  remoteData = signal<UserModel[]>([])
+  remoteData = signal<FileMetadataResponse[]>([])
 
   searchText: string = '';
 
-  displayedColumns: string[] = ['uuid', 'name', 'email'];
+  displayedColumns: string[] = ['name', 'date', 'action'];
   remoteDataLoaded = false
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private networkService: NetworkService) {
+  constructor(private userService: UserService) {
     effect(() => {
       this.dataSource.data = this.remoteData()
     })
@@ -43,10 +56,10 @@ export class ViewListComponent implements OnInit, AfterViewInit {
 
 
     //load data
-    this.networkService.loadAllData().subscribe({
-      next: (users) => {
+    this.userService.loadFileList().subscribe({
+      next: (response) => {
         this.remoteDataLoaded = true
-        this.remoteData.set(users)
+        this.remoteData.set(response.data!)
       },
       error: (error) => {
         this.remoteDataLoaded = true
@@ -60,8 +73,8 @@ export class ViewListComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
   }
-  customFilter = (data: UserModel, filter: string) => {
-    return data.name != undefined ? data.name.toLowerCase()?.indexOf(filter) >= 0 : false;
+  customFilter = (data: FileMetadataResponse, filter: string) => {
+    return data.fileName != undefined ? data.fileName.toLowerCase()?.indexOf(filter.toLocaleLowerCase()) >= 0 : false;
   };
 
 
@@ -71,7 +84,7 @@ export class ViewListComponent implements OnInit, AfterViewInit {
 
   onClickExport() {
     this.disableExport = true
-    this.networkService.exportAll().subscribe({
+    this.userService.exportAll().subscribe({
       next: (response) => {
         console.log(response)
         this.disableExport = false

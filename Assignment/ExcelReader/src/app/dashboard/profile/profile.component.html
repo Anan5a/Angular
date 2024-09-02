@@ -1,0 +1,48 @@
+<mat-card class="profile-card">
+  <mat-card-header>
+    <mat-card-title>{{user.name}}</mat-card-title>
+    <mat-card-subtitle>{{user.email}}</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="profile-info">
+      <div class="info-row">
+        <mat-icon>calendar_today</mat-icon>
+        <span>Created At: {{user.createdAt|date}}</span>
+      </div>
+      <div
+        class="info-row"
+        *ngIf="user.updatedAt"
+      >
+        <mat-icon>calendar_today</mat-icon>
+        <span>Updated At: {{user.updatedAt|date}}</span>
+      </div>
+      <div
+        class="info-row"
+        *ngIf="user.deletedAt"
+      >
+        <mat-icon>delete</mat-icon>
+        <span>Deleted At: {{user.deletedAt|date}}</span>
+      </div>
+      <div class="info-row">
+        <mat-icon>badge</mat-icon>
+        <span>Role: <b>{{ user.role?.roleName||'N/A' }}</b></span>
+      </div>
+      <div class="info-row">
+        <mat-icon>verified_user</mat-icon>
+        <span>Status: <b>{{user.status}}</b></span>
+      </div>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button
+      mat-stroked-button
+      (click)="openEditDialog()"
+    >Edit Profile</button>
+    <button
+      mat-stroked-button
+      (click)="logout()"
+    >Logout</button>
+  </mat-card-actions>
+</mat-card>

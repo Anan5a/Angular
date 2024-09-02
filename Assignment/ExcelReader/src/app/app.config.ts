@@ -4,6 +4,7 @@ import { provideRouter, withComponentInputBinding, withRouterConfig } from '@ang
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { injectAuthorizationHeaderInterceptor } from './services/auth.guards';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,7 +16,9 @@ export const appConfig: ApplicationConfig = {
         paramsInheritanceStrategy: 'always'
       })
     ),
-    provideHttpClient(),
+    provideHttpClient(
+      withInterceptors([injectAuthorizationHeaderInterceptor])
+    ),
     provideAnimationsAsync()
   ]
 };

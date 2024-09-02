@@ -34,12 +34,26 @@
         [accept]="accept"
       >
     </div>
-    <mat-progress-bar
-      *ngIf="progressActive"
-      mode="indeterminate"
-    ></mat-progress-bar>
+  </mat-form-field>
+  <mat-form-field
+    appearance="outline"
+    class="full-width"
+  >
+    <mat-label>File name</mat-label>
+    <input
+      matInput
+      placeholder="Enter a custom file name"
+      [value]="fileNameCustom"
+      [(ngModel)]="fileNameCustom"
+    >
+    <mat-icon matSuffix>file</mat-icon>
+    <mat-hint>Hint: important-document.xlsx</mat-hint>
   </mat-form-field>
 
+  <mat-progress-bar
+    *ngIf="progressActive"
+    mode="indeterminate"
+  ></mat-progress-bar>
   <button
     mat-stroked-button
     color="primary"
@@ -54,12 +68,9 @@
   style="flex-direction:column;"
 >
   <h2 style="color: cadetblue;">File uploaded succesfully!</h2>
-  <h3><b>Total rows</b>: {{responseSuccess.totalRows||0}}</h3>
-  <h3><b>Empty rows</b>: {{responseSuccess.skippedRows||0}}</h3>
-  <h3><b>Skipped rows</b>: {{responseSuccess.failedCount||0}}</h3>
   <h2><a
       [routerLink]="['/view-list']"
       routerLinkActive="router-link-active"
-    >List of entries</a>
+    >View Files</a>
   </h2>
 </div>

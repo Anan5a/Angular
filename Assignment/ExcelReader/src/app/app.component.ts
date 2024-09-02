@@ -10,6 +10,9 @@ import { MatListModule } from '@angular/material/list';
 import { map } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgIf } from '@angular/common';
+import { HomeComponent } from "./dashboard/home/home.component";
+import { LoginComponent } from "./auth/login/login.component";
+import { SignupComponent } from "./auth/signup/signup.component";
 
 @Component({
   selector: 'app-root',
@@ -25,7 +28,10 @@ import { NgIf } from '@angular/common';
     RouterOutlet,
     RouterLink,
     NgIf,
-  ],
+    HomeComponent,
+    LoginComponent,
+    SignupComponent
+],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

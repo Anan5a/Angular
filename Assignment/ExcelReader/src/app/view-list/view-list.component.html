@@ -1,13 +1,12 @@
 <h3
   style="font-size: 2rem; padding: 1rem;"
   class="center"
->List of data in the database<mat-progress-bar
+>Files you uploaded<mat-progress-bar
     *ngIf="!remoteDataLoaded"
     mode="indeterminate"
   ></mat-progress-bar></h3>
 
 <div class="mat-elevation-z8">
-
   <div
     class="flex-container"
     style="justify-content: space-between;"
@@ -15,7 +14,7 @@
     <div class="flex-1">
 
       <mat-form-field appearance="fill">
-        <mat-label>Search names</mat-label>
+        <mat-label>Search file</mat-label>
         <input
           matInput
           (keyup)="applyFilter()"
@@ -25,34 +24,14 @@
 
       </mat-form-field>
     </div>
-    <div class="flex-1">
-      <mat-spinner *ngIf="disableExport"></mat-spinner>
 
-      <button
-        mat-raised-button
-        color="primary"
-        class="right"
-        [disabled]="disableExport"
-        (click)="onClickExport()"
-      ><mat-icon>download</mat-icon>Export</button>
-    </div>
   </div>
 
   <table
     mat-table
     [dataSource]="dataSource"
   >
-    <ng-container matColumnDef="uuid">
-      <th
-        mat-header-cell
-        *matHeaderCellDef
-      > UUID </th>
-      <td
-        mat-cell
-        *matCellDef="let user"
-      > {{user.uuid}}</td>
-
-    </ng-container>
+    
 
     <ng-container matColumnDef="name">
       <th
@@ -61,23 +40,61 @@
       > Name </th>
       <td
         mat-cell
-        *matCellDef="let user"
-      > {{user.name}} </td>
+        *matCellDef="let fileMeta"
+      > {{fileMeta.fileName}} </td>
 
     </ng-container>
 
-    <ng-container matColumnDef="email">
+    <ng-container matColumnDef="date">
       <th
         mat-header-cell
         *matHeaderCellDef
-      > Email </th>
+      > Upload Date </th>
       <td
         mat-cell
-        *matCellDef="let user"
-      > {{user.email}} </td>
+        *matCellDef="let fileMeta"
+      > {{fileMeta.createdAt|date}} </td>
 
     </ng-container>
+    <ng-container matColumnDef="action">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+      > Action </th>
+      <td
+        mat-cell
+        *matCellDef="let fileMeta"
+      >
 
+        <div class="action-buttons">
+          <button
+            mat-button
+            (click)="onShare()"
+          >
+            <mat-icon>share</mat-icon>
+          </button>
+          <button
+            mat-button
+            (click)="onEdit()"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-button
+            (click)="onDownload()"
+          >
+            <mat-icon>download</mat-icon>
+          </button>
+          <button
+            mat-button
+            (click)="onDelete()"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </td>
+
+    </ng-container>
     <tr
       mat-header-row
       *matHeaderRowDef="displayedColumns"
@@ -94,7 +111,7 @@
     [pageSizeOptions]="[5, 10, 20,50,100]"
     showFirstLastButtons
     [pageSize]="10"
-    aria-label="Select page "
+    aria-label="Select page"
   >
   </mat-paginator>
 </div>

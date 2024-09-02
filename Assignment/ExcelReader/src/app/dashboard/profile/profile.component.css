@@ -1,0 +1,25 @@
+.profile-card {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.info-row mat-icon {
+  margin-right: 8px;
+}
+
+mat-card-actions {
+  display: flex;
+  justify-content: flex-end;
+}

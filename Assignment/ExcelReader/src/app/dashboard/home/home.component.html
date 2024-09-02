@@ -1,0 +1,53 @@
+<div class="max-400 center">
+
+  <mat-grid-list
+    cols="2"
+    rowHeight="1:1"
+  >
+    <a [routerLink]="['/view-list']">
+      <mat-grid-tile
+        [style.backgroundImage]="'url(/files.png)'"
+        class="tile-container"
+        [routerLink]="['/view-list']"
+        routerLinkActive="router-link-active"
+      >
+        <div class="overlay">
+          <p class="tile-text">My Files</p>
+        </div>
+      </mat-grid-tile>
+    </a>
+    <a [routerLink]="['/upload']">
+      <mat-grid-tile
+        [style.backgroundImage]="'url(/file-upload.png)'"
+        class="tile-container"
+      >
+        <div class="overlay">
+          <p class="tile-text">Upload</p>
+        </div>
+      </mat-grid-tile>
+    </a>
+    <a [routerLink]="['/profile']">
+      <mat-grid-tile
+        [style.backgroundImage]="'url(/profile.png)'"
+        class="tile-container"
+      >
+        <div class="overlay">
+          <p class="tile-text">Profile</p>
+        </div>
+      </mat-grid-tile>
+    </a>
+    <a
+      *ngIf="canAddUser"
+      [routerLink]="['/admin','add-user']"
+    >
+      <mat-grid-tile
+        [style.backgroundImage]="'url(/add-user.png)'"
+        class="tile-container"
+      >
+        <div class="overlay">
+          <p class="tile-text">Add user</p>
+        </div>
+      </mat-grid-tile>
+    </a>
+  </mat-grid-list>
+</div>

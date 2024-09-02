@@ -6,14 +6,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { NetworkService } from '../network.service';
+
 import { UploadResponseModel } from '../app.models';
 import { RouterLink } from '@angular/router';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-upload',
   standalone: true,
-  imports: [MatInputModule, MatFormFieldModule, MatButtonModule, MatIconModule, MatProgressBarModule, FormsModule, NgIf,RouterLink],
+  imports: [MatInputModule, MatFormFieldModule, MatButtonModule, MatIconModule, MatProgressBarModule, FormsModule, NgIf, RouterLink],
   templateUrl: './upload.component.html',
   styleUrl: './upload.component.css'
 })
@@ -29,10 +30,13 @@ export class UploadComponent {
   @ViewChild('fileUpload') fileUpload!: ElementRef
 
   form = new FormGroup({
-    excelFile: new FormControl(null, { validators: [Validators.required, this.fileTypeValidator] }),
-  })
+    ExcelFile: new FormControl(null, { validators: [Validators.required, this.fileTypeValidator] }),
+    FileName: new FormControl('', {})
+  });
 
-  constructor(private networkService: NetworkService) { }
+  fileNameCustom?: string;
+
+  constructor(private userService: UserService) { }
 
   fileTypeValidator(control: AbstractControl) {
     if (control.value && control.value.type) {
@@ -61,13 +65,20 @@ export class UploadComponent {
       if (file.type === 'application/vnd.ms-excel' || file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
         this.inputFileName = file.name;
         this.form.patchValue({
-          excelFile: file
+          ExcelFile: file
         });
+        //only change if no custom name was typed
+        if (!this.fileNameCustom) {
+          this.form.patchValue({
+            FileName: file.name
+          });
+          this.fileNameCustom = file.name.split('.').slice(0, -1).join('.');;
+        }
       } else {
         this.inputFileName = '';
         // this.form.get('excelFile')?.setValue(null);
-        this.form.get('excelFile')?.markAsTouched();
-        this.form.get('excelFile')?.setErrors({ invalidFileType: true });
+        this.form.get('ExcelFile')?.markAsTouched();
+        this.form.get('ExcelFile')?.setErrors({ invalidFileType: true });
       }
     }
   }
@@ -76,12 +87,13 @@ export class UploadComponent {
     this.progressActive = true
 
     const formData = new FormData();
-    formData.append('excelFile', this.form.controls['excelFile'].value!);
+    formData.append('ExcelFile', this.form.controls['ExcelFile'].value!);
+    formData.append('FileName', this.fileNameCustom!);
 
 
 
 
-    this.networkService.uploadFile(formData).subscribe({
+    this.userService.uploadFile(formData).subscribe({
       next: (uploadResponse) => {
         this.responseSuccess = uploadResponse
         this.form.reset()
