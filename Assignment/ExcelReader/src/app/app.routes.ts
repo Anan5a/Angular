@@ -7,34 +7,48 @@ import { SignupComponent } from './auth/signup/signup.component';
 import { HomeComponent } from './dashboard/home/home.component';
 import { CreateUserComponent } from './admin/create-user/create-user.component';
 import { ProfileComponent } from './dashboard/profile/profile.component';
+import { isAdminGuard, isAuthenticatedGuard, isNotAuthenticatedGuard } from './services/auth.guards';
 
 export const routes: Routes = [
   {
     path: '',
-    component: HomeComponent
+    redirectTo: 'dashboard',
+    pathMatch: 'full'
+  },
+  {
+    path: 'dashboard',
+    component: HomeComponent,
+    canActivate: [isAuthenticatedGuard]
   },
   {
     path: 'upload',
-    component: UploadComponent
+    component: UploadComponent,
+    canActivate: [isAuthenticatedGuard]
   },
   {
     path: 'profile',
-    component: ProfileComponent
+    component: ProfileComponent,
+    canActivate: [isAuthenticatedGuard]
   },
   {
     path: 'view-list',
-    component: ViewListComponent
+    component: ViewListComponent,
+    canActivate: [isAuthenticatedGuard]
   },
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
+    canActivate: [isNotAuthenticatedGuard]
   },
   {
     path: 'signup',
-    component: SignupComponent
+    component: SignupComponent,
+    canActivate: [isNotAuthenticatedGuard]
   },
   {
     path: 'admin',
+    canActivate: [isAdminGuard],
+    canActivateChild: [isAdminGuard],
     children: [
       {
         path: 'add-user',

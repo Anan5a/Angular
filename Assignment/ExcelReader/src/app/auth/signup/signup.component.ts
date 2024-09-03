@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '../../services/auth.service';
 import { NgIf } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 
 
@@ -47,7 +48,8 @@ export class SignupComponent {
 
   errorMessage = signal('')
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router, private toastrService: ToastrService
+  ) { }
 
   formOnSubmit() {
     this.errorMessage.set("");
@@ -66,6 +68,7 @@ export class SignupComponent {
       next: (response) => {
         if (response.status === 'ok') {
           this.router.navigate(['/'])
+          this.toastrService.success(response.message)
         } else {
           this.errorMessage.set(response.message)
         }

@@ -13,6 +13,7 @@ import { NgIf } from '@angular/common';
 import { HomeComponent } from "./dashboard/home/home.component";
 import { LoginComponent } from "./auth/login/login.component";
 import { SignupComponent } from "./auth/signup/signup.component";
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -31,17 +32,25 @@ import { SignupComponent } from "./auth/signup/signup.component";
     HomeComponent,
     LoginComponent,
     SignupComponent
-],
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
+
   title = 'ExcelReader';
 
   isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(result => result.matches)
   );
+  isAuthenticated = this.authService.isAuthenticated
 
-  constructor(private breakpointObserver: BreakpointObserver, private router: Router) { }
-
+  constructor(private breakpointObserver: BreakpointObserver, private router: Router,
+    private authService: AuthService
+  ) { }
+  logout() {
+    this.authService.logout()
+    this.router.navigate(['/'])
+    window.location.reload()
+  }
 }

@@ -72,7 +72,7 @@ export class UploadComponent {
           this.form.patchValue({
             FileName: file.name
           });
-          this.fileNameCustom = file.name.split('.').slice(0, -1).join('.');;
+          this.fileNameCustom = file.name.split('.').slice(0, -1).join('.').replace(/[^a-zA-Z0-9\(\)\.]/g, '_');
         }
       } else {
         this.inputFileName = '';

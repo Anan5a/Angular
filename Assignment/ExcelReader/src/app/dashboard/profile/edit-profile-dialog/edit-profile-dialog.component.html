@@ -51,6 +51,8 @@
     >Cancel</button>
     <button
       mat-button
+      [disabled]="form.invalid"
+      color="primary"
       (click)="onSave()"
     >Save</button>
   </div>

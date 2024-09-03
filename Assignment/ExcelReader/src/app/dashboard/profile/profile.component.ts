@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EditProfileDialogComponent } from './edit-profile-dialog/edit-profile-dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -18,24 +19,21 @@ export class ProfileComponent {
 
   user = this.authService.user()!.user
 
-  constructor(private authService: AuthService, private dialog: MatDialog) { }
+  constructor(private authService: AuthService, private dialog: MatDialog, private router: Router) { }
 
 
 
   logout() {
     this.authService.logout()
+    this.router.navigate(['/'])
   }
   openEditDialog() {
     const dialogRef = this.dialog.open(EditProfileDialogComponent, {
-      maxWidth: '600px',
+      maxWidth: '400px',
       data: { user: this.user }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.user = result;
-      }
-    });
+    dialogRef.afterClosed().subscribe(result => { });
   }
 
 }

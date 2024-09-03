@@ -25,6 +25,22 @@ export const isAuthenticatedGuard: CanActivateFn = (route, segments) => {
   }
   return authService.isAuthenticated();
 }
+
+
+export const isAdminGuard: CanActivateFn = (route, segments) => {
+  const authService = inject(AuthService)
+
+
+  if (!authService.isAuthenticated()) {
+    const router = inject(Router)
+
+    router.navigate(['/login']);
+
+    return false;
+  }
+  return authService.isAdmin();
+}
+
 export const injectAuthorizationHeaderInterceptor: HttpInterceptorFn = (req, next) => {
 
   const authService = inject(AuthService)

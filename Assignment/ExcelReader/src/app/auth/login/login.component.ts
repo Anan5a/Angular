@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '../../services/auth.service';
 import { NgIf } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +24,8 @@ export class LoginComponent {
   })
 
   formErrorMessage = signal<string | null>(null)
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router, private toastrService: ToastrService
+  ) { }
 
 
   formOnSubmit() {
@@ -33,6 +35,7 @@ export class LoginComponent {
     this.authService.login({ email: this.form.controls['email'].value!, password: this.form.controls['password'].value! }).subscribe({
       next: (response) => {
         //login ok
+        this.toastrService.success(response.message)
 
         this.formErrorMessage.set(null)
         this.router.navigate(['/'])

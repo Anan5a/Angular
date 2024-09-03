@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { passwordMatchValidator } from '../../../auth/signup/signup.component';
 import { UserService } from '../../../services/user.service';
 import { NgIf } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -33,7 +34,8 @@ export class EditProfileDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<EditProfileDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { user: User },
-    private userService: UserService
+    private userService: UserService,
+    private toastrService: ToastrService
   ) {
 
   }
@@ -46,6 +48,7 @@ export class EditProfileDialogComponent {
     }).subscribe({
       next: (response) => {
         this.dialogRef.close();
+        this.toastrService.success(response.message)
       },
       error: (error) => {
         this.errorMessage = error

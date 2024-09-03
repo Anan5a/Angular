@@ -11,6 +11,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { UserService } from '../services/user.service';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { ApiBaseImageUrl, ApiBaseUrl } from '../../constants';
+import { MatDialog } from '@angular/material/dialog';
+import { EditFileDialogComponent } from './edit-file-dialog/edit-file-dialog.component';
 
 @Component({
   selector: 'app-view-list',
@@ -20,18 +23,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
   styleUrl: './view-list.component.css'
 })
 export class ViewListComponent implements OnInit, AfterViewInit {
-  onDelete() {
-    throw new Error('Method not implemented.');
-  }
-  onDownload() {
-    throw new Error('Method not implemented.');
-  }
-  onEdit() {
-    throw new Error('Method not implemented.');
-  }
-  onShare() {
-    throw new Error('Method not implemented.');
-  }
+
   disableExport = false;
 
   dataSource = new MatTableDataSource<FileMetadataResponse>([]);
@@ -44,7 +36,7 @@ export class ViewListComponent implements OnInit, AfterViewInit {
   remoteDataLoaded = false
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private dialog: MatDialog) {
     effect(() => {
       this.dataSource.data = this.remoteData()
     })
@@ -53,25 +45,11 @@ export class ViewListComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.dataSource.filterPredicate = this.customFilter;
     this.remoteDataLoaded = false
-
-
-    //load data
-    this.userService.loadFileList().subscribe({
-      next: (response) => {
-        this.remoteDataLoaded = true
-        this.remoteData.set(response.data!)
-      },
-      error: (error) => {
-        this.remoteDataLoaded = true
-        window.alert("Failed to load the list!.");
-      }
-    })
-
-
   }
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
+    this.loadList()
   }
   customFilter = (data: FileMetadataResponse, filter: string) => {
     return data.fileName != undefined ? data.fileName.toLowerCase()?.indexOf(filter.toLocaleLowerCase()) >= 0 : false;
@@ -81,7 +59,63 @@ export class ViewListComponent implements OnInit, AfterViewInit {
   applyFilter() {
     this.dataSource.filter = this.searchText;
   }
+  onDelete(fileId: number) {
+    if (window.confirm("The file will be deleted permanently")) {
+      this.remoteDataLoaded = false
+      this.userService.deleteFile(fileId).subscribe({
+        next: () => {
+          this.remoteDataLoaded = true
+          this.loadList()
+        }, error: () => {
+          this.remoteDataLoaded = false
+        }
+      })
+    }
 
+
+  }
+  onDownload(fileId: number) {
+    this.remoteDataLoaded = false
+    this.userService.downloadFile(fileId).subscribe({
+      next: (response) => {
+        const downloadUrl = `${ApiBaseImageUrl}${response.data}`;
+        this.remoteDataLoaded = true
+        window.open(downloadUrl, '_blank')
+      }
+    })
+  }
+  onEdit(fileMeta: FileMetadataResponse) {
+
+    const dialogRef = this.dialog.open(EditFileDialogComponent, {
+      maxWidth: '500px',
+      width: '450px',
+      data: { fileMeta }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        //reload list
+        this.loadList()
+      }
+    });
+
+  }
+  onShare() {
+    throw new Error('Method not implemented.');
+  }
+
+  loadList() {
+    this.userService.loadFileList().subscribe({
+      next: (response) => {
+        this.remoteDataLoaded = true
+        this.remoteData.set(response.data!)
+      },
+      error: (error) => {
+        this.remoteDataLoaded = true
+
+      }
+    })
+  }
   onClickExport() {
     this.disableExport = true
     this.userService.exportAll().subscribe({
