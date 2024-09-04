@@ -14,11 +14,12 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ApiBaseImageUrl, ApiBaseUrl } from '../../constants';
 import { MatDialog } from '@angular/material/dialog';
 import { EditFileDialogComponent } from './edit-file-dialog/edit-file-dialog.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-view-list',
   standalone: true,
-  imports: [MatTableModule, MatInputModule, MatProgressSpinnerModule, FormsModule, MatPaginatorModule, MatIconModule, MatProgressBarModule, MatButtonModule, NgIf, DatePipe, MatButtonToggleModule],
+  imports: [MatTableModule, MatInputModule, MatProgressSpinnerModule, FormsModule, MatPaginatorModule, MatIconModule, MatProgressBarModule, MatButtonModule, NgIf, DatePipe, MatButtonToggleModule, RouterLink],
   templateUrl: './view-list.component.html',
   styleUrl: './view-list.component.css'
 })

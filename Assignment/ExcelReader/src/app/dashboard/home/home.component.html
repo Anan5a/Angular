@@ -1,52 +1,42 @@
-<div class="max-400 center">
-
-  <mat-grid-list
-    cols="2"
-    rowHeight="1:1"
+<div class="card-container">
+  <mat-card
+    class="card card-image"
+    [routerLink]="['/view-list']"
+    [style.backgroundImage]="'url(/files.png)'"
   >
-    <a [routerLink]="['/view-list']">
-      <mat-grid-tile
-        [style.backgroundImage]="'url(/files.png)'"
-        class="tile-container"
-        routerLinkActive="router-link-active"
-      >
-        <div class="overlay">
-          <p class="tile-text">My Files</p>
-        </div>
-      </mat-grid-tile>
-    </a>
-    <a [routerLink]="['/upload']">
-      <mat-grid-tile
-        [style.backgroundImage]="'url(/file-upload.png)'"
-        class="tile-container"
-      >
-        <div class="overlay">
-          <p class="tile-text">Upload</p>
-        </div>
-      </mat-grid-tile>
-    </a>
-    <a [routerLink]="['/profile']">
-      <mat-grid-tile
-        [style.backgroundImage]="'url(/profile.png)'"
-        class="tile-container"
-      >
-        <div class="overlay">
-          <p class="tile-text">Profile</p>
-        </div>
-      </mat-grid-tile>
-    </a>
-    <a
-      *ngIf="canAddUser"
-      [routerLink]="['/admin','add-user']"
-    >
-      <mat-grid-tile
-        [style.backgroundImage]="'url(/add-user.png)'"
-        class="tile-container"
-      >
-        <div class="overlay">
-          <p class="tile-text">Add user</p>
-        </div>
-      </mat-grid-tile>
-    </a>
-  </mat-grid-list>
+    <div class="overlay">
+      <p class="tile-text">My Files.</p>
+    </div>
+  </mat-card>
+
+  <mat-card
+    class="card card-image"
+    [routerLink]="['/upload']"
+    [style.backgroundImage]="'url(/file-upload.png)'"
+  >
+    <div class="overlay">
+      <p class="tile-text">Upload</p>
+    </div>
+  </mat-card>
+
+  <mat-card
+    class="card card-image"
+    [routerLink]="['/profile']"
+    [style.backgroundImage]="'url(/profile.png)'"
+  >
+    <div class="overlay">
+      <p class="tile-text">Profile</p>
+    </div>
+  </mat-card>
+
+  <mat-card
+    *ngIf="canAddUser"
+    class="card card-image"
+    [routerLink]="['/admin', 'add-user']"
+    [style.backgroundImage]="'url(/add-user.png)'"
+  >
+    <div class="overlay">
+      <p class="tile-text">Add user</p>
+    </div>
+  </mat-card>
 </div>

@@ -30,6 +30,11 @@
         [routerLink]="['/view-list']"
       >My Files</a>
       <a
+        *ngIf="isAdmin()"
+        mat-list-item
+        [routerLink]="['/admin','add-user']"
+      >Create user</a>
+      <a
         *ngIf="!isAuthenticated()"
         mat-list-item
         [routerLink]="['/login']"

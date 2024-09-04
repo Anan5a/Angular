@@ -1,24 +1,11 @@
-.max-400 {
-  max-width: 400px;
-  max-height: 400px;
-}
-mat-grid-list {
-  width: 100%;
-}
-
-.tile-container {
-  background-size: cover;
-  background-position: center;
-  border: 1px dotted rgba(192, 70, 51, 0.79);
-}
-
 .overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+
+  background: rgba(103, 58, 183, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,6 +20,7 @@ mat-grid-list {
   text-decoration: none;
   font-size: 1.4rem;
   font-weight: bold;
+  margin-top: 150px;
 
   padding: 8px 16px;
   border-radius: 4px;
@@ -42,7 +30,53 @@ mat-grid-list {
   text-decoration: underline;
 }
 
-.tile-container:hover .overlay {
+.card:hover .overlay {
   opacity: 1;
-  transform: scale(1.05); /* Slightly scale the tile */
+  transform: scale(1.05);
+}
+
+/* ////////// */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+.card {
+  width: calc(20% - 16px);
+  min-width: 200px;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card-image {
+  background-size: 50%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+mat-card-header {
+  display: flex;
+  align-items: center;
+}
+
+mat-card-title {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.card-text {
+  margin: 0;
+}
+.card[routerLink] {
+  cursor: pointer !important;
+}
+/* Styles for mobile devices */
+@media only screen and (max-width: 600px) {
+  .overlay {
+    opacity: 0.9;
+  }
 }

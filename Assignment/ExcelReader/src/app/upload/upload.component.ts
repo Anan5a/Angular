@@ -20,17 +20,17 @@ import { UserService } from '../services/user.service';
 })
 export class UploadComponent {
   inputFileName!: string;
-  accept = ".xls,.xlsx";
+  accept = ".*";
   file!: File
   progressActive = false
   errorMessage = ""
   responseSuccess?: UploadResponseModel
-
+  validTypes = ['*/*', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
 
   @ViewChild('fileUpload') fileUpload!: ElementRef
 
   form = new FormGroup({
-    ExcelFile: new FormControl(null, { validators: [Validators.required, this.fileTypeValidator] }),
+    ExcelFile: new FormControl(null, { validators: [Validators.required, this.fileTypeValidator(this.validTypes)] }),
     FileName: new FormControl('', {})
   });
 
@@ -38,14 +38,17 @@ export class UploadComponent {
 
   constructor(private userService: UserService) { }
 
-  fileTypeValidator(control: AbstractControl) {
-    if (control.value && control.value.type) {
-      const validTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
-      if (!validTypes.includes(control.value.type)) {
-        return { invalidFileType: true };
+  fileTypeValidator(validTypes: string[]) {
+
+    return (control: AbstractControl) => {
+      if (control.value && control.value.type) {
+
+        if (!validTypes.includes('*/*') && !validTypes.includes(control.value.type)) {
+          return { invalidFileType: true };
+        }
       }
+      return null;
     }
-    return null;
   }
 
   triggerFileInput() {
@@ -62,18 +65,18 @@ export class UploadComponent {
   onFileChange(event: any) {
     const file = event.target.files[0];
     if (file) {
-      if (file.type === 'application/vnd.ms-excel' || file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+
+      if (this.validTypes.includes('*/*') || !this.validTypes.includes(file.type)) {
         this.inputFileName = file.name;
         this.form.patchValue({
           ExcelFile: file
         });
         //only change if no custom name was typed
-        if (!this.fileNameCustom) {
-          this.form.patchValue({
-            FileName: file.name
-          });
-          this.fileNameCustom = file.name.split('.').slice(0, -1).join('.').replace(/[^a-zA-Z0-9\(\)\.]/g, '_');
-        }
+        this.form.patchValue({
+          FileName: file.name
+        });
+        this.fileNameCustom = file.name.split('.').slice(0, -1).join('.').replace(/[^a-zA-Z0-9\(\)\.]/g, '_');
+
       } else {
         this.inputFileName = '';
         // this.form.get('excelFile')?.setValue(null);

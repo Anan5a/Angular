@@ -38,12 +38,13 @@ import { AuthService } from './services/auth.service';
 })
 export class AppComponent {
 
-  title = 'ExcelReader';
+  title = 'FileKeeper';
 
   isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map(result => result.matches)
   );
   isAuthenticated = this.authService.isAuthenticated
+  isAdmin = this.authService.isAdmin
 
   constructor(private breakpointObserver: BreakpointObserver, private router: Router,
     private authService: AuthService

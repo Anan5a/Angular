@@ -1,4 +1,4 @@
-<h2 class="center">Upload your excel file here.</h2>
+<h2 class="center">Upload your file here.</h2>
 
 <div
   *ngIf="!responseSuccess"
@@ -11,7 +11,7 @@
   >
     <h2 *ngIf="errorMessage"><mat-error>{{errorMessage}}</mat-error>
     </h2>
-    <mat-label>Select an Excel file</mat-label>
+    <mat-label>Select a file</mat-label>
     <div class="file-upload-wrapper">
       <button
         mat-raised-button
@@ -19,7 +19,7 @@
         (click)="triggerFileInput()"
       >
         <mat-icon>attach_file_add</mat-icon>
-        Select excel file</button>
+        Select file</button>
       <input
         matInput
         [value]="inputFileName || 'Choose a file...'"

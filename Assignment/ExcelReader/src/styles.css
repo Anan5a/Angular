@@ -13,10 +13,13 @@ body {
   text-align: center;
   margin: auto;
 }
+
+.center-text-important {
+  text-align: center !important;
+}
 .right {
   align-items: self-end;
   margin: 0 0 0 auto;
-  
 }
 .flex-container {
   display: flex;
@@ -27,7 +30,7 @@ body {
   width: 100%;
 }
 [routerLink] {
-  cursor: pointer;
+  cursor: pointer !important;
 }
 .flex-1 {
   flex: 1;
