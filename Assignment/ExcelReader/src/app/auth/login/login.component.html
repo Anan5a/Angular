@@ -1,4 +1,3 @@
-
 <mat-card class="form-card">
   <mat-card-header>
     <mat-card-title class="center">Login</mat-card-title>
@@ -54,5 +53,15 @@
         [disabled]="!form.valid"
       >Submit</button>
     </mat-card-actions>
+
   </form>
+  <div class="center">
+
+    <asl-google-signin-button
+      type='standard'
+      size='large'
+      [width]="300"
+      logo_alignment="center"
+    ></asl-google-signin-button>
+  </div>
 </mat-card>

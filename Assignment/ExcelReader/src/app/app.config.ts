@@ -6,6 +6,13 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { injectAuthorizationHeaderInterceptor } from './services/auth.guards';
 import { provideToastr } from 'ngx-toastr';
+import { SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
+
+import {
+  GoogleLoginProvider,
+  FacebookLoginProvider
+} from '@abacritt/angularx-social-login';
+import { GoogleClientId } from '../constants';
 
 
 export const appConfig: ApplicationConfig = {
@@ -22,6 +29,25 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([injectAuthorizationHeaderInterceptor])
     ),
     provideAnimationsAsync(),
-    provideToastr()
+    provideToastr(),
+    //// social login ////
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        lang: 'en',
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              GoogleClientId
+            )
+          }
+        ],
+        onError: (err) => {
+          console.error(err);
+        }
+      } as SocialAuthServiceConfig,
+    }
   ]
 };

@@ -14,6 +14,8 @@ import { HomeComponent } from "./dashboard/home/home.component";
 import { LoginComponent } from "./auth/login/login.component";
 import { SignupComponent } from "./auth/signup/signup.component";
 import { AuthService } from './services/auth.service';
+import { SocialAuthService } from '@abacritt/angularx-social-login';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-root',
@@ -31,12 +33,12 @@ import { AuthService } from './services/auth.service';
     NgIf,
     HomeComponent,
     LoginComponent,
-    SignupComponent
+    SignupComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   title = 'FileKeeper';
 
@@ -47,11 +49,29 @@ export class AppComponent {
   isAdmin = this.authService.isAdmin
 
   constructor(private breakpointObserver: BreakpointObserver, private router: Router,
-    private authService: AuthService
+    private authService: AuthService, private socialAuthService: SocialAuthService, private toastrService: ToastrService
   ) { }
+  ngOnInit(): void {
+    this.socialAuthService.authState.subscribe((user) => {
+      //social login
+      this.onSocialAuth(user.idToken)
+    })
+  }
+
   logout() {
     this.authService.logout()
     this.router.navigate(['/'])
     window.location.reload()
+  }
+
+
+  onSocialAuth(idToen: string) {
+    this.authService.socialAuth(idToen).subscribe({
+      next: (response) => {
+        //login ok
+        this.toastrService.success(response.message)
+        this.router.navigate(['/'])
+      }
+    })
   }
 }

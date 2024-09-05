@@ -11,6 +11,11 @@
         mat-list-item
         routerLink="/dashboard"
       >Dashboard</a>
+      <a
+        *ngIf="isAuthenticated()"
+        mat-list-item
+        routerLink="/profile"
+      >Profile</a>
       <!-- <a
         mat-list-item
         routerLink="/about"

@@ -14,7 +14,7 @@ export class AuthService extends BaseNetworkService {
 
   private currentUserKey = 'CurrentUser'
 
-  constructor(httpClient: HttpClient) {
+  constructor(httpClient: HttpClient,) {
     super(httpClient);
 
     this.getCurrentUser()
@@ -41,6 +41,7 @@ export class AuthService extends BaseNetworkService {
     //erase tokens
     this._user.set(null)
     this.eraseCurrentUser()
+    window.location.reload()
   }
 
 
@@ -64,6 +65,20 @@ export class AuthService extends BaseNetworkService {
       })
     )
   }
+
+  socialAuth(idToken: string) {
+    const url = ApiBaseUrl + '/User/social-auth';
+    const errorMessage = 'Failed to login user!';
+    return this.post<{}, LoginResponseModel>(url, { 'idToken': idToken }, errorMessage).pipe(
+      tap({
+        next: (response) => {
+          this._user.set(response.data!)
+          this.storeUser()
+        }
+      })
+    )
+  }
+
 
   private storeUser() {
     window.localStorage.setItem(this.currentUserKey, JSON.stringify(this._user()))

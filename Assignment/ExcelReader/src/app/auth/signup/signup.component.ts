@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,6 +9,7 @@ import { AuthService } from '../../services/auth.service';
 import { NgIf } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { GoogleSigninButtonModule, SocialAuthService, SocialLoginModule } from '@abacritt/angularx-social-login';
 
 
 
@@ -31,7 +32,7 @@ export function passwordMatchValidator(p1 = 'password', p2 = 'c_password'): Vali
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, ReactiveFormsModule, NgIf, RouterLink],
+  imports: [MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule, ReactiveFormsModule, NgIf, RouterLink, SocialLoginModule, GoogleSigninButtonModule],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss'
 })
@@ -48,8 +49,10 @@ export class SignupComponent {
 
   errorMessage = signal('')
 
-  constructor(private authService: AuthService, private router: Router, private toastrService: ToastrService
+  constructor(private authService: AuthService, private router: Router, private toastrService: ToastrService,
   ) { }
+
+
 
   formOnSubmit() {
     this.errorMessage.set("");
@@ -77,10 +80,7 @@ export class SignupComponent {
         this.errorMessage.set(error)
       }
     })
-
-
-    //auto login
-    // this.authService.login(this.form.controls['email'].value!,
-    //   this.form.controls['password'].value!)
   }
+
+
 }
