@@ -28,8 +28,8 @@ export class BaseNetworkService {
     );
   }
 
-  protected delete(url: string, errorMessage: string): Observable<void> {
-    return this.httpClient.delete<void>(url).pipe(
+  protected delete<RT>(url: string, errorMessage: string): Observable<RT> {
+    return this.httpClient.delete<RT>(url).pipe(
       catchError((error) => {
         this.toastrService.error(error.error?.message || errorMessage)
         return throwError(() => new Error(error.error?.message || errorMessage))

@@ -15,6 +15,7 @@ import { ApiBaseImageUrl, ApiBaseUrl } from '../../constants';
 import { MatDialog } from '@angular/material/dialog';
 import { EditFileDialogComponent } from './edit-file-dialog/edit-file-dialog.component';
 import { RouterLink } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-view-list',
@@ -33,11 +34,11 @@ export class ViewListComponent implements OnInit, AfterViewInit {
 
   searchText: string = '';
 
-  displayedColumns: string[] = ['name', 'date', 'action'];
+  displayedColumns: string[] = ['name', 'size', 'date', 'action'];
   remoteDataLoaded = false
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private userService: UserService, private dialog: MatDialog) {
+  constructor(private userService: UserService, private dialog: MatDialog, private toastrService: ToastrService) {
     effect(() => {
       this.dataSource.data = this.remoteData()
     })
@@ -64,8 +65,9 @@ export class ViewListComponent implements OnInit, AfterViewInit {
     if (window.confirm("The file will be deleted permanently")) {
       this.remoteDataLoaded = false
       this.userService.deleteFile(fileId).subscribe({
-        next: () => {
+        next: (response) => {
           this.remoteDataLoaded = true
+          this.toastrService.success(response?.data)
           this.loadList()
         }, error: () => {
           this.remoteDataLoaded = false
@@ -79,6 +81,8 @@ export class ViewListComponent implements OnInit, AfterViewInit {
     this.remoteDataLoaded = false
     this.userService.downloadFile(fileId).subscribe({
       next: (response) => {
+        this.toastrService.success("Download link generated successfully.")
+
         const downloadUrl = `${ApiBaseImageUrl}${response.data}`;
         this.remoteDataLoaded = true
         window.open(downloadUrl, '_blank')
@@ -141,5 +145,14 @@ export class ViewListComponent implements OnInit, AfterViewInit {
     link.click();
     window.URL.revokeObjectURL(url);
     document.body.removeChild(link);
+  }
+
+  convertBytes(length: number): string {
+    if (length === 0) return '0 B';
+
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const i = Math.floor(Math.log(length) / Math.log(1024));
+
+    return `${parseFloat((length / Math.pow(1024, i)).toFixed(2))} ${sizes[i]}`;
   }
 }

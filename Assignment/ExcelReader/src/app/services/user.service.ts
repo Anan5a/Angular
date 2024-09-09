@@ -39,7 +39,7 @@ export class UserService extends BaseNetworkService {
   deleteFile(fileId: number) {
     const url = `${ApiBaseUrl}/File/delete/${fileId}`;
     const errorMessage = 'Failed to delete file!';
-    return this.delete(url, errorMessage);
+    return this.delete<ResponseModelGeneric<string>>(url, errorMessage);
   }
 
 

@@ -62,6 +62,7 @@ export interface FileMetadataResponse {
   createdAt: string
   updatedAt: string
   deletedAt: string
+  filesizeBytes: number
   user?: User
 }
 
