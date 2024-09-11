@@ -53,6 +53,10 @@ export interface DownloadFileRequestModel {
   fileId: number
 }
 
+export interface DashboardDataModel {
+  fileCount: number
+}
+
 
 export interface FileMetadataResponse {
   id: number
@@ -72,4 +76,5 @@ export type SignupResponseModel = ResponseModelGeneric<null>;
 export type DownloadFileResponseModel = ResponseModelGeneric<string>;
 export type UploadFileResponseModel = ResponseModelGeneric<number>;
 export type FileListResponseModel = ResponseModelGeneric<FileMetadataResponse[]>;
+export type DashboardResponseModel = ResponseModelGeneric<DashboardDataModel>;
 
