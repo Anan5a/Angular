@@ -8,6 +8,7 @@ import { HomeComponent } from './dashboard/home/home.component';
 import { CreateUserComponent } from './admin/create-user/create-user.component';
 import { ProfileComponent } from './dashboard/profile/profile.component';
 import { isAdminGuard, isAuthenticatedGuard, isNotAuthenticatedGuard } from './services/auth.guards';
+import { ChatComponent } from './dashboard/chat/chat.component';
 
 export const routes: Routes = [
   {
@@ -33,6 +34,11 @@ export const routes: Routes = [
   {
     path: 'view-list',
     component: ViewListComponent,
+    canActivate: [isAuthenticatedGuard]
+  },
+  {
+    path: 'chat',
+    component: ChatComponent,
     canActivate: [isAuthenticatedGuard]
   },
   {

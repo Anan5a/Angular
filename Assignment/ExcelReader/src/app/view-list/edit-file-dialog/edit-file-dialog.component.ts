@@ -44,7 +44,7 @@ export class EditFileDialogComponent implements AfterViewInit {
       fileName: this.form.value.fileName
     }).subscribe({
       next: (response) => {
-        this.dialogRef.close(true);
+        this.dialogRef.close({status:true, fileName: this.form.value.fileName });
         this.toastrService.success(response.data)
       },
       error: (error) => {

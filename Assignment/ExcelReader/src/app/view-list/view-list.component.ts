@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, effect, OnInit, signal, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { FileMetadataResponse, UserModel } from '../app.models';
+import { FileEvent, FileMetadataResponse, UserModel } from '../app.models';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
@@ -16,6 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditFileDialogComponent } from './edit-file-dialog/edit-file-dialog.component';
 import { RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { RealtimeService } from '../services/realtime.service';
 
 @Component({
   selector: 'app-view-list',
@@ -38,15 +39,24 @@ export class ViewListComponent implements OnInit, AfterViewInit {
   remoteDataLoaded = false
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private userService: UserService, private dialog: MatDialog, private toastrService: ToastrService) {
+  constructor(private userService: UserService, private dialog: MatDialog, private toastrService: ToastrService, private realtimeService: RealtimeService) {
     effect(() => {
       this.dataSource.data = this.remoteData()
+    })
+    //configure realtime service for files
+    this.realtimeService.addReceiveMessageListener<FileEvent[]>('FileChannel', (fileEvent: FileEvent) => {
+      this.handleFileEvent(fileEvent)
     })
   }
 
   ngOnInit(): void {
     this.dataSource.filterPredicate = this.customFilter;
     this.remoteDataLoaded = false
+
+
+
+
+
   }
 
   ngAfterViewInit(): void {
@@ -68,15 +78,16 @@ export class ViewListComponent implements OnInit, AfterViewInit {
         next: (response) => {
           this.remoteDataLoaded = true
           this.toastrService.success(response?.data)
-          this.loadList()
+          //remove item from list
+          const newList = [...this.remoteData().filter((item) => item.id !== fileId)]
+          this.remoteData.set(newList)
         }, error: () => {
           this.remoteDataLoaded = false
         }
       })
     }
-
-
   }
+
   onDownload(fileId: number) {
     this.remoteDataLoaded = false
     this.userService.downloadFile(fileId).subscribe({
@@ -98,9 +109,14 @@ export class ViewListComponent implements OnInit, AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result === true) {
-        //reload list
-        this.loadList()
+      if (result?.status === true) {
+        //update list
+        const oldList = [... this.remoteData()];
+        const index = oldList.findIndex(item => item.id === fileMeta.id);
+        if (index !== -1) {
+          oldList[index].fileName = result?.fileName;
+        }
+        this.remoteData.set(oldList);
       }
     });
 
@@ -155,4 +171,46 @@ export class ViewListComponent implements OnInit, AfterViewInit {
 
     return `${parseFloat((length / Math.pow(1024, i)).toFixed(2))} ${sizes[i]}`;
   }
+
+  handleFileEvent(event: FileEvent) {
+    console.log(event)
+    this.toastrService.info(event.message)
+
+    if (event.shouldRefetchList) {
+      //re-fetch whole list
+      this.loadList()
+    }
+    if (event.wasFileDeleted) {
+      //remove from list
+      const newList = [...this.remoteData().filter((item) => item.id !== event.fileId)]
+      this.remoteData.set(newList)
+    }
+    if (event.wasFileModified && event.fileMetadata == null) {
+      //update file from server
+      this.userService.getFileById(event.fileId).subscribe({
+        next: (response) => {
+          this.remoteDataLoaded = true
+          const oldList = [...this.remoteData()];
+          const index = oldList.findIndex(item => item.id === event.fileId);
+          if (index !== -1) {
+            oldList[index] = response.data!
+          }
+          this.remoteData.set(oldList);
+        },
+        error: (error) => {
+          this.remoteDataLoaded = true
+
+        }
+      })
+
+    }
+    if (event.fileMetadata != null) {
+      const newList = [... this.remoteData(), event.fileMetadata]
+      this.remoteData.set(newList)
+    }
+  }
+
+
+
+
 }

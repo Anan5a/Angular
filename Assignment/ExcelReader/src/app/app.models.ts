@@ -70,11 +70,22 @@ export interface FileMetadataResponse {
   user?: User
 }
 
+//models for realtime events
+export interface FileEvent {
+  fileId: number;
+  fileMetadata?: FileMetadataResponse
+  message: string;
+  shouldRefetchList: boolean;
+  wasFileDeleted: boolean;
+  wasFileModified: boolean;
+}
 //creating types to make code more readable
 export type LoginResponseModel = ResponseModelGeneric<DataUserLoginResponseModel>;
 export type SignupResponseModel = ResponseModelGeneric<null>;
 export type DownloadFileResponseModel = ResponseModelGeneric<string>;
 export type UploadFileResponseModel = ResponseModelGeneric<number>;
 export type FileListResponseModel = ResponseModelGeneric<FileMetadataResponse[]>;
+export type FileSingleResponseModel = ResponseModelGeneric<FileMetadataResponse>;
 export type DashboardResponseModel = ResponseModelGeneric<DashboardDataModel>;
 
+export type CallbackFunction<TArgs extends any[]> = (...args: TArgs) => void;

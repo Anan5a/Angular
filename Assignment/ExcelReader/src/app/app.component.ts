@@ -16,6 +16,8 @@ import { SignupComponent } from "./auth/signup/signup.component";
 import { AuthService } from './services/auth.service';
 import { SocialAuthService } from '@abacritt/angularx-social-login';
 import { ToastrService } from 'ngx-toastr';
+import { ChatComponent } from "./dashboard/chat/chat.component";
+import { RealtimeService } from './services/realtime.service';
 
 @Component({
   selector: 'app-root',
@@ -34,6 +36,7 @@ import { ToastrService } from 'ngx-toastr';
     HomeComponent,
     LoginComponent,
     SignupComponent,
+    ChatComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -48,14 +51,27 @@ export class AppComponent implements OnInit {
   isAuthenticated = this.authService.isAuthenticated
   isAdmin = this.authService.isAdmin
 
-  constructor(private breakpointObserver: BreakpointObserver, private router: Router,
-    private authService: AuthService, private socialAuthService: SocialAuthService, private toastrService: ToastrService
+  constructor(private breakpointObserver: BreakpointObserver,
+    private router: Router,
+    private authService: AuthService,
+    private socialAuthService: SocialAuthService,
+    private toastrService: ToastrService,
+    private realtimeService: RealtimeService
   ) { }
+
   ngOnInit(): void {
     this.socialAuthService.authState.subscribe((user) => {
       //social login
       this.onSocialAuth(user.idToken)
     })
+
+    //application wide realtime comm.
+    this.realtimeService.startConnection();
+    this.realtimeService.addReceiveMessageListener<string[]>('ReceiveMessage',(message) => {
+      this.toastrService.show("Realtime message: " + message);
+    });
+
+
   }
 
   logout() {
