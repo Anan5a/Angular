@@ -18,6 +18,7 @@ import { SocialAuthService } from '@abacritt/angularx-social-login';
 import { ToastrService } from 'ngx-toastr';
 import { ChatComponent } from "./dashboard/chat/chat.component";
 import { RealtimeService } from './services/realtime.service';
+import { UserListComponent } from "./dashboard/chat/user-list/user-list.component";
 
 @Component({
   selector: 'app-root',
@@ -36,7 +37,8 @@ import { RealtimeService } from './services/realtime.service';
     HomeComponent,
     LoginComponent,
     SignupComponent,
-    ChatComponent
+    ChatComponent,
+    UserListComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -45,19 +47,24 @@ export class AppComponent implements OnInit {
 
   title = 'FileKeeper';
 
-  isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
-    map(result => result.matches)
-  );
+  isHandset$ = false
+
   isAuthenticated = this.authService.isAuthenticated
   isAdmin = this.authService.isAdmin
 
-  constructor(private breakpointObserver: BreakpointObserver,
+
+  constructor(
+    private breakpointObserver: BreakpointObserver,
     private router: Router,
     private authService: AuthService,
     private socialAuthService: SocialAuthService,
     private toastrService: ToastrService,
     private realtimeService: RealtimeService
-  ) { }
+  ) {
+    this.breakpointObserver.observe(Breakpoints.Handset).pipe(
+      map(result => this.isHandset$ = result.matches)
+    );
+  }
 
   ngOnInit(): void {
     this.socialAuthService.authState.subscribe((user) => {
@@ -67,7 +74,7 @@ export class AppComponent implements OnInit {
 
     //application wide realtime comm.
     this.realtimeService.startConnection();
-    this.realtimeService.addReceiveMessageListener<string[]>('ReceiveMessage',(message) => {
+    this.realtimeService.addReceiveMessageListener<string[]>('ReceiveMessage', (message) => {
       this.toastrService.show("Realtime message: " + message);
     });
 
@@ -90,4 +97,6 @@ export class AppComponent implements OnInit {
       }
     })
   }
+
+
 }

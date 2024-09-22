@@ -1,15 +1,22 @@
-<div>
-  <h2>SignalR Chat</h2>
-  <input
-    [(ngModel)]="user"
-    placeholder="Your Name"
-  />
-  <input
-    [(ngModel)]="message"
-    placeholder="Type a message..."
-  />
-  <button (click)="sendMessage()">Send</button>
-  <div *ngFor="let msg of messages">
-    <p>{{ msg }}</p>
+<div
+  class="container"
+  *ngIf="!isHandset$"
+>
+  <app-user-list
+    [users]="users"
+    (userSelected)="onUserSelected($event)"
+    style="max-width: 20%;"
+  ></app-user-list>
+  <app-chat-window [selectedUser]="selectedUser"></app-chat-window>
+</div>
+
+<!-- Mobile Version -->
+<div *ngIf="isHandset$">
+  <app-user-list
+    [users]="users"
+    (userSelected)="onUserSelected($event)"
+  ></app-user-list>
+  <div *ngIf="selectedUser">
+    <app-chat-window [selectedUser]="selectedUser"></app-chat-window>
   </div>
 </div>

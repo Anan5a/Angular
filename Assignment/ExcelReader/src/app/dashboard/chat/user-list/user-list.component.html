@@ -1,0 +1,14 @@
+<mat-card>
+  <mat-card-title>User List</mat-card-title>
+  <mat-list>
+    <mat-list-item
+      *ngFor="let user of users"
+      (click)="selectUser(user)"
+      matRipple
+    >
+      <mat-icon matListItemIcon>person</mat-icon>
+      <div matListItemTitle>{{user}}</div>
+      <div matListItemLine>hi there...</div>
+    </mat-list-item>
+  </mat-list>
+</mat-card>

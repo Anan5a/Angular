@@ -17,7 +17,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent implements AfterViewInit {
+export class HomeComponent implements OnInit {
   isHandset$ = false
 
   subscription = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
@@ -31,7 +31,7 @@ export class HomeComponent implements AfterViewInit {
 
   dashboardData?: DashboardDataModel
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this.userService.dashboardData().subscribe({
       next: (data) => {
         this.dashboardData = data?.data;

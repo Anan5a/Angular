@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BaseNetworkService } from './base-network.service'; // Import the base service
 import { ApiBaseUrl } from '../../constants';
-import { UserModel, UploadResponseModel, FileListResponseModel, ResponseModelGeneric, Role, DashboardDataModel, FileSingleResponseModel, DashboardResponseModel } from '../app.models';
+import { UserModel, UploadResponseModel, FileListResponseModel, ResponseModelGeneric, Role, DashboardDataModel, FileSingleResponseModel, DashboardResponseModel, OnlineUserListResponseModel } from '../app.models';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -64,6 +64,12 @@ export class UserService extends BaseNetworkService {
     const url = `${ApiBaseUrl}/User/change-password`;
     const errorMessage = 'Failed to change password!';
     return this.post<{}, ResponseModelGeneric<null>>(url, formData, errorMessage);
+  }
+  /////////messaging features
+  getOnlineUsers() {
+    const url = `${ApiBaseUrl}/User/online-users`;
+    const errorMessage = 'Failed to fetch online users!';
+    return this.get<OnlineUserListResponseModel>(url, errorMessage);
   }
 
 

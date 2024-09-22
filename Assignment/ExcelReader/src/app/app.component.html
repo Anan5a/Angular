@@ -1,8 +1,8 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav
     #sidenav
-    [mode]="(isHandset$) ? 'over' : 'side'"
-    [opened]="!(isHandset$ )"
+    [mode]="'over'"
+    [opened]="false"
   >
 
     <mat-nav-list class="sidenav">
@@ -80,6 +80,8 @@
       <app-login></app-login>
       <app-signup></app-signup> -->
       <!-- <app-chat></app-chat> -->
+
+
       <router-outlet></router-outlet>
     </div>
   </mat-sidenav-content>

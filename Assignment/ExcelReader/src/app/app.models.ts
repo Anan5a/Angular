@@ -79,6 +79,13 @@ export interface FileEvent {
   wasFileDeleted: boolean;
   wasFileModified: boolean;
 }
+export interface ChatEvent {
+  message: string;
+  from: number
+  content: string
+}
+
+
 //creating types to make code more readable
 export type LoginResponseModel = ResponseModelGeneric<DataUserLoginResponseModel>;
 export type SignupResponseModel = ResponseModelGeneric<null>;
@@ -87,5 +94,6 @@ export type UploadFileResponseModel = ResponseModelGeneric<number>;
 export type FileListResponseModel = ResponseModelGeneric<FileMetadataResponse[]>;
 export type FileSingleResponseModel = ResponseModelGeneric<FileMetadataResponse>;
 export type DashboardResponseModel = ResponseModelGeneric<DashboardDataModel>;
+export type OnlineUserListResponseModel = ResponseModelGeneric<number[]>;
 
 export type CallbackFunction<TArgs extends any[]> = (...args: TArgs) => void;

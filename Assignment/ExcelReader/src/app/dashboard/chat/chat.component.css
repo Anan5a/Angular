@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  height: 100vh;
+  padding: 20px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column; /* Stack components on mobile */
+  }
+}
+
+app-user-list {
+  flex: 1;
+  margin-right: 20px;
+}
+
+app-chat-window {
+  flex: 2;
+}

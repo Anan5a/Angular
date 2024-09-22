@@ -1,0 +1,7 @@
+/* Chat window */
+.chat-window {
+  height: 60vh;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  min-height: 100%;
+}
