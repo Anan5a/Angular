@@ -42,6 +42,7 @@ export class RealtimeService {
       console.warn("Method/Channel '" + method + "' already registered, use different name/channel")
       return
     }
+    this.registeredMethodList.push(method)
     this.hubConnection.on(method, (...args: TArgs) => {
       callback(...args);
     });

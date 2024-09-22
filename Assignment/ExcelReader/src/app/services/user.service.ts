@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BaseNetworkService } from './base-network.service'; // Import the base service
 import { ApiBaseUrl } from '../../constants';
-import { UserModel, UploadResponseModel, FileListResponseModel, ResponseModelGeneric, Role, DashboardDataModel, FileSingleResponseModel } from '../app.models';
+import { UserModel, UploadResponseModel, FileListResponseModel, ResponseModelGeneric, Role, DashboardDataModel, FileSingleResponseModel, DashboardResponseModel } from '../app.models';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -33,7 +33,7 @@ export class UserService extends BaseNetworkService {
   dashboardData() {
     const url = `${ApiBaseUrl}/User/dashboard`;
     const errorMessage = 'Failed to fetch dashboard!';
-    return this.get<DashboardDataModel>(url, errorMessage);
+    return this.get<DashboardResponseModel>(url, errorMessage);
   }
   updateFile(formData: {}) {
     const url = `${ApiBaseUrl}/File/update`;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { RouterLink } from '@angular/router';
 import { UserService } from '../../services/user.service';
@@ -17,7 +17,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements AfterViewInit {
   isHandset$ = false
 
   subscription = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
@@ -31,10 +31,13 @@ export class HomeComponent implements OnInit {
 
   dashboardData?: DashboardDataModel
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.userService.dashboardData().subscribe({
-      next: (data) => this.dashboardData = data,
+      next: (data) => {
+        this.dashboardData = data?.data;
+      },
     })
+
   }
 
 }
