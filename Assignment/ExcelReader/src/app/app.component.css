@@ -24,3 +24,6 @@
   position: fixed;
   z-index: 111;
 }
+a mat-icon {
+  line-height: 1.3;
+}

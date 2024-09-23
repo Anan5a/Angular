@@ -10,12 +10,12 @@
         *ngIf="isAuthenticated()"
         mat-list-item
         routerLink="/dashboard"
-      >Dashboard</a>
+      ><mat-icon>dashboard</mat-icon> Dashboard</a>
       <a
         *ngIf="isAuthenticated()"
         mat-list-item
         routerLink="/profile"
-      >Profile</a>
+      ><mat-icon>account_circle</mat-icon> Profile</a>
       <!-- <a
         mat-list-item
         routerLink="/about"
@@ -28,17 +28,22 @@
         *ngIf="isAuthenticated()"
         mat-list-item
         [routerLink]="['/upload']"
-      >Upload</a>
+      ><mat-icon>cloud_upload</mat-icon> Upload</a>
       <a
         *ngIf="isAuthenticated()"
         mat-list-item
         [routerLink]="['/view-list']"
-      >My Files</a>
+      ><mat-icon>list_alt</mat-icon> My Files</a>
+      <a
+        *ngIf="isAuthenticated()"
+        mat-list-item
+        [routerLink]="['/chat']"
+      ><mat-icon>chat</mat-icon> Chat</a>
       <a
         *ngIf="isAdmin()"
         mat-list-item
         [routerLink]="['/admin','add-user']"
-      >Create user</a>
+      ><mat-icon>person_add</mat-icon> Create user</a>
       <a
         *ngIf="!isAuthenticated()"
         mat-list-item
@@ -53,7 +58,7 @@
         *ngIf="isAuthenticated()"
         mat-list-item
         (click)="logout()"
-      >Logout</a>
+      ><mat-icon>logout </mat-icon> Logout</a>
     </mat-nav-list>
   </mat-sidenav>
 

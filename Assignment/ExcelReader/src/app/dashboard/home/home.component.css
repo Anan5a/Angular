@@ -71,7 +71,7 @@ mat-card-title {
 .card-text {
   margin: 0;
 }
-.card[routerLink] {
+mat-card {
   cursor: pointer !important;
 }
 /* Styles for mobile devices */
