@@ -1,10 +1,3 @@
-export interface UserModel {
-  id: number
-  uuid: string
-  name: string
-  email: string
-  createdAt: string
-}
 export interface UploadResponseModel {
   totalRows: number
   skippedRows: number
@@ -34,6 +27,10 @@ export interface User {
   verifiedAt: string
   status: string
   role?: Role
+}
+export interface ChatUserLimited {
+  id: number
+  name: string
 }
 
 export interface Role {
@@ -84,7 +81,22 @@ export interface ChatEvent {
   from: number
   content: string
 }
+////////////
+export interface SendMessageModel {
+  to: number
+  message: string
+}
+export interface ChatRepositoryModel {
+  recpId: number
+  chatList: ChatMessageModel[]
+}
+export interface ChatMessageModel {
+  from: number
+  to: number
+  text: string
+  time: string | null
 
+}
 
 //creating types to make code more readable
 export type LoginResponseModel = ResponseModelGeneric<DataUserLoginResponseModel>;
@@ -94,6 +106,7 @@ export type UploadFileResponseModel = ResponseModelGeneric<number>;
 export type FileListResponseModel = ResponseModelGeneric<FileMetadataResponse[]>;
 export type FileSingleResponseModel = ResponseModelGeneric<FileMetadataResponse>;
 export type DashboardResponseModel = ResponseModelGeneric<DashboardDataModel>;
-export type OnlineUserListResponseModel = ResponseModelGeneric<number[]>;
+export type OnlineUserListResponseModel = ResponseModelGeneric<ChatUserLimited[]>;
+export type SendMessageToUserResponseModel = ResponseModelGeneric<string | null>;
 
 export type CallbackFunction<TArgs extends any[]> = (...args: TArgs) => void;

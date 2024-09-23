@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, effect, OnInit, signal, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { FileEvent, FileMetadataResponse, UserModel } from '../app.models';
+import { FileEvent, FileMetadataResponse } from '../app.models';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';

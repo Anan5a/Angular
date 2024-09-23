@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BaseNetworkService } from './base-network.service'; // Import the base service
 import { ApiBaseUrl } from '../../constants';
-import { UserModel, UploadResponseModel, FileListResponseModel, ResponseModelGeneric, Role, DashboardDataModel, FileSingleResponseModel, DashboardResponseModel, OnlineUserListResponseModel } from '../app.models';
+import { UploadResponseModel, FileListResponseModel, ResponseModelGeneric, Role, DashboardDataModel, FileSingleResponseModel, DashboardResponseModel, OnlineUserListResponseModel, SendMessageModel, SendMessageToUserResponseModel } from '../app.models';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -71,6 +71,12 @@ export class UserService extends BaseNetworkService {
     const errorMessage = 'Failed to fetch online users!';
     return this.get<OnlineUserListResponseModel>(url, errorMessage);
   }
+  sendMessageToUser(model: SendMessageModel) {
+    const url = `${ApiBaseUrl}/User/send-message`;
+    const errorMessage = 'Failed to send message!';
+    return this.post<SendMessageModel, SendMessageToUserResponseModel>(url, model, errorMessage);
+  }
+
 
 
   ////////admin functions

@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { UserService } from '../../../services/user.service';
+import { ChatUserLimited } from '../../../app.models';
 
 @Component({
   selector: 'app-user-list',
@@ -15,15 +15,20 @@ import { UserService } from '../../../services/user.service';
   styleUrl: './user-list.component.css'
 })
 export class UserListComponent implements OnInit {
-  @Output() userSelected = new EventEmitter<string>();
+  @Input({ required: true }) users!: ChatUserLimited[]
+  @Output() userSelected = new EventEmitter<ChatUserLimited>();
+  @Output() onRefreshUserList = new EventEmitter<boolean>();
 
-  constructor(private userService: UserService) { }
+  constructor() { }
 
   ngOnInit(): void {
-    
+    //todo: show last message in the list
   }
 
-  selectUser(user: string) {
+  selectUser(user: ChatUserLimited) {
     this.userSelected.emit(user);
+  }
+  refreshUsersList() {
+    this.onRefreshUserList.emit();
   }
 }

@@ -6,15 +6,19 @@
 
 @media (max-width: 768px) {
   .container {
-    flex-direction: column; /* Stack components on mobile */
+    flex-direction: column;
+  }
+  app-user-list {
+    min-width: 100%;
   }
 }
 
 app-user-list {
   flex: 1;
   margin-right: 20px;
+  max-width: 25%;
 }
 
-app-chat-window {
+.app-chat-window {
   flex: 2;
 }

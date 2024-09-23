@@ -1,22 +1,33 @@
-<div
-  class="container"
-  *ngIf="!isHandset$"
->
-  <app-user-list
-    [users]="users"
-    (userSelected)="onUserSelected($event)"
-    style="max-width: 20%;"
-  ></app-user-list>
-  <app-chat-window [selectedUser]="selectedUser"></app-chat-window>
-</div>
-
 <!-- Mobile Version -->
-<div *ngIf="isHandset$">
+<div class="container">
+
+
+  @if (!selectedUser) {
   <app-user-list
-    [users]="users"
+    [users]="onlineUsers()"
     (userSelected)="onUserSelected($event)"
+    (onRefreshUserList)="loadOnlineUsers()"
   ></app-user-list>
-  <div *ngIf="selectedUser">
-    <app-chat-window [selectedUser]="selectedUser"></app-chat-window>
+  }
+  @if (!(isHandset$|async) && selectedUser) {
+  <app-user-list
+    [users]="onlineUsers()"
+    (userSelected)="onUserSelected($event)"
+    (onRefreshUserList)="loadOnlineUsers()"
+  ></app-user-list>
+
+  }
+
+  <div class="app-chat-window">
+    @if (selectedUser) {
+    <app-chat-window
+      [selectedUser]="selectedUser"
+      [fromUser]="user"
+      (onOutgoingMessage)="sendMessageToSelectedUser($event)"
+      (onCloseChatWindow)="closeChatWindow()"
+    ></app-chat-window>
+    }@else if (!(isHandset$|async)) {
+    <h2 class="center">Select a user to start conversation.</h2>
+    }
   </div>
 </div>

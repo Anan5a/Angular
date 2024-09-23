@@ -1,14 +1,25 @@
 <mat-card *ngIf="selectedUser">
   <mat-card-header>
     <mat-toolbar>
-      <span>Chat with {{ selectedUser }}</span>
+      <span>Chat with <b>{{ selectedUser.name }}</b></span>
+      <span class="spacer"></span>
+      <button
+        mat-button
+        (click)="closeChat()"
+      ><mat-icon>close</mat-icon> Close</button>
     </mat-toolbar>
   </mat-card-header>
   <mat-card-content>
     <div class="chat-window">
-      <div *ngFor="let message of messages">
-        <strong>{{ message.user }}:</strong> {{ message.text }}
-      </div>
+      <mat-card
+        *ngFor="let message of messages()"
+        class="message"
+        [class.message-align-right]="message.from == fromUser.id"
+        [class.message-align-left]="message.from != fromUser.id"
+        appearance="outlined"
+      >
+        <mat-card-content>{{ message.text }}</mat-card-content>
+      </mat-card>
     </div>
   </mat-card-content>
   <mat-card-actions>
@@ -17,12 +28,14 @@
       <input
         matInput
         [(ngModel)]="newMessage"
-        (keydown.enter)="sendMessage()"
+        (keydown.enter)="sendOutgoingMessageEvent()"
       >
     </mat-form-field>
     <button
       mat-button
-      (click)="sendMessage()"
-    >Send</button>
+      (click)="sendOutgoingMessageEvent()"
+    >Send<mat-icon>
+        send
+      </mat-icon></button>
   </mat-card-actions>
 </mat-card>
