@@ -1,5 +1,5 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component, computed, EventEmitter, Input, Output } from '@angular/core';
+import { AfterViewInit, Component, computed, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -17,7 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './chat-window.component.html',
   styleUrl: './chat-window.component.css'
 })
-export class ChatWindowComponent {
+export class ChatWindowComponent implements AfterViewInit {
 
   @Input({ required: true }) fromUser!: User
   @Input({ required: true }) selectedUser?: ChatUserLimited;
@@ -37,6 +37,10 @@ export class ChatWindowComponent {
 
   constructor(private chatService: ChatService) { }
 
+  ngAfterViewInit(): void {
+    //update message view state
+    this.chatService.markChatViewed(this.selectedUser?.id!)
+  }
 
   sendOutgoingMessageEvent() {
     if (this.newMessage.trim()) {

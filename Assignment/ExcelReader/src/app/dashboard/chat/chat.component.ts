@@ -54,6 +54,7 @@ export class ChatComponent {
         to: this.user.id,
         text: message.content,
         time: (new Date()).toISOString(),
+        didView: this.selectedUser?.id == message.from
       }, message.from)
     });
   }
@@ -84,6 +85,7 @@ export class ChatComponent {
           to: this.selectedUser?.id!,
           text: message,
           time: (new Date()).toISOString(),
+          didView: true
         }, this.selectedUser?.id!)
       }
     })

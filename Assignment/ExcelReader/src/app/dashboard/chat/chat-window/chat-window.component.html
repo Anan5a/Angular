@@ -1,7 +1,7 @@
 <mat-card *ngIf="selectedUser">
   <mat-card-header>
     <mat-toolbar>
-      <span>Chat with <b>{{ selectedUser.name }}</b></span>
+      <span>Chat with {{fromUser.name}} => <b>{{ selectedUser.name }}</b></span>
       <span class="spacer"></span>
       <button
         mat-button

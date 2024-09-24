@@ -12,6 +12,24 @@ export class ChatService {
   get chats() {
     return this.chatRepository.asReadonly()
   }
+
+  markChatViewed(repoIdx: number) {
+    if (!repoIdx) {
+      return
+    }
+    const repository = [...this.chatRepository()];
+    const index = repository.findIndex(c => c.recpId == repoIdx)
+    if (index != -1) {
+
+      repository[repoIdx].chatList.forEach((ch, idx) => {
+        repository[repoIdx].chatList[idx].didView = true
+      })
+      this.chatRepository.set(repository);
+    }
+
+  }
+
+
   storeChat(chat: ChatMessageModel, recpId: number) {
     const repository = [...this.chatRepository()];
     //find the receiver

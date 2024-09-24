@@ -95,7 +95,7 @@ export interface ChatMessageModel {
   to: number
   text: string
   time: string | null
-
+  didView?: boolean
 }
 
 //creating types to make code more readable

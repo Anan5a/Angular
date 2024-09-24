@@ -1,3 +1,6 @@
 mat-card-title {
   padding: 1rem;
 }
+.highlight {
+  background-color: #9c3636;
+}
