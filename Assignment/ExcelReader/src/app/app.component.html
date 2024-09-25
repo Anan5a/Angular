@@ -48,12 +48,12 @@
         *ngIf="!isAuthenticated()"
         mat-list-item
         [routerLink]="['/login']"
-      >Login</a>
+      ><mat-icon>login</mat-icon>Login</a>
       <a
         *ngIf="!isAuthenticated()"
         mat-list-item
         [routerLink]="['/signup']"
-      >Signup</a>
+      ><mat-icon>account_circle</mat-icon>Signup</a>
       <a
         *ngIf="isAuthenticated()"
         mat-list-item
