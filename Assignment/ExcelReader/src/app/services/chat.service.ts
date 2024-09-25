@@ -1,16 +1,25 @@
 import { Injectable, signal } from '@angular/core';
-import { ChatMessageModel, ChatRepositoryModel } from '../app.models';
+import { ChatMessageModel, ChatRepositoryModel, ChatUserLimited } from '../app.models';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
   private chatRepository = signal<ChatRepositoryModel[]>([])
-  constructor() { }
+  private selectedUser = signal<ChatUserLimited | null>(null)
+  constructor(private authService: AuthService) { }
 
 
   get chats() {
     return this.chatRepository.asReadonly()
+  }
+  get currentUser() {
+    return this.selectedUser.asReadonly()
+  }
+
+  setCurrentUser(cuser: ChatUserLimited | null) {
+    this.selectedUser.set(cuser)
   }
 
   markChatViewed(repoIdx: number) {
@@ -20,9 +29,8 @@ export class ChatService {
     const repository = [...this.chatRepository()];
     const index = repository.findIndex(c => c.recpId == repoIdx)
     if (index != -1) {
-
-      repository[repoIdx].chatList.forEach((ch, idx) => {
-        repository[repoIdx].chatList[idx].didView = true
+      repository[index].chatList.forEach((ch, idx) => {
+        repository[index].chatList[idx].didView = true
       })
       this.chatRepository.set(repository);
     }
@@ -32,6 +40,7 @@ export class ChatService {
 
   storeChat(chat: ChatMessageModel, recpId: number) {
     const repository = [...this.chatRepository()];
+    chat.didView = (this.selectedUser()?.id == chat.from || this.authService.user()?.user.id == chat.from);
     //find the receiver
     const recv = repository.findIndex(r => r.recpId == recpId)
     if (recv == -1) {

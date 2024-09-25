@@ -29,6 +29,7 @@ export class UserListComponent implements OnInit {
     return chatHistory;
   })
 
+  activeChatUser = this.chatService.currentUser
 
   constructor(private chatService: ChatService) { }
 
