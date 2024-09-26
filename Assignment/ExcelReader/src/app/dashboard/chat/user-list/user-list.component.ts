@@ -17,9 +17,7 @@ import { ChatService } from '../../../services/chat.service';
 })
 export class UserListComponent implements OnInit {
   @Input({ required: true }) users!: ChatUserLimited[]
-  @Output() userSelected = new EventEmitter<ChatUserLimited>();
   @Output() onRefreshUserList = new EventEmitter<boolean>();
-  selectedUserId = signal<null | number>(null)
 
   recentMessages = computed(() => {
     const chatHistory: ChatMessageModel[] = []
@@ -38,11 +36,9 @@ export class UserListComponent implements OnInit {
   }
 
   selectUser(user: ChatUserLimited) {
-    console.log(user)
-    this.selectedUserId.set(user.id)
-    // setTimeout(() => this.userSelected.emit(user), 100);
-    this.userSelected.emit(user);
+    this.chatService.setCurrentUser(user)
   }
+
   refreshUsersList() {
     this.onRefreshUserList.emit();
   }
@@ -50,7 +46,6 @@ export class UserListComponent implements OnInit {
   lastMessageForId(id: number) {
     return computed(() => {
       return this.recentMessages().find(msg => {
-
         return msg.from == id || msg.to == id
       })
     })

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BaseNetworkService } from './base-network.service'; // Import the base service
 import { ApiBaseUrl } from '../../constants';
-import { UploadResponseModel, FileListResponseModel, ResponseModelGeneric, Role, DashboardDataModel, FileSingleResponseModel, DashboardResponseModel, OnlineUserListResponseModel, SendMessageModel, SendMessageToUserResponseModel } from '../app.models';
+import { UploadResponseModel, FileListResponseModel, ResponseModelGeneric, Role, DashboardDataModel, FileSingleResponseModel, DashboardResponseModel, OnlineUserListResponseModel, SendMessageModel, SendMessageToUserResponseModel, UserListResponseModel } from '../app.models';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -13,11 +13,19 @@ export class UserService extends BaseNetworkService {
     super(httpClient);
   }
 
-  loadFileList() {
-    const url = `${ApiBaseUrl}/File/list`;
+  loadFileList(systemFileList: boolean | null | undefined) {
+    const query = systemFileList ? '?systemFiles=true' : '';
+    const url = `${ApiBaseUrl}/File/list${query}`;
     const errorMessage = 'Failed to fetch file list!';
     return this.get<FileListResponseModel>(url, errorMessage);
   }
+
+  loadUsersList() {
+    const url = `${ApiBaseUrl}/User/list`;
+    const errorMessage = 'Failed to fetch user list!';
+    return this.get<UserListResponseModel>(url, errorMessage);
+  }
+
   getFileById(fileId: number) {
     const url = `${ApiBaseUrl}/File/file/` + fileId;
     const errorMessage = 'Failed to fetch file details!';

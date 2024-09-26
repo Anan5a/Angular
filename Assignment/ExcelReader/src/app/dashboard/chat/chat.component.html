@@ -2,26 +2,23 @@
 <div class="container">
 
 
-  @if (!selectedUser) {
+  @if (!selectedUser()) {
   <app-user-list
     [users]="onlineUsers()"
-    (userSelected)="onUserSelected($event)"
     (onRefreshUserList)="loadOnlineUsers()"
   ></app-user-list>
   }
-  @if (!(isHandset$|async) && selectedUser) {
+  @if (!(isHandset$|async) && selectedUser()) {
   <app-user-list
     [users]="onlineUsers()"
-    (userSelected)="onUserSelected($event)"
     (onRefreshUserList)="loadOnlineUsers()"
   ></app-user-list>
 
   }
 
   <div class="app-chat-window">
-    @if (selectedUser) {
+    @if (selectedUser()) {
     <app-chat-window
-      [selectedUser]="selectedUser"
       [fromUser]="user"
       (onOutgoingMessage)="sendMessageToSelectedUser($event)"
       (onCloseChatWindow)="closeChatWindow()"

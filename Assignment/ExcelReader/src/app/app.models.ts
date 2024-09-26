@@ -104,6 +104,7 @@ export type SignupResponseModel = ResponseModelGeneric<null>;
 export type DownloadFileResponseModel = ResponseModelGeneric<string>;
 export type UploadFileResponseModel = ResponseModelGeneric<number>;
 export type FileListResponseModel = ResponseModelGeneric<FileMetadataResponse[]>;
+export type UserListResponseModel = ResponseModelGeneric<User[]>;
 export type FileSingleResponseModel = ResponseModelGeneric<FileMetadataResponse>;
 export type DashboardResponseModel = ResponseModelGeneric<DashboardDataModel>;
 export type OnlineUserListResponseModel = ResponseModelGeneric<ChatUserLimited[]>;

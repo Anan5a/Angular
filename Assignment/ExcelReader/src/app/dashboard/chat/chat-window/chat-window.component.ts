@@ -20,12 +20,12 @@ import { MatIconModule } from '@angular/material/icon';
 export class ChatWindowComponent implements OnInit {
 
   @Input({ required: true }) fromUser!: User
-  @Input({ required: true }) selectedUser?: ChatUserLimited;
   @Output() onOutgoingMessage = new EventEmitter<string>()
   @Output() onCloseChatWindow = new EventEmitter<boolean>()
 
+  selectedUser = this.chatService.currentUser
   messages = computed(() => {
-    const index = this.chatService.chats().findIndex(ch => ch.recpId == this.selectedUser?.id)
+    const index = this.chatService.chats().findIndex(ch => ch.recpId == this.selectedUser()?.id)
     let chats: ChatMessageModel[] = []
     if (index != -1) {
       chats = this.chatService.chats()[index].chatList
@@ -39,10 +39,10 @@ export class ChatWindowComponent implements OnInit {
 
   ngOnInit(): void {
     //update message view state
-    if (typeof this.selectedUser != "undefined") {
-      this.chatService.setCurrentUser(this.selectedUser)
-      this.chatService.markChatViewed(this.selectedUser.id)
-    }
+    // if (typeof this.selectedUser() != "undefined") {
+    //   this.chatService.setCurrentUser(this.selectedUser)
+    //   this.chatService.markChatViewed(this.selectedUser.id)
+    // }
   }
 
   sendOutgoingMessageEvent() {
@@ -55,7 +55,6 @@ export class ChatWindowComponent implements OnInit {
 
   closeChat() {
     this.chatService.setCurrentUser(null)
-    this.selectedUser = undefined
     this.onCloseChatWindow.emit()
   }
 

@@ -39,8 +39,8 @@ export class RealtimeService {
 
   public addReceiveMessageListener<TArgs extends any[]>(method: string, callback: CallbackFunction<TArgs>) {
     if (this.registeredMethodList.includes(method)) {
-      console.warn("Method/Channel '" + method + "' already registered, use different name/channel")
-      return
+      console.warn("Method/Channel '" + method + "' already registered, overriding with new callback")
+      this.hubConnection.off(method);
     }
     this.registeredMethodList.push(method)
     this.hubConnection.on(method, (...args: TArgs) => {

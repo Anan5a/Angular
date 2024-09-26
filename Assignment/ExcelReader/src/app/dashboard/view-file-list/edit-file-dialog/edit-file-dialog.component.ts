@@ -6,8 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { NgIf } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
-import { FileMetadataResponse } from '../../app.models';
-import { UserService } from '../../services/user.service';
+import { FileMetadataResponse } from '../../../app.models';
+import { UserService } from '../../../services/user.service';
 
 
 @Component({
@@ -44,7 +44,7 @@ export class EditFileDialogComponent implements AfterViewInit {
       fileName: this.form.value.fileName
     }).subscribe({
       next: (response) => {
-        this.dialogRef.close({status:true, fileName: this.form.value.fileName });
+        this.dialogRef.close({ status: true, fileName: this.form.value.fileName });
         this.toastrService.success(response.data)
       },
       error: (error) => {

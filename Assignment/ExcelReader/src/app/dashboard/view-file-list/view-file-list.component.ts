@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, effect, OnInit, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, Input, OnInit, signal, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { FileEvent, FileMetadataResponse } from '../app.models';
+import { FileEvent, FileMetadataResponse } from '../../app.models';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
@@ -9,24 +9,25 @@ import { DatePipe, NgIf } from '@angular/common';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
-import { UserService } from '../services/user.service';
+import { UserService } from '../../services/user.service';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { ApiBaseImageUrl, ApiBaseUrl } from '../../constants';
+import { ApiBaseImageUrl, ApiBaseUrl } from '../../../constants';
 import { MatDialog } from '@angular/material/dialog';
 import { EditFileDialogComponent } from './edit-file-dialog/edit-file-dialog.component';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { RealtimeService } from '../services/realtime.service';
+import { RealtimeService } from '../../services/realtime.service';
 
 @Component({
-  selector: 'app-view-list',
+  selector: 'app-view-file-list',
   standalone: true,
   imports: [MatTableModule, MatInputModule, MatProgressSpinnerModule, FormsModule, MatPaginatorModule, MatIconModule, MatProgressBarModule, MatButtonModule, NgIf, DatePipe, MatButtonToggleModule, RouterLink],
-  templateUrl: './view-list.component.html',
-  styleUrl: './view-list.component.css'
+  templateUrl: './view-file-list.component.html',
+  styleUrl: './view-file-list.component.css'
 })
-export class ViewListComponent implements OnInit, AfterViewInit {
+export class ViewFileListComponent implements OnInit, AfterViewInit {
 
+  @Input({ required: false }) showSystemFileList?: boolean
   disableExport = false;
 
   dataSource = new MatTableDataSource<FileMetadataResponse>([]);
@@ -39,10 +40,13 @@ export class ViewListComponent implements OnInit, AfterViewInit {
   remoteDataLoaded = false
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private userService: UserService, private dialog: MatDialog, private toastrService: ToastrService, private realtimeService: RealtimeService) {
+
+  pageTitle = "Files you uploaded"
+  constructor(private userService: UserService, private dialog: MatDialog, private toastrService: ToastrService, private realtimeService: RealtimeService, private activatedRoute: ActivatedRoute) {
     effect(() => {
       this.dataSource.data = this.remoteData()
     })
+
     //configure realtime service for files
     this.realtimeService.addReceiveMessageListener<FileEvent[]>('FileChannel', (fileEvent: FileEvent) => {
       this.handleFileEvent(fileEvent)
@@ -50,18 +54,21 @@ export class ViewListComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.dataSource.filterPredicate = this.customFilter;
+
+
     this.remoteDataLoaded = false
+    this.showSystemFileList = this.activatedRoute.snapshot.data['systemFiles']||null
+    if (this.showSystemFileList) {
+      this.pageTitle = "Files in the system"
+    }
 
-
-
-
-
+    this.loadList()
   }
+
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
-    this.loadList()
+    this.dataSource.filterPredicate = this.customFilter;
   }
   customFilter = (data: FileMetadataResponse, filter: string) => {
     return data.fileName != undefined ? data.fileName.toLowerCase()?.indexOf(filter.toLocaleLowerCase()) >= 0 : false;
@@ -81,8 +88,9 @@ export class ViewListComponent implements OnInit, AfterViewInit {
           //remove item from list
           const newList = [...this.remoteData().filter((item) => item.id !== fileId)]
           this.remoteData.set(newList)
-        }, error: () => {
-          this.remoteDataLoaded = false
+        },
+        error: () => {
+          this.remoteDataLoaded = true
         }
       })
     }
@@ -97,7 +105,10 @@ export class ViewListComponent implements OnInit, AfterViewInit {
         const downloadUrl = `${ApiBaseImageUrl}${response.data}`;
         this.remoteDataLoaded = true
         window.open(downloadUrl, '_blank')
-      }
+      },
+      error: (error) => {
+        this.remoteDataLoaded = true
+      },
     })
   }
   onEdit(fileMeta: FileMetadataResponse) {
@@ -115,6 +126,7 @@ export class ViewListComponent implements OnInit, AfterViewInit {
         const index = oldList.findIndex(item => item.id === fileMeta.id);
         if (index !== -1) {
           oldList[index].fileName = result?.fileName;
+          // + '.' + oldList[index].fileName.split('.')[oldList[index].fileName.split('.').length - 1];
         }
         this.remoteData.set(oldList);
       }
@@ -126,15 +138,17 @@ export class ViewListComponent implements OnInit, AfterViewInit {
   }
 
   loadList() {
-    this.userService.loadFileList().subscribe({
+
+    this.userService.loadFileList(this.showSystemFileList).subscribe({
       next: (response) => {
         this.remoteDataLoaded = true
         this.remoteData.set(response.data!)
       },
       error: (error) => {
         this.remoteDataLoaded = true
+      },
 
-      }
+
     })
   }
   onClickExport() {
@@ -173,17 +187,20 @@ export class ViewListComponent implements OnInit, AfterViewInit {
   }
 
   handleFileEvent(event: FileEvent) {
-    console.log(event)
+    // console.log(event)
     this.toastrService.info(event.message)
 
     if (event.shouldRefetchList) {
       //re-fetch whole list
       this.loadList()
+
     }
     if (event.wasFileDeleted) {
       //remove from list
-      const newList = [...this.remoteData().filter((item) => item.id !== event.fileId)]
+      const newList = [...this.remoteData()].filter((item) => item.id !== event.fileId)
+
       this.remoteData.set(newList)
+
     }
     if (event.wasFileModified && event.fileMetadata == null) {
       //update file from server
@@ -207,6 +224,7 @@ export class ViewListComponent implements OnInit, AfterViewInit {
     if (event.fileMetadata != null) {
       const newList = [... this.remoteData(), event.fileMetadata]
       this.remoteData.set(newList)
+
     }
   }
 

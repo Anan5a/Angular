@@ -30,7 +30,7 @@ export class ChatComponent {
     map(result => result.matches)
   );
   onlineUsers = signal<ChatUserLimited[]>([])
-  selectedUser?: ChatUserLimited
+  selectedUser = this.chatService.currentUser
 
   constructor(
     private realtimeService: RealtimeService,
@@ -58,9 +58,6 @@ export class ChatComponent {
     });
   }
 
-  onUserSelected(user: ChatUserLimited) {
-    this.selectedUser = user;
-  }
 
   loadOnlineUsers() {
     this.userService.getOnlineUsers().subscribe({
@@ -74,22 +71,22 @@ export class ChatComponent {
 
   sendMessageToSelectedUser(message: string) {
     this.userService.sendMessageToUser({
-      to: this.selectedUser?.id!,
+      to: this.selectedUser()?.id!,
       message: message
     }).subscribe({
       next: (x) => {
         //send this to chat window
         this.chatService.storeChat({
           from: this.user.id,
-          to: this.selectedUser?.id!,
+          to: this.selectedUser()?.id!,
           text: message,
           time: (new Date()).toISOString(),
-        }, this.selectedUser?.id!)
+        }, this.selectedUser()?.id!)
       }
     })
   }
 
   closeChatWindow() {
-    this.selectedUser = undefined
+    this.chatService.setCurrentUser(null)
   }
 }

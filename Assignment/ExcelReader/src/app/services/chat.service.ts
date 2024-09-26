@@ -19,15 +19,19 @@ export class ChatService {
   }
 
   setCurrentUser(cuser: ChatUserLimited | null) {
+
+    this.markChatViewed(cuser?.id)
+
+
     this.selectedUser.set(cuser)
   }
 
-  markChatViewed(repoIdx: number) {
-    if (!repoIdx) {
+  markChatViewed(recpId: number | undefined | null) {
+    if (!recpId) {
       return
     }
     const repository = [...this.chatRepository()];
-    const index = repository.findIndex(c => c.recpId == repoIdx)
+    const index = repository.findIndex(c => c.recpId == recpId)
     if (index != -1) {
       repository[index].chatList.forEach((ch, idx) => {
         repository[index].chatList[idx].didView = true

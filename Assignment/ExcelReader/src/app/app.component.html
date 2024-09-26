@@ -35,6 +35,11 @@
         [routerLink]="['/view-list']"
       ><mat-icon>list_alt</mat-icon> My Files</a>
       <a
+        *ngIf="isAdmin()"
+        mat-list-item
+        [routerLink]="['/admin','system-files']"
+      ><mat-icon>dynamic_form</mat-icon> System Files</a>
+      <a
         *ngIf="isAuthenticated()"
         mat-list-item
         [routerLink]="['/chat']"
@@ -44,6 +49,11 @@
         mat-list-item
         [routerLink]="['/admin','add-user']"
       ><mat-icon>person_add</mat-icon> Create user</a>
+      <a
+        *ngIf="isAdmin()"
+        mat-list-item
+        [routerLink]="['/admin','user-list']"
+      ><mat-icon>people_alt</mat-icon> System Users</a>
       <a
         *ngIf="!isAuthenticated()"
         mat-list-item
