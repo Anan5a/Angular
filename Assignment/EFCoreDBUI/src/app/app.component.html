@@ -1,0 +1,118 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    #sidenav
+    [mode]="'over'"
+    [opened]="false"
+  >
+
+    <mat-nav-list class="sidenav">
+      <a
+        *ngIf="isAuthenticated()"
+        mat-list-item
+        routerLink="/dashboard"
+      ><mat-icon>dashboard</mat-icon> Dashboard</a>
+      <a
+        *ngIf="isAuthenticated()"
+        mat-list-item
+        routerLink="/email-templates"
+      ><mat-icon>email</mat-icon> Email Templates</a>
+
+      <a
+        *ngIf="isAuthenticated()"
+        mat-list-item
+        [routerLink]="['/sla']"
+      ><mat-icon>list_alt</mat-icon> Slas</a>
+      <a
+        *ngIf="isAuthenticated()"
+        mat-list-item
+        [routerLink]="['/nodes']"
+      ><mat-icon>list_alt</mat-icon> Nodes</a>
+      <a
+        *ngIf="!isAuthenticated()"
+        mat-list-item
+        [routerLink]="['/login']"
+      ><mat-icon>login</mat-icon>Login</a>
+      <a
+        *ngIf="isAuthenticated()"
+        mat-list-item
+        (click)="logout()"
+      ><mat-icon>logout </mat-icon> Logout</a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar
+      color="primary"
+      class="fixedToolbar"
+    >
+
+      <div>
+        <span
+          routerLink="/"
+          class="flex-1"
+        ><mat-icon style="line-height: 1.4;">home</mat-icon></span>
+
+      </div>
+      <div><mat-chip-set
+          *ngIf="isAuthenticated()"
+          aria-label="Fish selection"
+          class="flex-4"
+        >
+          <mat-chip
+            [routerLink]="['/nodes']"><mat-icon>hub</mat-icon></mat-chip>
+          <mat-chip
+            routerLink="/dashboard"><mat-icon>monitor_heart</mat-icon></mat-chip>
+          <mat-chip
+            routerLink="/email-templates"><mat-icon>email</mat-icon></mat-chip>
+        </mat-chip-set>
+      </div>
+
+      <div>
+        <button
+          mat-icon-button
+          (click)="sidenav.toggle()"
+          class="flex-1"
+        ><mat-icon>menu</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          [matMenuTriggerFor]="menu"
+          aria-label="Example icon-button with a menu"
+          class="flex-1"
+        ><mat-icon>person</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button
+            *ngIf="isAuthenticated()"
+            mat-menu-item
+            (click)="logout()"
+          >
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+
+          <button
+            *ngIf="!isAuthenticated()"
+            mat-menu-item
+            [routerLink]="['/login']"
+          ><mat-icon>login</mat-icon>Login</button>
+
+
+        </mat-menu>
+
+      </div>
+
+    </mat-toolbar>
+
+
+    <div class="content">
+      <!-- <app-home></app-home>
+      <app-login></app-login>
+      <app-signup></app-signup> -->
+      <!-- <app-chat></app-chat> -->
+
+
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

@@ -1,0 +1,111 @@
+<div class="dialog-container">
+  <h1 mat-dialog-title>SLA Form</h1>
+  <div mat-dialog-content>
+    <h4 *ngIf="errorMessage">
+      <mat-error>{{ errorMessage }}</mat-error>
+    </h4>
+
+    <form [formGroup]="form">
+      <!-- SLA Name -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>SLA Name</mat-label>
+        <input
+          matInput
+          formControlName="slaName"
+          type="text"
+        >
+      </mat-form-field>
+
+      <!-- Frequency Transaction -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Frequency Transaction</mat-label>
+        <mat-select formControlName="frequencyTransaction">
+          <mat-option
+            *ngFor="let option of transactionOptions"
+            [value]="option"
+          >{{ option }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Frequency Position -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Frequency Position</mat-label>
+        <mat-select formControlName="frequencyPosition">
+          <mat-option
+            *ngFor="let option of positionOptions"
+            [value]="option"
+          >{{ option }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Frequency Option -->
+      <div>
+        <mat-label>Frequency Type</mat-label>
+        <mat-radio-group formControlName="frequencyType">
+          <mat-radio-button value="yearly">Yearly</mat-radio-button>
+          <mat-radio-button value="weekly">Weekly</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <!-- Reminder Days -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Reminder Days</mat-label>
+        <input
+          matInput
+          formControlName="reminderDays"
+          type="number"
+        >
+      </mat-form-field>
+
+      <!-- Escalation Days -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Escalation Days</mat-label>
+        <input
+          matInput
+          formControlName="escalationDays"
+          type="number"
+        >
+      </mat-form-field>
+
+      <!-- Loader -->
+      <div
+        *ngIf="isLoading"
+        class="loader-container"
+      >
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+    </form>
+  </div>
+  <div
+    mat-dialog-actions
+    class="flex-container"
+  >
+    <div class="right">
+      <button
+        mat-button
+        (click)="onCancel()"
+      >Cancel</button>
+      <button
+        mat-button
+        [disabled]="form.invalid || isLoading"
+        color="primary"
+        (click)="onSave()"
+      >Save</button>
+    </div>
+  </div>
+</div>

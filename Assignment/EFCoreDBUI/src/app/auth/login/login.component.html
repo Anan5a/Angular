@@ -1,0 +1,58 @@
+<mat-card class="form-card">
+  <mat-card-header>
+    <mat-card-title class="center">Login</mat-card-title>
+  </mat-card-header>
+
+  <form
+    [formGroup]="form"
+    (submit)="formOnSubmit()"
+  >
+    <h3 *ngIf="formErrorMessage()!==null">
+      <mat-error>{{formErrorMessage()}}</mat-error>
+    </h3>
+    <mat-card-content>
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Username</mat-label>
+        <input
+          matInput
+          placeholder="Enter your userName"
+          formControlName="userName"
+        >
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-error *ngIf="form.value.userName">A valid username address is
+          required</mat-error>
+        <mat-hint>Hint: user&#64;example.com</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          placeholder="Enter your Password"
+          type="password"
+          formControlName="password"
+        >
+        <mat-icon matSuffix>password</mat-icon>
+        <mat-error *ngIf="form.value.password">A valid password must contain
+          atleast 8 character</mat-error>
+      </mat-form-field>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <p><a [routerLink]="['/signup']">I don't have an account</a></p>
+      <button
+        mat-raised-button
+        color="primary"
+        class="right"
+        [disabled]="!form.valid"
+      >Submit</button>
+    </mat-card-actions>
+
+  </form>
+</mat-card>

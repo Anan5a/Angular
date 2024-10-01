@@ -1,0 +1,80 @@
+<div class="dialog-container">
+  <h1 mat-dialog-title>Email Template Form</h1>
+  <div mat-dialog-content>
+    <h4 *ngIf="errorMessage">
+      <mat-error>{{ errorMessage }}</mat-error>
+    </h4>
+
+    <form [formGroup]="form">
+      <!-- SLA Name -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Template name</mat-label>
+        <input
+          matInput
+          formControlName="templateName"
+          type="text"
+          required
+        >
+      </mat-form-field>
+
+      <!-- Subject -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Subject</mat-label>
+        <input
+          matInput
+          formControlName="subject"
+          type="text"
+          required
+        >
+      </mat-form-field>
+
+      <!-- Body -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Body</mat-label>
+        <textarea
+          matInput
+          formControlName="body"
+          rows="4"
+          required
+        ></textarea>
+      </mat-form-field>
+
+      <!-- Loader -->
+      <div
+        *ngIf="isLoading"
+        class="loader-container"
+      >
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+    </form>
+  </div>
+
+  <div
+    mat-dialog-actions
+    class="flex-container"
+  >
+    <div class="right">
+      <button
+        mat-button
+        (click)="onCancel()"
+      >Cancel</button>
+      <button
+        mat-button
+        [disabled]="form.invalid || isLoading"
+        color="primary"
+        (click)="onSave()"
+      >
+        Save
+      </button>
+    </div>
+  </div>
+</div>

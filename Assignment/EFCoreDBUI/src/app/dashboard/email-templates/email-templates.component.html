@@ -1,0 +1,33 @@
+<h3
+  style="font-size: 2rem; padding: 1rem;"
+  class="center"
+>{{pageTitle}}
+</h3>
+@if (remoteDataLoaded) {
+<app-table-component
+  [columns]="columns"
+  [exportName]="exportName"
+  [tableId]="tableId"
+  [remoteDataLoaded]="remoteDataLoaded"
+  [remoteData]="remoteData"
+  [showAddButton]="true"
+  [showActions]="['edit','delete']"
+  (onAddEvent)="onAddEvent()"
+  (onEditEvent)="onEdit($event)"
+  (onDeleteEvent)="onDelete($event)"
+></app-table-component>
+
+}@else {
+
+<app-table-component
+  [columns]="columns"
+  [exportName]="exportName"
+  [tableId]="tableId"
+  [remoteDataLoaded]="remoteDataLoaded"
+  [remoteData]="remoteData"
+  [showAddButton]="true"
+  (onAddEvent)="onAddEvent()"
+  (onEditEvent)="onEdit($event)"
+  (onDeleteEvent)="onDelete($event)"
+></app-table-component>
+}

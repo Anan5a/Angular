@@ -1,0 +1,17 @@
+{
+  "sqltools.connections": [
+    {
+      "mssqlOptions": {
+        "appName": "SQLTools",
+        "useUTC": true,
+        "encrypt": true,
+        "abortTransactionOnError": true
+      },
+      "previewLimit": 50,
+      "server": "localhost",
+      "driver": "MSSQL",
+      "name": "docker",
+      "connectString": "Server=127.0.0.1,14333;User Id=SA;Password=yourStrong(!)Password;TrustServerCertificate=True"
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+<div class="dialog-container">
+  <h1 mat-dialog-title>Node Form</h1>
+  <div mat-dialog-content>
+    <h4 *ngIf="errorMessage">
+      <mat-error>{{ errorMessage }}</mat-error>
+    </h4>
+
+    <form [formGroup]="form">
+      <!-- Name -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Name</mat-label>
+        <input
+          matInput
+          formControlName="name"
+          type="text"
+        >
+      </mat-form-field>
+
+      <!-- Alias -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Alias</mat-label>
+        <input
+          matInput
+          formControlName="alias"
+          type="text"
+        >
+      </mat-form-field>
+
+      <!-- Aggregate -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Aggregate</mat-label>
+        <input
+          matInput
+          formControlName="aggregate"
+          type="text"
+        >
+      </mat-form-field>
+
+      <!-- Player -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Player</mat-label>
+        <input
+          matInput
+          formControlName="player"
+          (input)="filterContacts()"
+          type="text"
+        >
+      </mat-form-field>
+
+      <!-- Type -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Type</mat-label>
+        <input
+          matInput
+          formControlName="type"
+          type="text"
+        >
+      </mat-form-field>
+
+      <!-- Subtype -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Subtype</mat-label>
+        <input
+          matInput
+          formControlName="subtype"
+          type="text"
+        >
+      </mat-form-field>
+
+      <!-- Task Type -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Task Type</mat-label>
+        <mat-select formControlName="taskType">
+          <mat-option
+            *ngFor="let option of taskType"
+            [value]="option"
+          >{{ option }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Email Template -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Email Template</mat-label>
+        <mat-select formControlName="emailTemplateId">
+          <mat-option
+            *ngFor="let template of emailTemplates"
+            [value]="template.emailTemplateId"
+          >{{ template.emailTemplateName }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- SLA -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>SLA</mat-label>
+        <mat-select formControlName="slaId">
+          <mat-option
+            *ngFor="let sla of slas"
+            [value]="sla.slaId"
+          >{{ sla.slaName }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Shifting -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Shifting</mat-label>
+        <input
+          matInput
+          formControlName="shifting"
+          type="text"
+        >
+      </mat-form-field>
+
+      <!-- Duration -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Process Duration</mat-label>
+        <input
+          matInput
+          formControlName="processDuration"
+          type="number"
+        >
+      </mat-form-field>
+
+      <!-- Contact -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Contact</mat-label>
+        <mat-select formControlName="contactId">
+          <mat-option
+            *ngFor="let contact of filteredContacts"
+            [value]="contact.contactId"
+          >{{ contact.fullName }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Contact CC -->
+      <mat-form-field
+        appearance="outline"
+        class="full-width"
+      >
+        <mat-label>Contact CC</mat-label>
+        <mat-select formControlName="contactCCId">
+          <mat-option
+            *ngFor="let contactCC of filteredContactsCC"
+            [value]="contactCC.contactId"
+          >{{ contactCC.fullName }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Loader -->
+      <div
+        *ngIf="isLoading"
+        class="loader-container"
+      >
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+    </form>
+  </div>
+  <div
+    mat-dialog-actions
+    class="flex-container"
+  >
+    <div class="right">
+      <button
+        mat-button
+        (click)="onCancel()"
+      >Cancel</button>
+      <button
+        mat-button
+        [disabled]="form.invalid || isLoading"
+        color="primary"
+        (click)="onSave()"
+      >Save</button>
+    </div>
+  </div>
+</div>

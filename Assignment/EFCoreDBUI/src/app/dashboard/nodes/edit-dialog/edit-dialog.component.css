@@ -1,0 +1,7 @@
+.dialog-container {
+  padding: 1rem;
+}
+::ng-deep .mat-dialog-content {
+  max-height: 70vh; /* Set the maximum height of the dialog content */
+  overflow-y: auto; /* Enable vertical scrolling */
+}

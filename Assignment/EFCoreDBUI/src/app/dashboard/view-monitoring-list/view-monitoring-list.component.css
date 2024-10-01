@@ -1,0 +1,63 @@
+.mat-mdc-row .mat-mdc-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  border-color: currentColor;
+  font-weight: bold;
+}
+table {
+  width: 100%;
+}
+tr.mat-mdc-footer-row td {
+  font-weight: bold;
+}
+
+.action-buttons {
+  align-items: center;
+  justify-items: flex-end;
+}
+.action-buttons button {
+  padding: 0.2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.action-buttons button:hover {
+  background-color: aliceblue;
+}
+mat-icon {
+  font-size: 24px;
+  padding: 0;
+}
+.table-container {
+  position: relative;
+  min-height: 200px;
+  max-height: 400px;
+  overflow: auto;
+}
+.header-container {
+  justify-content: center;
+  align-items: center;
+}
+.flex-container-sb {
+  justify-content: space-between;
+  align-items: center;
+}
+.loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 56px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.table-parent-container {
+  position: relative;
+}

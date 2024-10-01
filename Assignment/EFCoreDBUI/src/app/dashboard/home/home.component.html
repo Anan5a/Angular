@@ -1,0 +1,41 @@
+<div class="card-container">
+  <mat-card
+    class="card card-image"
+    [routerLink]="['/view-list']"
+    [style.backgroundImage]="'url(/files.png)'"
+  >
+    <div class="overlay">
+      <p class="tile-text">My Files</p>
+    </div>
+  </mat-card>
+
+  <mat-card
+    class="card card-image"
+    [routerLink]="['/upload']"
+    [style.backgroundImage]="'url(/file-upload.png)'"
+  >
+    <div class="overlay">
+      <p class="tile-text">Upload</p>
+    </div>
+  </mat-card>
+
+  <mat-card
+    class="card card-image"
+    [routerLink]="['/profile']"
+    [style.backgroundImage]="'url(/profile.png)'"
+  >
+    <div class="overlay">
+      <p class="tile-text">Profile</p>
+    </div>
+  </mat-card>
+
+  <mat-card
+     class="card card-image"
+    [routerLink]="['/admin', 'add-user']"
+    [style.backgroundImage]="'url(/add-user.png)'"
+  >
+    <div class="overlay">
+      <p class="tile-text">Add user</p>
+    </div>
+  </mat-card>
+</div>
