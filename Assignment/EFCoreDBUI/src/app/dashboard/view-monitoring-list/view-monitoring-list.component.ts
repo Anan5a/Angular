@@ -20,7 +20,7 @@ export class ViewMonitoringListComponent implements OnInit {
   remoteData!: MonitoringModel[]
   tableId = "myTableMon"
   columns = [
-    { def: 'id', header: 'ID', },
+    { def: 'monitoringId', header: 'ID', },
     { def: 'alias', header: 'Alias' },
     { def: 'aggregate', header: 'Aggregate' },
     { def: 'node', header: 'Node' },

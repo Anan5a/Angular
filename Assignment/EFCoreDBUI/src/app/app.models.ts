@@ -13,7 +13,7 @@ export interface DataUserLoginResponseModel {
 }
 
 export interface MonitoringModel {
-  id: number
+  monitoringId: number
   alias: string
   aggregate: string
   node: string
