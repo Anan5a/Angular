@@ -1,11 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { SlaModel } from '../../app.models';
 import { TableComponentComponent } from "../table-component/table-component.component";
 import { EditDialogComponent } from './edit-dialog/edit-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { ToastrService } from 'ngx-toastr';
+import { ConfirmPopupComponent } from '../confirm-popup/confirm-popup.component';
 
 @Component({
   selector: 'app-sla',
@@ -54,19 +54,30 @@ export class SlaComponent {
 
 
   onDelete($event: SlaModel) {
-    if (window.confirm("This SLA will be deleted.\nAre you sure?")) {
-      this.userService.deleteSla($event.slaId!).subscribe({
-        next: (response) => {
-          const filtered = this.remoteData.filter((i) => i.slaId != $event.slaId)
-          this.remoteData = [...filtered]
-          this.toastrService.success(response.data)
 
-        },
-        error: (error) => {
-          this.toastrService.error(error)
-        }
-      })
-    }
+    const dialogRef = this.dialog.open(ConfirmPopupComponent, {
+      disableClose: true,
+      maxWidth: '500px',
+      width: '450px',
+      maxHeight: '90vh',
+      data: { message: 'This SLA will be deleted permanently. Are you sure?', title: 'Confirm action' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.userService.deleteSla($event.slaId!).subscribe({
+          next: (response) => {
+            const filtered = this.remoteData.filter((i) => i.slaId != $event.slaId)
+            this.remoteData = [...filtered]
+            this.toastrService.success(response.data)
+          },
+          error: (error) => {
+            this.toastrService.error(error)
+          }
+        })
+      }
+    });
+
   }
 
   onEdit($event: SlaModel) {
