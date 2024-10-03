@@ -57,9 +57,12 @@ export class ViewFileListComponent implements OnInit, AfterViewInit {
 
 
     this.remoteDataLoaded = false
-    this.showSystemFileList = this.activatedRoute.snapshot.data['systemFiles']||null
+    this.showSystemFileList = this.activatedRoute.snapshot.data['systemFiles'] || null
     if (this.showSystemFileList) {
       this.pageTitle = "Files in the system"
+      this.displayedColumns.splice(this.displayedColumns.length - 1, 0, 'user_name');
+
+
     }
 
     this.loadList()
