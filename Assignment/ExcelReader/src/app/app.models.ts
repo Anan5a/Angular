@@ -11,6 +11,12 @@ export interface ResponseModelGeneric<T> {
   data?: T
 }
 
+export interface RTCConnModel {
+  targetUserId: number
+  data: string
+
+}
+
 export interface DataUserLoginResponseModel {
   token: string
   user: User
@@ -81,6 +87,11 @@ export interface ChatEvent {
   from: number
   content: string
 }
+export interface VoiceCallEvent {
+  message: string;
+  metadata: RTCConnModel
+  callData: string
+}
 ////////////
 export interface SendMessageModel {
   to: number
@@ -105,6 +116,7 @@ export type DownloadFileResponseModel = ResponseModelGeneric<string>;
 export type UploadFileResponseModel = ResponseModelGeneric<number>;
 export type FileListResponseModel = ResponseModelGeneric<FileMetadataResponse[]>;
 export type UserListResponseModel = ResponseModelGeneric<User[]>;
+export type RTCRequestResponseModel = ResponseModelGeneric<boolean>;
 export type FileSingleResponseModel = ResponseModelGeneric<FileMetadataResponse>;
 export type DashboardResponseModel = ResponseModelGeneric<DashboardDataModel>;
 export type OnlineUserListResponseModel = ResponseModelGeneric<ChatUserLimited[]>;

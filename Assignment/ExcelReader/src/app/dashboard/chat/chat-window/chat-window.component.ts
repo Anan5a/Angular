@@ -9,6 +9,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { ChatMessageModel, ChatUserLimited, User } from '../../../app.models';
 import { ChatService } from '../../../services/chat.service';
 import { MatIconModule } from '@angular/material/icon';
+import { VoiceCallService } from '../../../services/voice-call.service';
 
 @Component({
   selector: 'app-chat-window',
@@ -35,7 +36,7 @@ export class ChatWindowComponent implements OnInit {
   newMessage: string = '';
 
 
-  constructor(private chatService: ChatService) { }
+  constructor(private chatService: ChatService, private voiceCallService: VoiceCallService) { }
 
   ngOnInit(): void {
     //update message view state
@@ -43,6 +44,8 @@ export class ChatWindowComponent implements OnInit {
     //   this.chatService.setCurrentUser(this.selectedUser)
     //   this.chatService.markChatViewed(this.selectedUser.id)
     // }
+    //register rtcallservice
+
   }
 
   sendOutgoingMessageEvent() {
@@ -58,4 +61,13 @@ export class ChatWindowComponent implements OnInit {
     this.onCloseChatWindow.emit()
   }
 
+
+  callUser() {
+    //check permission
+    this.chatService.callUser()
+  }
+  endCall() {
+    //check permission
+    this.chatService.endCall()
+  }
 }

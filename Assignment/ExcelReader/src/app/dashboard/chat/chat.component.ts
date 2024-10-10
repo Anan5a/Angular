@@ -2,19 +2,15 @@ import { Component, Input, signal } from '@angular/core';
 import { RealtimeService } from '../../services/realtime.service';
 import { FormsModule } from '@angular/forms';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { UserListComponent } from "./user-list/user-list.component";
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { ChatWindowComponent } from "./chat-window/chat-window.component";
 import { UserService } from '../../services/user.service';
-import { ChatEvent, ChatUserLimited, User } from '../../app.models';
+import { ChatEvent, ChatUserLimited, User, VoiceCallEvent } from '../../app.models';
 import { AuthService } from '../../services/auth.service';
 import { ChatService } from '../../services/chat.service';
+import { VoiceCallService } from '../../services/voice-call.service';
 
 @Component({
   selector: 'app-chat',
@@ -37,7 +33,8 @@ export class ChatComponent {
     private breakpointObserver: BreakpointObserver,
     private userService: UserService,
     private authService: AuthService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private voiceCallService: VoiceCallService
   ) {
     this.user = authService.user()?.user!
 
@@ -56,6 +53,12 @@ export class ChatComponent {
         time: (new Date()).toISOString(),
       }, message.from)
     });
+
+    this.realtimeService.addReceiveMessageListener<any[]>('CallingChannel', (message: any) => {
+      console.log(message)
+      this.voiceCallService.handleRTCSignal(message)
+    });
+
   }
 
 

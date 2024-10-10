@@ -43,6 +43,8 @@ export class RealtimeService {
       this.hubConnection.off(method);
     }
     this.registeredMethodList.push(method)
+    console.info("Method/Channel '" + method + "' registered")
+
     this.hubConnection.on(method, (...args: TArgs) => {
       callback(...args);
     });
@@ -54,5 +56,9 @@ export class RealtimeService {
       .invoke('SendMessage', message)
       .catch(err => console.error("Send message failed: " + err))
   }
+
+
+
+
 
 }

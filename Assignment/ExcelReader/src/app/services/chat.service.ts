@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { ChatMessageModel, ChatRepositoryModel, ChatUserLimited } from '../app.models';
 import { AuthService } from './auth.service';
+import { VoiceCallService } from './voice-call.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,7 @@ import { AuthService } from './auth.service';
 export class ChatService {
   private chatRepository = signal<ChatRepositoryModel[]>([])
   private selectedUser = signal<ChatUserLimited | null>(null)
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private voiceCallService: VoiceCallService) { }
 
 
   get chats() {
@@ -58,7 +59,12 @@ export class ChatService {
     this.chatRepository.set(repository);
   }
 
-
+  callUser() {
+    this.voiceCallService.startCall(this.currentUser()?.id!)
+  }
+  endCall() {
+    this.voiceCallService.endCall()
+  }
 
 
 
