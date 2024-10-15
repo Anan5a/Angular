@@ -13,6 +13,7 @@ CREATE TABLE [users] (
 	[password_reset_id] nvarchar(max),
 	[verified_at] datetime2(7),
 	[status] nvarchar(max) NOT NULL DEFAULT 'pending',
+	[social_login] nvarchar(max),
 	PRIMARY KEY ([id]),
 	CONSTRAINT CK_Users_ValidStatus CHECK (status IN ('ok','pending', 'disabled'))
 );
