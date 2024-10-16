@@ -10,8 +10,6 @@ import { RTCConnModel, RTCRequestResponseModel } from '../app.models';
 export class VoiceCallService extends BaseNetworkService {
   private localStream!: MediaStream;
   private peerConnection?: RTCPeerConnection | null;
-  private retryCounter = 0; // Retry at least once if the first connection fails
-  private isInitiator = false;
   public callUserId = signal(0);
   public callState = signal<'idle' | 'in-call' | 'calling' | 'disconnected'>(
     'idle'
@@ -19,29 +17,29 @@ export class VoiceCallService extends BaseNetworkService {
 
   private rtcConfig: RTCConfiguration = {
     iceServers: [
-      {
-        urls: 'stun:stun.relay.metered.ca:80',
-      },
-      {
-        urls: 'turn:global.relay.metered.ca:80',
-        username: 'b38d4b896baa144a0d36b815',
-        credential: 'nMFN+eR4YE5+SFvg',
-      },
-      {
-        urls: 'turn:global.relay.metered.ca:80?transport=tcp',
-        username: 'b38d4b896baa144a0d36b815',
-        credential: 'nMFN+eR4YE5+SFvg',
-      },
-      {
-        urls: 'turn:global.relay.metered.ca:443',
-        username: 'b38d4b896baa144a0d36b815',
-        credential: 'nMFN+eR4YE5+SFvg',
-      },
-      {
-        urls: 'turns:global.relay.metered.ca:443?transport=tcp',
-        username: 'b38d4b896baa144a0d36b815',
-        credential: 'nMFN+eR4YE5+SFvg',
-      },
+      // {
+      //   urls: 'stun:stun.relay.metered.ca:80',
+      // },
+      // {
+      //   urls: 'turn:global.relay.metered.ca:80',
+      //   username: 'b38d4b896baa144a0d36b815',
+      //   credential: 'nMFN+eR4YE5+SFvg',
+      // },
+      // {
+      //   urls: 'turn:global.relay.metered.ca:80?transport=tcp',
+      //   username: 'b38d4b896baa144a0d36b815',
+      //   credential: 'nMFN+eR4YE5+SFvg',
+      // },
+      // {
+      //   urls: 'turn:global.relay.metered.ca:443',
+      //   username: 'b38d4b896baa144a0d36b815',
+      //   credential: 'nMFN+eR4YE5+SFvg',
+      // },
+      // {
+      //   urls: 'turns:global.relay.metered.ca:443?transport=tcp',
+      //   username: 'b38d4b896baa144a0d36b815',
+      //   credential: 'nMFN+eR4YE5+SFvg',
+      // },
     ],
   };
 
@@ -56,7 +54,6 @@ export class VoiceCallService extends BaseNetworkService {
     }
     this.callUserId.set(userId);
     this.callState.set('calling');
-    this.isInitiator = true;
     await this.setupLocalStream();
     await this.createAndSendOffer(userId);
   }
@@ -74,7 +71,6 @@ export class VoiceCallService extends BaseNetworkService {
 
     this.peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
-        console.log('New Local ICE candidate:', event.candidate);
         this.sendIceCandidate(
           this.callUserId(),
           JSON.stringify(event.candidate)
@@ -98,25 +94,7 @@ export class VoiceCallService extends BaseNetworkService {
   private async createAndSendOffer(userId: number) {
     const offer = await this.peerConnection?.createOffer();
     await this.peerConnection?.setLocalDescription(offer);
-    await this.sendOfferWithRetry(userId, JSON.stringify(offer));
-  }
-
-  private async sendOfferWithRetry(
-    userId: number,
-    offer: string,
-    attempts = 3
-  ) {
-    for (let i = 0; i < attempts; i++) {
-      try {
-        await this.sendOffer(userId, offer).toPromise();
-        console.log('Offer sent successfully.');
-        return;
-      } catch (error) {
-        console.error('Failed to send offer. Retrying...', error);
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait before retrying
-      }
-    }
-    console.error('Failed to send offer after multiple attempts.');
+    await this.sendOffer(userId, JSON.stringify(offer)).subscribe();
   }
 
   public sendOffer(userId: number, offer: string) {
@@ -149,7 +127,13 @@ export class VoiceCallService extends BaseNetworkService {
 
   async handleRTCSignal(remoteData: {}) {
     const parsedSignal = JSON.parse(atob((remoteData as any).callData));
-    console.log(parsedSignal);
+
+    //this was the bug :'( How were I going to answer without knowing who's calling...
+    if (this.callUserId() == 0) {
+      console.log('Set incoming caller id...');
+      //@ts-ignore
+      this.callUserId.set(remoteData.metadata.targetUserId as number);
+    }
     try {
       if (parsedSignal.candidate) {
         console.log('Remote ICE candidate...');
@@ -216,7 +200,6 @@ export class VoiceCallService extends BaseNetworkService {
       case 'connected':
         console.log('Peers connected!');
         this.callState.set('in-call');
-        this.retryCounter = 0; // Reset retry counter
         break;
       case 'disconnected':
       case 'failed':
@@ -224,11 +207,7 @@ export class VoiceCallService extends BaseNetworkService {
           'Connection ' + this.peerConnection?.iceConnectionState + '...'
         );
         this.endCall();
-        // if (this.retryCounter < 1 && this.isInitiator) {
-        //   console.log('Retrying connection...');
-        //   this.retryCounter++;
-        //   this.startCall(this.callUserId()); // Retry the call
-        // }
+
         break;
     }
   }
@@ -239,6 +218,5 @@ export class VoiceCallService extends BaseNetworkService {
     this.peerConnection = null;
     this.callState.set('idle');
     console.info('Call ended.');
-    this.retryCounter = 0;
   }
 }
