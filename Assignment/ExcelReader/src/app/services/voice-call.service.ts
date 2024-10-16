@@ -17,9 +17,9 @@ export class VoiceCallService extends BaseNetworkService {
 
   private rtcConfig: RTCConfiguration = {
     iceServers: [
-      // {
-      //   urls: 'stun:stun.relay.metered.ca:80',
-      // },
+      {
+        urls: 'stun:stun.relay.metered.ca:80',
+      },
       // {
       //   urls: 'turn:global.relay.metered.ca:80',
       //   username: 'b38d4b896baa144a0d36b815',
