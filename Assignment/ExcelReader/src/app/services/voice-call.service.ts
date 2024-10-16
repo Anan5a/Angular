@@ -5,84 +5,82 @@ import { ApiBaseUrl } from '../../constants';
 import { RTCConnModel, RTCRequestResponseModel } from '../app.models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class VoiceCallService extends BaseNetworkService {
-
   private localStream!: MediaStream;
-  private rtcConfig: RTCConfiguration = {};
   private peerConnection?: RTCPeerConnection | null;
+  private retryCounter = 0; // Retry at least once if the first connection fails
+  private isInitiator = false;
   public callUserId = signal(0);
-  public callState = signal('idle'); // Added call state tracking
+  public callState = signal<'idle' | 'in-call' | 'calling' | 'disconnected'>(
+    'idle'
+  );
+
+  private rtcConfig: RTCConfiguration = {
+    iceServers: [
+      {
+        urls: 'stun:stun.relay.metered.ca:80',
+      },
+      {
+        urls: 'turn:global.relay.metered.ca:80',
+        username: 'b38d4b896baa144a0d36b815',
+        credential: 'nMFN+eR4YE5+SFvg',
+      },
+      {
+        urls: 'turn:global.relay.metered.ca:80?transport=tcp',
+        username: 'b38d4b896baa144a0d36b815',
+        credential: 'nMFN+eR4YE5+SFvg',
+      },
+      {
+        urls: 'turn:global.relay.metered.ca:443',
+        username: 'b38d4b896baa144a0d36b815',
+        credential: 'nMFN+eR4YE5+SFvg',
+      },
+      {
+        urls: 'turns:global.relay.metered.ca:443?transport=tcp',
+        username: 'b38d4b896baa144a0d36b815',
+        credential: 'nMFN+eR4YE5+SFvg',
+      },
+    ],
+  };
 
   constructor(httpClient: HttpClient) {
     super(httpClient);
-    this.setupLocalStream();
   }
 
-  public sendOffer(userId: number, offer: string) {
-    const url = `${ApiBaseUrl}/Calling/offerCall`;
-    const errorMessage = 'Failed to call user!';
-    return this.post<RTCConnModel, RTCRequestResponseModel>(url, { targetUserId: userId, data: this.encodeB64(offer) }, errorMessage);
-  }
-
-  public sendAnswer(userId: number, answer: string) {
-    const url = `${ApiBaseUrl}/Calling/answerCall`;
-    const errorMessage = 'Failed to answer call!';
-    return this.post<RTCConnModel, RTCRequestResponseModel>(url, { targetUserId: userId, data: this.encodeB64(answer) }, errorMessage);
-  }
-
-  public sendIceCandidate(userId: number, candidate: string) {
-    const url = `${ApiBaseUrl}/Calling/sendICECandidate`;
-    const errorMessage = 'Failed to send ICE data!';
-    return this.post<RTCConnModel, RTCRequestResponseModel>(url, { targetUserId: userId, data: this.encodeB64(candidate) }, errorMessage);
-  }
-
-  private encodeB64(data: string) {
-    return btoa(data);
-  }
-
-  async checkMicrophoneAccess() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach(track => track.stop());
-      return true;
-    } catch (error) {
-      console.error('Microphone access denied: ', error);
-      return false;
-    }
-  }
-
-  async startCall(userId: number) {
+  public async startCall(userId: number) {
     if (this.callState() !== 'idle') {
       console.warn('Cannot start call: already in a call.');
       return;
     }
     this.callUserId.set(userId);
     this.callState.set('calling');
+    this.isInitiator = true;
     await this.setupLocalStream();
     await this.createAndSendOffer(userId);
   }
 
   private async setupLocalStream() {
+    this.localStream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+    });
     this.peerConnection = new RTCPeerConnection(this.rtcConfig);
 
-    this.localStream = await navigator.mediaDevices.getUserMedia({
-      audio: {
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
-        sampleRate: 44100,
-      }
-    });
-
-    this.localStream.getTracks().forEach(track => {
+    this.localStream.getTracks().forEach((track) => {
+      console.log('Audio track added:', track);
       this.peerConnection?.addTrack(track, this.localStream);
     });
 
     this.peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
-        this.sendIceCandidate(this.callUserId(), JSON.stringify(event.candidate)).subscribe();
+        console.log('New Local ICE candidate:', event.candidate);
+        this.sendIceCandidate(
+          this.callUserId(),
+          JSON.stringify(event.candidate)
+        ).subscribe();
+      } else {
+        console.log('All ICE candidates have been sent.');
       }
     };
 
@@ -93,72 +91,154 @@ export class VoiceCallService extends BaseNetworkService {
     };
 
     this.peerConnection.oniceconnectionstatechange = () => {
-      console.log(this.peerConnection?.iceConnectionState);
-      if (this.peerConnection?.iceConnectionState === 'connected') {
-        console.log('Peers connected!');
-        this.callState.set('in-call');
-      } else if (this.peerConnection?.iceConnectionState === 'disconnected') {
-        console.log('Peers disconnected.');
-        this.callState.set('disconnected');
-      } else if (this.peerConnection?.iceConnectionState === 'failed') {
-        console.error('Connection failed.');
-        // Handle reconnection or notify the user
-      }
+      this.handleConnectionStateChange();
     };
   }
 
   private async createAndSendOffer(userId: number) {
     const offer = await this.peerConnection?.createOffer();
     await this.peerConnection?.setLocalDescription(offer);
-    this.sendOffer(userId, JSON.stringify(offer)).subscribe();
+    await this.sendOfferWithRetry(userId, JSON.stringify(offer));
+  }
+
+  private async sendOfferWithRetry(
+    userId: number,
+    offer: string,
+    attempts = 3
+  ) {
+    for (let i = 0; i < attempts; i++) {
+      try {
+        await this.sendOffer(userId, offer).toPromise();
+        console.log('Offer sent successfully.');
+        return;
+      } catch (error) {
+        console.error('Failed to send offer. Retrying...', error);
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait before retrying
+      }
+    }
+    console.error('Failed to send offer after multiple attempts.');
+  }
+
+  public sendOffer(userId: number, offer: string) {
+    return this.post<RTCConnModel, RTCRequestResponseModel>(
+      `${ApiBaseUrl}/Calling/offerCall`,
+      { targetUserId: userId, data: this.encodeB64(offer) },
+      'Failed to call user!'
+    );
+  }
+
+  public sendAnswer(userId: number, answer: string) {
+    return this.post<RTCConnModel, RTCRequestResponseModel>(
+      `${ApiBaseUrl}/Calling/answerCall`,
+      { targetUserId: userId, data: this.encodeB64(answer) },
+      'Failed to answer call!'
+    );
+  }
+
+  public sendIceCandidate(userId: number, candidate: string) {
+    return this.post<RTCConnModel, RTCRequestResponseModel>(
+      `${ApiBaseUrl}/Calling/sendICECandidate`,
+      { targetUserId: userId, data: this.encodeB64(candidate) },
+      'Failed to send ICE data!'
+    );
+  }
+
+  private encodeB64(data: string) {
+    return btoa(data);
   }
 
   async handleRTCSignal(remoteData: {}) {
-    //@ts-ignore
-    const parsedSignal = JSON.parse(atob(remoteData.callData));
+    const parsedSignal = JSON.parse(atob((remoteData as any).callData));
+    console.log(parsedSignal);
     try {
-      if (parsedSignal.sdp) {
-        // if (this.callState() !== 'idle') {
-        //   console.warn('Invalid state for handling SDP: ', this.callState());
-        //   return;
-        // }
-
-        await this.peerConnection?.setRemoteDescription(new RTCSessionDescription(parsedSignal));
-        if (this.peerConnection?.remoteDescription?.type === 'offer') {
-          console.log("offer; send answer");
-          const answer = await this.peerConnection?.createAnswer();
-          await this.peerConnection?.setLocalDescription(answer);
-          //@ts-ignore
-          this.sendAnswer(remoteData.metadata.targetUserId, JSON.stringify(answer)).subscribe();
+      if (parsedSignal.candidate) {
+        console.log('Remote ICE candidate...');
+        await this.handleIceCandidate(parsedSignal);
+      } else if (parsedSignal.type) {
+        switch (parsedSignal.type) {
+          case 'answer':
+            await this.handleAnswer(parsedSignal);
+            break;
+          case 'offer':
+            await this.handleOffer(parsedSignal, remoteData);
+            break;
         }
-      } else if (parsedSignal.candidate) {
-        // if (this.callState() !== 'in-call') {
-        //   console.warn('Invalid state for handling ICE candidate: ', this.callState());
-        //   return;
-        // }
-        console.log("set IceCandidate");
-        await this.peerConnection?.addIceCandidate(new RTCIceCandidate(parsedSignal));
       }
     } catch (error) {
-      console.error('Error handling signal: ', error);
-      alert('An error occurred while processing the call signal.');
+      console.error('Error handling signal:', error);
+    }
+  }
+
+  private async handleAnswer(answer: RTCSessionDescriptionInit) {
+    if (this.isPeerConnectionOpen()) {
+      console.log('Handling answer');
+      await this.peerConnection?.setRemoteDescription(
+        new RTCSessionDescription(answer)
+      );
+    }
+  }
+
+  private async handleOffer(offer: RTCSessionDescriptionInit, remoteData: any) {
+    if (!this.peerConnection) {
+      await this.setupLocalStream();
+    }
+    console.log('Handling offer');
+    await this.peerConnection?.setRemoteDescription(
+      new RTCSessionDescription(offer)
+    );
+    const answer = await this.peerConnection?.createAnswer();
+    await this.peerConnection?.setLocalDescription(answer);
+    this.sendAnswer(
+      remoteData.metadata.targetUserId,
+      JSON.stringify(answer)
+    ).subscribe();
+  }
+
+  private async handleIceCandidate(candidate: RTCIceCandidateInit) {
+    if (this.isPeerConnectionOpen()) {
+      console.log('Handling ICE candidate');
+      await this.peerConnection?.addIceCandidate(
+        new RTCIceCandidate(candidate)
+      );
+    }
+  }
+
+  private isPeerConnectionOpen(): boolean {
+    return (
+      this.peerConnection !== null &&
+      this.peerConnection?.iceConnectionState !== 'closed'
+    );
+  }
+
+  private handleConnectionStateChange() {
+    console.log('Connection State:', this.peerConnection?.iceConnectionState);
+    switch (this.peerConnection?.iceConnectionState) {
+      case 'connected':
+        console.log('Peers connected!');
+        this.callState.set('in-call');
+        this.retryCounter = 0; // Reset retry counter
+        break;
+      case 'disconnected':
+      case 'failed':
+        console.error(
+          'Connection ' + this.peerConnection?.iceConnectionState + '...'
+        );
+        this.endCall();
+        // if (this.retryCounter < 1 && this.isInitiator) {
+        //   console.log('Retrying connection...');
+        //   this.retryCounter++;
+        //   this.startCall(this.callUserId()); // Retry the call
+        // }
+        break;
     }
   }
 
   endCall() {
-    // Stop local media tracks
-    if (this.localStream) {
-      this.localStream.getTracks().forEach(track => track.stop());
-    }
-
-    // Close the peer connection
-    if (this.peerConnection) {
-      this.peerConnection.close();
-      this.peerConnection = null;
-    }
-
-    // Update state
+    this.localStream?.getTracks().forEach((track) => track.stop());
+    this.peerConnection?.close();
+    this.peerConnection = null;
     this.callState.set('idle');
-    alert('Call ended.');
+    console.info('Call ended.');
+    this.retryCounter = 0;
   }
 }
