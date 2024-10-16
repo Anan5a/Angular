@@ -1,63 +1,70 @@
-import { Routes } from '@angular/router';
-import { UploadComponent } from './upload/upload.component';
-import { NotFoundComponent } from './not-found/not-found.component';
-import { ViewFileListComponent } from './dashboard/view-file-list/view-file-list.component';
-import { LoginComponent } from './auth/login/login.component';
-import { SignupComponent } from './auth/signup/signup.component';
-import { HomeComponent } from './dashboard/home/home.component';
-import { CreateUserComponent } from './admin/create-user/create-user.component';
-import { ProfileComponent } from './dashboard/profile/profile.component';
-import { isAdminGuard, isAuthenticatedGuard, isNotAuthenticatedGuard } from './services/auth.guards';
-import { ChatComponent } from './dashboard/chat/chat.component';
-import { ChatWindowComponent } from './dashboard/chat/chat-window/chat-window.component';
-import { UserListComponent } from './dashboard/user-list/user-list.component';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import {
+  isAdminGuard,
+  isAuthenticatedGuard,
+  isNotAuthenticatedGuard,
+} from './services/auth.guards';
 
 export const routes: Routes = [
   {
     path: '',
     redirectTo: 'dashboard',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'dashboard',
-    component: HomeComponent,
-    canActivate: [isAuthenticatedGuard]
+    loadComponent: () =>
+      import('./dashboard/home/home.component').then((c) => c.HomeComponent),
+    canActivate: [isAuthenticatedGuard],
   },
   {
     path: 'upload',
-    component: UploadComponent,
-    canActivate: [isAuthenticatedGuard]
+    loadComponent: () =>
+      import('./upload/upload.component').then((c) => c.UploadComponent),
+    canActivate: [isAuthenticatedGuard],
   },
   {
     path: 'profile',
-    component: ProfileComponent,
-    canActivate: [isAuthenticatedGuard]
+    loadComponent: () =>
+      import('./dashboard/profile/profile.component').then(
+        (c) => c.ProfileComponent
+      ),
+    canActivate: [isAuthenticatedGuard],
   },
   {
     path: 'view-list',
-    component: ViewFileListComponent,
-    canActivate: [isAuthenticatedGuard]
+    loadComponent: () =>
+      import('./dashboard/view-file-list/view-file-list.component').then(
+        (c) => c.ViewFileListComponent
+      ),
+    canActivate: [isAuthenticatedGuard],
   },
-
   {
     path: 'chat',
-    component: ChatComponent,
-    canActivate: [isAuthenticatedGuard]
+    loadComponent: () =>
+      import('./dashboard/chat/chat.component').then((c) => c.ChatComponent),
+    canActivate: [isAuthenticatedGuard],
   },
   {
     path: 'chat/detail',
-    component: ChatWindowComponent,
-    canActivate: [isAuthenticatedGuard]
+    loadComponent: () =>
+      import('./dashboard/chat/chat-window/chat-window.component').then(
+        (c) => c.ChatWindowComponent
+      ),
+    canActivate: [isAuthenticatedGuard],
   },
   {
     path: 'login',
-    component: LoginComponent,
-    canActivate: [isNotAuthenticatedGuard]
+    loadComponent: () =>
+      import('./auth/login/login.component').then((c) => c.LoginComponent),
+    canActivate: [isNotAuthenticatedGuard],
   },
   {
     path: 'signup',
-    component: SignupComponent,
-    canActivate: [isNotAuthenticatedGuard]
+    loadComponent: () =>
+      import('./auth/signup/signup.component').then((c) => c.SignupComponent),
+    canActivate: [isNotAuthenticatedGuard],
   },
   {
     path: 'admin',
@@ -66,21 +73,33 @@ export const routes: Routes = [
     children: [
       {
         path: 'add-user',
-        component: CreateUserComponent
+        loadComponent: () =>
+          import('./admin/create-user/create-user.component').then(
+            (c) => c.CreateUserComponent
+          ),
       },
       {
         path: 'user-list',
-        component: UserListComponent,
+        loadComponent: () =>
+          import('./dashboard/user-list/user-list.component').then(
+            (c) => c.UserListComponent
+          ),
       },
       {
         path: 'system-files',
-        component: ViewFileListComponent,
-        data: { systemFiles: true }
+        loadComponent: () =>
+          import('./dashboard/view-file-list/view-file-list.component').then(
+            (c) => c.ViewFileListComponent
+          ),
+        data: { systemFiles: true },
       },
-    ]
+    ],
   },
   {
     path: '**',
-    component: NotFoundComponent,
-  }
+    loadComponent: () =>
+      import('./not-found/not-found.component').then(
+        (c) => c.NotFoundComponent
+      ),
+  },
 ];
