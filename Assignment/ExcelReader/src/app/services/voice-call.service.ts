@@ -20,26 +20,26 @@ export class VoiceCallService extends BaseNetworkService {
       {
         urls: 'stun:stun.relay.metered.ca:80',
       },
-      // {
-      //   urls: 'turn:global.relay.metered.ca:80',
-      //   username: 'b38d4b896baa144a0d36b815',
-      //   credential: 'nMFN+eR4YE5+SFvg',
-      // },
-      // {
-      //   urls: 'turn:global.relay.metered.ca:80?transport=tcp',
-      //   username: 'b38d4b896baa144a0d36b815',
-      //   credential: 'nMFN+eR4YE5+SFvg',
-      // },
-      // {
-      //   urls: 'turn:global.relay.metered.ca:443',
-      //   username: 'b38d4b896baa144a0d36b815',
-      //   credential: 'nMFN+eR4YE5+SFvg',
-      // },
-      // {
-      //   urls: 'turns:global.relay.metered.ca:443?transport=tcp',
-      //   username: 'b38d4b896baa144a0d36b815',
-      //   credential: 'nMFN+eR4YE5+SFvg',
-      // },
+      {
+        urls: 'turn:global.relay.metered.ca:80',
+        username: 'b38d4b896baa144a0d36b815',
+        credential: 'nMFN+eR4YE5+SFvg',
+      },
+      {
+        urls: 'turn:global.relay.metered.ca:80?transport=tcp',
+        username: 'b38d4b896baa144a0d36b815',
+        credential: 'nMFN+eR4YE5+SFvg',
+      },
+      {
+        urls: 'turn:global.relay.metered.ca:443',
+        username: 'b38d4b896baa144a0d36b815',
+        credential: 'nMFN+eR4YE5+SFvg',
+      },
+      {
+        urls: 'turns:global.relay.metered.ca:443?transport=tcp',
+        username: 'b38d4b896baa144a0d36b815',
+        credential: 'nMFN+eR4YE5+SFvg',
+      },
     ],
   };
 
