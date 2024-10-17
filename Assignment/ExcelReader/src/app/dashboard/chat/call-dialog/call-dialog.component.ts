@@ -3,6 +3,7 @@ import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { VoiceCallService } from '../../../services/voice-call.service';
 
 @Component({
   selector: 'app-call-dialog',
@@ -22,7 +23,8 @@ export class CallDialogComponent {
       message: string;
       showAccept: boolean;
       showReject: boolean;
-    }
+    },
+    private voiceCallService: VoiceCallService
   ) {}
 
   onSave(): void {}
@@ -34,6 +36,7 @@ export class CallDialogComponent {
     this.actionEvent.emit('rejected');
   }
   onCancel(): void {
+    this.voiceCallService.endCall();
     this.dialogRef.close();
   }
 }
