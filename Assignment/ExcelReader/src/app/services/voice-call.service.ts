@@ -276,11 +276,7 @@ export class VoiceCallService extends BaseNetworkService {
 
   private async handleIceCandidate(candidate: RTCIceCandidateInit) {
     //show notification that connection is being established
-    if (
-      this.isPeerConnectionOpen() &&
-      this.userSelection &&
-      this.userSelection() == 'accepted'
-    ) {
+    if (this.isPeerConnectionOpen()) {
       console.log('Handling ICE candidate');
       await this.peerConnection?.addIceCandidate(
         new RTCIceCandidate(candidate)
