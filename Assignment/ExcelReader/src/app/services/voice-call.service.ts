@@ -15,6 +15,7 @@ export class VoiceCallService extends BaseNetworkService {
   public callUserId = signal(0);
   public callUserName = signal('');
   private currentDialog: any;
+  private wasAnswerSent = false;
   private userSelection? = signal<'accepted' | 'rejected' | null>(null);
   public callState = signal<'idle' | 'in-call' | 'calling' | 'disconnected'>(
     'idle'
@@ -87,18 +88,6 @@ export class VoiceCallService extends BaseNetworkService {
         }
       );
     });
-    this.currentDialog.componentInstance.actionEvent.subscribe(
-      (result: string) => {
-        if (result === 'accepted') {
-          this.userSelection?.set('accepted');
-          console.log('Call accepted');
-        } else if (result === 'rejected') {
-          this.userSelection?.set('rejected');
-          console.log('Call rejected');
-          this.endCall();
-        }
-      }
-    );
   }
 
   public async startCall(userId: number, userName: string) {
@@ -202,7 +191,7 @@ export class VoiceCallService extends BaseNetworkService {
 
     try {
       if (parsedSignal.candidate) {
-        if (this.userSelection && this.userSelection() == 'accepted') {
+        if (this.peerConnection && this.wasAnswerSent) {
           console.log('Remote ICE candidate...');
           await this.handleIceCandidate(parsedSignal);
         }
@@ -216,6 +205,7 @@ export class VoiceCallService extends BaseNetworkService {
             ).then((value) => {
               if (value == 'accepted') {
                 //user consented
+                this.wasAnswerSent = true;
                 this.handleAnswer(parsedSignal);
               } else if (value == 'rejected') {
                 this.endCall();
@@ -281,6 +271,8 @@ export class VoiceCallService extends BaseNetworkService {
       await this.peerConnection?.addIceCandidate(
         new RTCIceCandidate(candidate)
       );
+    } else {
+      console.warn('PeerConnection not open...');
     }
   }
 
@@ -314,6 +306,7 @@ export class VoiceCallService extends BaseNetworkService {
     this.localStream?.getTracks().forEach((track) => track.stop());
     this.peerConnection?.close();
     this.peerConnection = null;
+    this.wasAnswerSent = false;
     this.callState.set('idle');
     console.info('Call ended.');
   }
