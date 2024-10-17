@@ -61,7 +61,9 @@ export class VoiceCallService extends BaseNetworkService {
       },
       disableClose: true,
     });
-
+    dialogRef.afterClosed().subscribe((result) => {
+      this.endCall();
+    });
     return new Promise((resolve) => {
       dialogRef.componentInstance.actionEvent.subscribe((result: string) => {
         if (result === 'accepted') {
