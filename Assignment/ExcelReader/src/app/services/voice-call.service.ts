@@ -59,6 +59,7 @@ export class VoiceCallService extends BaseNetworkService {
         title,
         message,
       },
+      disableClose: true,
     });
 
     return new Promise((resolve) => {
@@ -68,6 +69,7 @@ export class VoiceCallService extends BaseNetworkService {
           resolve('accepted');
         } else if (result === 'rejected') {
           console.log('Call rejected');
+          this.endCall();
           resolve('rejected');
         }
       });

@@ -1,7 +1,7 @@
 <div class="dialog-container">
   <h1 mat-dialog-title>{{ data.title || "Call" }}</h1>
   <div mat-dialog-content>
-    <p>{{ "Incoming call..." }}</p>
+    <p>{{ data.message || "Call ongoing..." }}</p>
     <!-- data?.callStatus || -->
     <p>status of the call</p>
     <div class="button-container">
