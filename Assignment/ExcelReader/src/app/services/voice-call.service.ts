@@ -14,7 +14,8 @@ export class VoiceCallService extends BaseNetworkService {
   private peerConnection?: RTCPeerConnection | null;
   public callUserId = signal(0);
   public callUserName = signal('');
-
+  private currentDialog: any;
+  private userSelection? = signal<'accepted' | 'rejected' | null>(null);
   public callState = signal<'idle' | 'in-call' | 'calling' | 'disconnected'>(
     'idle'
   );
@@ -55,8 +56,12 @@ export class VoiceCallService extends BaseNetworkService {
     message: string,
     showAccept: boolean = true,
     showReject: boolean = true
-  ): Promise<string> {
-    const dialogRef = this.callDialog.open(CallDialogComponent, {
+  ) {
+    if (this.currentDialog) {
+      this.currentDialog.close();
+    }
+
+    this.currentDialog = this.callDialog.open(CallDialogComponent, {
       data: {
         title,
         message,
@@ -65,21 +70,20 @@ export class VoiceCallService extends BaseNetworkService {
       },
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((result) => {
-      this.endCall();
-    });
-    return new Promise((resolve) => {
-      dialogRef.componentInstance.actionEvent.subscribe((result: string) => {
+    this.currentDialog.afterClosed().subscribe(() => {});
+
+    this.currentDialog.componentInstance.actionEvent.subscribe(
+      (result: string) => {
         if (result === 'accepted') {
+          this.userSelection?.set('accepted');
           console.log('Call accepted');
-          resolve('accepted');
         } else if (result === 'rejected') {
+          this.userSelection?.set('rejected');
           console.log('Call rejected');
           this.endCall();
-          resolve('rejected');
         }
-      });
-    });
+      }
+    );
   }
 
   public async startCall(userId: number, userName: string) {
@@ -188,15 +192,18 @@ export class VoiceCallService extends BaseNetworkService {
       } else if (parsedSignal.type) {
         switch (parsedSignal.type) {
           case 'answer':
-            const action1 = await this.showDialogAndGetAction(
+            await this.showDialogAndGetAction(
               'Outgoing call',
               'Calling ' + this.callUserName() + ' ...',
               false
             );
-            if (action1 == 'accepted') {
+            if (this.userSelection && this.userSelection() == 'accepted') {
               //user consented
               await this.handleAnswer(parsedSignal);
-            } else if (action1 == 'rejected') {
+            } else if (
+              this.userSelection &&
+              this.userSelection() == 'rejected'
+            ) {
               this.endCall();
             }
             break;
@@ -207,10 +214,13 @@ export class VoiceCallService extends BaseNetworkService {
               true,
               true
             );
-            if (action2 == 'accepted') {
+            if (this.userSelection && this.userSelection() == 'accepted') {
               //user consented
               await this.handleOffer(parsedSignal, remoteData);
-            } else if (action2 == 'rejected') {
+            } else if (
+              this.userSelection &&
+              this.userSelection() == 'rejected'
+            ) {
               this.endCall();
             }
             break;
