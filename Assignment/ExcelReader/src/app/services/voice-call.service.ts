@@ -3,6 +3,8 @@ import { BaseNetworkService } from './base-network.service';
 import { HttpClient } from '@angular/common/http';
 import { ApiBaseUrl } from '../../constants';
 import { RTCConnModel, RTCRequestResponseModel } from '../app.models';
+import { MatDialog } from '@angular/material/dialog';
+import { CallDialogComponent } from '../dashboard/chat/call-dialog/call-dialog.component';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +13,8 @@ export class VoiceCallService extends BaseNetworkService {
   private localStream!: MediaStream;
   private peerConnection?: RTCPeerConnection | null;
   public callUserId = signal(0);
+  public callUserName = signal('');
+
   public callState = signal<'idle' | 'in-call' | 'calling' | 'disconnected'>(
     'idle'
   );
@@ -43,8 +47,31 @@ export class VoiceCallService extends BaseNetworkService {
     ],
   };
 
-  constructor(httpClient: HttpClient) {
+  constructor(httpClient: HttpClient, private callDialog: MatDialog) {
     super(httpClient);
+  }
+  private showDialogAndGetAction(
+    title: string,
+    message: string
+  ): Promise<string> {
+    const dialogRef = this.callDialog.open(CallDialogComponent, {
+      data: {
+        title,
+        message,
+      },
+    });
+
+    return new Promise((resolve) => {
+      dialogRef.componentInstance.actionEvent.subscribe((result: string) => {
+        if (result === 'accepted') {
+          console.log('Call accepted');
+          resolve('accepted');
+        } else if (result === 'rejected') {
+          console.log('Call rejected');
+          resolve('rejected');
+        }
+      });
+    });
   }
 
   public async startCall(userId: number) {
@@ -54,8 +81,14 @@ export class VoiceCallService extends BaseNetworkService {
     }
     this.callUserId.set(userId);
     this.callState.set('calling');
+    //show outgoing call dialog
+
     await this.setupLocalStream();
     await this.createAndSendOffer(userId);
+    const action = await this.showDialogAndGetAction(
+      'Outgoing call',
+      'Calling ' + this.callUserName() + ' ...'
+    );
   }
 
   private async setupLocalStream() {
@@ -133,7 +166,10 @@ export class VoiceCallService extends BaseNetworkService {
       console.log('Set incoming caller id...');
       //@ts-ignore
       this.callUserId.set(remoteData.metadata.targetUserId as number);
+      //@ts-ignore
+      this.callUserName.set(remoteData.metadata.targetUserName as string);
     }
+
     try {
       if (parsedSignal.candidate) {
         console.log('Remote ICE candidate...');
@@ -141,10 +177,28 @@ export class VoiceCallService extends BaseNetworkService {
       } else if (parsedSignal.type) {
         switch (parsedSignal.type) {
           case 'answer':
-            await this.handleAnswer(parsedSignal);
+            const action1 = await this.showDialogAndGetAction(
+              'Outgoing call',
+              'Calling ' + this.callUserName() + ' ...'
+            );
+            if (action1 == 'accepted') {
+              //user consented
+              await this.handleAnswer(parsedSignal);
+            } else if (action1 == 'rejected') {
+              this.endCall();
+            }
             break;
           case 'offer':
-            await this.handleOffer(parsedSignal, remoteData);
+            const action2 = await this.showDialogAndGetAction(
+              'Incoming call',
+              'Calling ' + this.callUserName() + ' ...'
+            );
+            if (action2 == 'accepted') {
+              //user consented
+              await this.handleOffer(parsedSignal, remoteData);
+            } else if (action2 == 'rejected') {
+              this.endCall();
+            }
             break;
         }
       }

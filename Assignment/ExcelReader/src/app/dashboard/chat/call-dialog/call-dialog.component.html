@@ -1,0 +1,19 @@
+<div class="dialog-container">
+  <h1 mat-dialog-title>{{ data.title || "Call" }}</h1>
+  <div mat-dialog-content>
+    <p>{{ "Incoming call..." }}</p>
+    <!-- data?.callStatus || -->
+    <p>status of the call</p>
+    <div class="button-container">
+      <button mat-button color="primary" (click)="onAccept()">
+        <mat-icon>call_received</mat-icon> Accept
+      </button>
+      <button mat-button color="warn" (click)="onReject()">
+        <mat-icon>call_missed</mat-icon> Reject
+      </button>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onCancel()">Close</button>
+  </div>
+</div>
