@@ -52,12 +52,16 @@ export class VoiceCallService extends BaseNetworkService {
   }
   private showDialogAndGetAction(
     title: string,
-    message: string
+    message: string,
+    showAccept: boolean = true,
+    showReject: boolean = true
   ): Promise<string> {
     const dialogRef = this.callDialog.open(CallDialogComponent, {
       data: {
         title,
         message,
+        showAccept,
+        showReject,
       },
       disableClose: true,
     });
@@ -78,12 +82,13 @@ export class VoiceCallService extends BaseNetworkService {
     });
   }
 
-  public async startCall(userId: number) {
+  public async startCall(userId: number, userName: string) {
     if (this.callState() !== 'idle') {
       console.warn('Cannot start call: already in a call.');
       return;
     }
     this.callUserId.set(userId);
+    this.callUserName.set(userName);
     this.callState.set('calling');
     //show outgoing call dialog
 
@@ -91,7 +96,9 @@ export class VoiceCallService extends BaseNetworkService {
     await this.createAndSendOffer(userId);
     const action = await this.showDialogAndGetAction(
       'Outgoing call',
-      'Calling ' + this.callUserName() + ' ...'
+      'Calling ' + this.callUserName() + ' ...',
+      false, //caller should not have accept button
+      true
     );
   }
 
@@ -183,7 +190,8 @@ export class VoiceCallService extends BaseNetworkService {
           case 'answer':
             const action1 = await this.showDialogAndGetAction(
               'Outgoing call',
-              'Calling ' + this.callUserName() + ' ...'
+              'Calling ' + this.callUserName() + ' ...',
+              false
             );
             if (action1 == 'accepted') {
               //user consented
@@ -195,7 +203,9 @@ export class VoiceCallService extends BaseNetworkService {
           case 'offer':
             const action2 = await this.showDialogAndGetAction(
               'Incoming call',
-              'Calling ' + this.callUserName() + ' ...'
+              'Calling ' + this.callUserName() + ' ...',
+              true,
+              true
             );
             if (action2 == 'accepted') {
               //user consented

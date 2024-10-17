@@ -62,14 +62,7 @@ export class ChatWindowComponent implements OnInit {
     private callDialog: MatDialog
   ) {}
 
-  ngOnInit(): void {
-    //update message view state
-    // if (typeof this.selectedUser() != "undefined") {
-    //   this.chatService.setCurrentUser(this.selectedUser)
-    //   this.chatService.markChatViewed(this.selectedUser.id)
-    // }
-    //register rtcallservice
-  }
+  ngOnInit(): void {}
 
   sendOutgoingMessageEvent() {
     if (this.newMessage.trim()) {

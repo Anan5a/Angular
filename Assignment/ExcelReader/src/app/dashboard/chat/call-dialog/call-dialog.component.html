@@ -5,12 +5,15 @@
     <!-- data?.callStatus || -->
     <p>status of the call</p>
     <div class="button-container">
+      @if (data.showAccept) {
       <button mat-button color="primary" (click)="onAccept()">
         <mat-icon>call_received</mat-icon> Accept
       </button>
+      } @if (data.showReject) {
       <button mat-button color="warn" (click)="onReject()">
         <mat-icon>call_missed</mat-icon> Reject
       </button>
+      }
     </div>
   </div>
   <div mat-dialog-actions>
