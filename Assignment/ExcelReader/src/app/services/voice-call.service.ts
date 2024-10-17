@@ -14,7 +14,7 @@ export class VoiceCallService extends BaseNetworkService {
   public callState = signal<'idle' | 'in-call' | 'calling' | 'disconnected'>(
     'idle'
   );
-
+  public notificationBus = signal<''>('');
   private rtcConfig: RTCConfiguration = {
     iceServers: [
       {
@@ -154,6 +154,7 @@ export class VoiceCallService extends BaseNetworkService {
   }
 
   private async handleAnswer(answer: RTCSessionDescriptionInit) {
+    //show that call was accepted
     if (this.isPeerConnectionOpen()) {
       console.log('Handling answer');
       await this.peerConnection?.setRemoteDescription(
@@ -163,6 +164,8 @@ export class VoiceCallService extends BaseNetworkService {
   }
 
   private async handleOffer(offer: RTCSessionDescriptionInit, remoteData: any) {
+    //show incoming notification to user
+
     if (!this.peerConnection) {
       await this.setupLocalStream();
     }
@@ -179,6 +182,7 @@ export class VoiceCallService extends BaseNetworkService {
   }
 
   private async handleIceCandidate(candidate: RTCIceCandidateInit) {
+    //show notification that connection is being established
     if (this.isPeerConnectionOpen()) {
       console.log('Handling ICE candidate');
       await this.peerConnection?.addIceCandidate(
@@ -195,6 +199,7 @@ export class VoiceCallService extends BaseNetworkService {
   }
 
   private handleConnectionStateChange() {
+    //show change of the connection state
     console.log('Connection State:', this.peerConnection?.iceConnectionState);
     switch (this.peerConnection?.iceConnectionState) {
       case 'connected':

@@ -1,4 +1,11 @@
-import { Component, Input, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  Input,
+  signal,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { RealtimeService } from '../../services/realtime.service';
 import { FormsModule } from '@angular/forms';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
@@ -16,6 +23,7 @@ import {
 import { AuthService } from '../../services/auth.service';
 import { ChatService } from '../../services/chat.service';
 import { VoiceCallService } from '../../services/voice-call.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-chat',
@@ -38,6 +46,9 @@ export class ChatComponent {
     .pipe(map((result) => result.matches));
   onlineUsers = signal<ChatUserLimited[]>([]);
   selectedUser = this.chatService.currentUser;
+  callUser = computed(() => this.voiceCallService.callUserId());
+
+  @ViewChild('callDialog', { static: false }) dialogContent!: TemplateRef<any>;
 
   constructor(
     private realtimeService: RealtimeService,
@@ -45,7 +56,8 @@ export class ChatComponent {
     private userService: UserService,
     private authService: AuthService,
     private chatService: ChatService,
-    private voiceCallService: VoiceCallService
+    private voiceCallService: VoiceCallService,
+    private callDialog: MatDialog
   ) {
     this.user = authService.user()?.user!;
   }

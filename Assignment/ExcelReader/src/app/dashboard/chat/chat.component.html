@@ -1,7 +1,5 @@
 <!-- Mobile Version -->
 <div class="container">
-
-
   @if (!selectedUser()) {
   <app-user-list
     [users]="onlineUsers()"
@@ -28,3 +26,8 @@
     }
   </div>
 </div>
+
+
+<ng-template #callDialog>
+  Incoming call from ID {{callUser()}}
+</ng-template>
