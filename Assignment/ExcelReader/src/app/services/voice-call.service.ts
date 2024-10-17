@@ -71,7 +71,22 @@ export class VoiceCallService extends BaseNetworkService {
       disableClose: true,
     });
     this.currentDialog.afterClosed().subscribe(() => {});
-
+    return new Promise((resolve) => {
+      this.currentDialog.componentInstance.actionEvent.subscribe(
+        (result: string) => {
+          if (result === 'accepted') {
+            console.log('Call accepted');
+            this.userSelection?.set('accepted');
+            resolve('accepted');
+          } else if (result === 'rejected') {
+            console.log('Call rejected');
+            resolve('rejected');
+            this.userSelection?.set('rejected');
+            this.endCall();
+          }
+        }
+      );
+    });
     this.currentDialog.componentInstance.actionEvent.subscribe(
       (result: string) => {
         if (result === 'accepted') {
@@ -194,37 +209,35 @@ export class VoiceCallService extends BaseNetworkService {
       } else if (parsedSignal.type) {
         switch (parsedSignal.type) {
           case 'answer':
-            await this.showDialogAndGetAction(
+            this.showDialogAndGetAction(
               'Outgoing call',
               'Calling ' + this.callUserName() + ' ...',
               false
-            );
-            if (this.userSelection && this.userSelection() == 'accepted') {
-              //user consented
-              await this.handleAnswer(parsedSignal);
-            } else if (
-              this.userSelection &&
-              this.userSelection() == 'rejected'
-            ) {
-              this.endCall();
-            }
+            ).then((value) => {
+              if (value == 'accepted') {
+                //user consented
+                this.handleAnswer(parsedSignal);
+              } else if (value == 'rejected') {
+                this.endCall();
+              }
+            });
+
             break;
           case 'offer':
-            const action2 = await this.showDialogAndGetAction(
+            this.showDialogAndGetAction(
               'Incoming call',
               'Calling ' + this.callUserName() + ' ...',
               true,
               true
-            );
-            if (this.userSelection && this.userSelection() == 'accepted') {
-              //user consented
-              await this.handleOffer(parsedSignal, remoteData);
-            } else if (
-              this.userSelection &&
-              this.userSelection() == 'rejected'
-            ) {
-              this.endCall();
-            }
+            ).then((value) => {
+              if (value == 'accepted') {
+                //user consented
+                this.handleOffer(parsedSignal, remoteData);
+              } else if (value == 'rejected') {
+                this.endCall();
+              }
+            });
+
             break;
         }
       }
