@@ -1,73 +1,78 @@
 import { Injectable, signal } from '@angular/core';
-import { ChatMessageModel, ChatRepositoryModel, ChatUserLimited } from '../app.models';
+import {
+  ChatMessageModel,
+  ChatRepositoryModel,
+  ChatUserLimited,
+} from '../app.models';
 import { AuthService } from './auth.service';
 import { VoiceCallService } from './voice-call.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ChatService {
-  private chatRepository = signal<ChatRepositoryModel[]>([])
-  private selectedUser = signal<ChatUserLimited | null>(null)
-  constructor(private authService: AuthService, private voiceCallService: VoiceCallService) { }
-
+  private chatRepository = signal<ChatRepositoryModel[]>([]);
+  private selectedUser = signal<ChatUserLimited | null>(null);
+  constructor(
+    private authService: AuthService,
+    private voiceCallService: VoiceCallService
+  ) {}
 
   get chats() {
-    return this.chatRepository.asReadonly()
+    return this.chatRepository.asReadonly();
   }
   get currentUser() {
-    return this.selectedUser.asReadonly()
+    return this.selectedUser.asReadonly();
   }
 
   setCurrentUser(cuser: ChatUserLimited | null) {
+    this.markChatViewed(cuser?.id);
 
-    this.markChatViewed(cuser?.id)
-
-
-    this.selectedUser.set(cuser)
+    this.selectedUser.set(cuser);
   }
 
   markChatViewed(recpId: number | undefined | null) {
     if (!recpId) {
-      return
+      return;
     }
     const repository = [...this.chatRepository()];
-    const index = repository.findIndex(c => c.recpId == recpId)
+    const index = repository.findIndex((c) => c.recpId == recpId);
     if (index != -1) {
       repository[index].chatList.forEach((ch, idx) => {
-        repository[index].chatList[idx].didView = true
-      })
+        repository[index].chatList[idx].didView = true;
+      });
       this.chatRepository.set(repository);
     }
-
   }
-
 
   storeChat(chat: ChatMessageModel, recpId: number) {
     const repository = [...this.chatRepository()];
-    chat.didView = (this.selectedUser()?.id == chat.from || this.authService.user()?.user.id == chat.from);
+    chat.didView =
+      this.selectedUser()?.id == chat.from ||
+      this.authService.user()?.user.id == chat.from;
     //find the receiver
-    const recv = repository.findIndex(r => r.recpId == recpId)
+    const recv = repository.findIndex((r) => r.recpId == recpId);
     if (recv == -1) {
       //add a new repo
-      repository.push({ recpId: recpId, chatList: [chat] } as ChatRepositoryModel)
+      repository.push({
+        recpId: recpId,
+        chatList: [chat],
+      } as ChatRepositoryModel);
     } else {
       //update
-      repository[recv].chatList.push(chat)
+      repository[recv].chatList.push(chat);
     }
     //change the signal
     this.chatRepository.set(repository);
   }
 
   callUser() {
-    this.voiceCallService.startCall(this.currentUser()?.id!)
+    this.voiceCallService.startCall(
+      this.currentUser()?.id!,
+      this.currentUser()?.name!
+    );
   }
   endCall() {
-    this.voiceCallService.endCall()
+    this.voiceCallService.endCall();
   }
-
-
-
-
-
 }
