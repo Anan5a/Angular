@@ -20,7 +20,6 @@ export class VoiceCallService extends BaseNetworkService {
   public callState = signal<'idle' | 'in-call' | 'calling' | 'disconnected'>(
     'idle'
   );
-  public notificationBus = signal<''>('');
   private rtcConfig: RTCConfiguration = {
     iceServers: [
       {
@@ -52,12 +51,13 @@ export class VoiceCallService extends BaseNetworkService {
   constructor(httpClient: HttpClient, private callDialog: MatDialog) {
     super(httpClient);
   }
+
   private showDialogAndGetAction(
     title: string,
     message: string,
     showAccept: boolean = true,
     showReject: boolean = true
-  ) {
+  ): Promise<string> {
     if (this.currentDialog) {
       this.currentDialog.close();
     }
@@ -71,43 +71,44 @@ export class VoiceCallService extends BaseNetworkService {
       },
       disableClose: true,
     });
-    this.currentDialog.afterClosed().subscribe(() => {});
+
     return new Promise((resolve) => {
-      this.currentDialog.componentInstance.actionEvent.subscribe(
-        (result: string) => {
-          if (result === 'accepted') {
-            console.log('Call accepted');
-            this.userSelection?.set('accepted');
-            resolve('accepted');
-          } else if (result === 'rejected') {
-            console.log('Call rejected');
-            resolve('rejected');
-            this.userSelection?.set('rejected');
-            this.endCall();
+      const subscription =
+        this.currentDialog.componentInstance.actionEvent.subscribe(
+          (result: string) => {
+            if (result === 'accepted') {
+              console.log('Call accepted');
+              this.userSelection?.set('accepted');
+              resolve('accepted');
+            } else if (result === 'rejected') {
+              console.log('Call rejected');
+              this.userSelection?.set('rejected');
+              this.endCall();
+              resolve('rejected');
+            }
           }
-        }
-      );
+        );
+
+      // this.currentDialog.afterClosed().subscribe(() => {
+      //   subscription.unsubscribe(); // Clean up subscription
+      // });
     });
   }
 
   public async startCall(userId: number, userName: string) {
     if (this.callState() !== 'idle') {
+      alert('Cannot call. Incosistent state.');
       console.warn('Cannot start call: already in a call.');
       return;
     }
     this.callUserId.set(userId);
     this.callUserName.set(userName);
     this.callState.set('calling');
-    //show outgoing call dialog
 
     await this.setupLocalStream();
     await this.createAndSendOffer(userId);
-    const action = await this.showDialogAndGetAction(
-      'Outgoing call',
-      'Calling ' + this.callUserName() + ' ...',
-      false, //caller should not have accept button
-      true
-    );
+    this.wasAnswerSent = true;
+    this.userSelection?.set('accepted');
   }
 
   private async setupLocalStream() {
@@ -180,54 +181,28 @@ export class VoiceCallService extends BaseNetworkService {
   async handleRTCSignal(remoteData: {}) {
     const parsedSignal = JSON.parse(atob((remoteData as any).callData));
 
-    //this was the bug :'( How were I going to answer without knowing who's calling...
-    if (this.callUserId() == 0) {
+    if (this.callUserId() === 0) {
       console.log('Set incoming caller id...');
       //@ts-ignore
-      this.callUserId.set(remoteData.metadata.targetUserId as number);
+      this.callUserId.set(remoteData.metadata.targetUserId);
       //@ts-ignore
-      this.callUserName.set(remoteData.metadata.targetUserName as string);
+      this.callUserName.set(remoteData.metadata.targetUserName);
     }
 
     try {
       if (parsedSignal.candidate) {
-        if (this.peerConnection && this.wasAnswerSent) {
+        if (this.peerConnection) {
           console.log('Remote ICE candidate...');
           await this.handleIceCandidate(parsedSignal);
         }
       } else if (parsedSignal.type) {
         switch (parsedSignal.type) {
           case 'answer':
-            this.showDialogAndGetAction(
-              'Outgoing call',
-              'Calling ' + this.callUserName() + ' ...',
-              false
-            ).then((value) => {
-              if (value == 'accepted') {
-                //user consented
-                this.wasAnswerSent = true;
-                this.handleAnswer(parsedSignal);
-              } else if (value == 'rejected') {
-                this.endCall();
-              }
-            });
-
+            await this.handleAnswer(parsedSignal);
             break;
-          case 'offer':
-            this.showDialogAndGetAction(
-              'Incoming call',
-              'Calling ' + this.callUserName() + ' ...',
-              true,
-              true
-            ).then((value) => {
-              if (value == 'accepted') {
-                //user consented
-                this.handleOffer(parsedSignal, remoteData);
-              } else if (value == 'rejected') {
-                this.endCall();
-              }
-            });
 
+          case 'offer':
+            await this.handleOffer(parsedSignal, remoteData);
             break;
         }
       }
@@ -237,7 +212,6 @@ export class VoiceCallService extends BaseNetworkService {
   }
 
   private async handleAnswer(answer: RTCSessionDescriptionInit) {
-    //show that call was accepted
     if (this.isPeerConnectionOpen()) {
       console.log('Handling answer');
       await this.peerConnection?.setRemoteDescription(
@@ -247,8 +221,6 @@ export class VoiceCallService extends BaseNetworkService {
   }
 
   private async handleOffer(offer: RTCSessionDescriptionInit, remoteData: any) {
-    //show incoming notification to user
-
     if (!this.peerConnection) {
       await this.setupLocalStream();
     }
@@ -265,7 +237,6 @@ export class VoiceCallService extends BaseNetworkService {
   }
 
   private async handleIceCandidate(candidate: RTCIceCandidateInit) {
-    //show notification that connection is being established
     if (this.isPeerConnectionOpen()) {
       console.log('Handling ICE candidate');
       await this.peerConnection?.addIceCandidate(
@@ -284,20 +255,17 @@ export class VoiceCallService extends BaseNetworkService {
   }
 
   private handleConnectionStateChange() {
-    //show change of the connection state
-    console.log('Connection State:', this.peerConnection?.iceConnectionState);
-    switch (this.peerConnection?.iceConnectionState) {
+    const state = this.peerConnection?.iceConnectionState;
+    console.log('Connection State:', state);
+    switch (state) {
       case 'connected':
         console.log('Peers connected!');
         this.callState.set('in-call');
         break;
       case 'disconnected':
       case 'failed':
-        console.error(
-          'Connection ' + this.peerConnection?.iceConnectionState + '...'
-        );
+        console.error('Connection ' + state + '...');
         this.endCall();
-
         break;
     }
   }
