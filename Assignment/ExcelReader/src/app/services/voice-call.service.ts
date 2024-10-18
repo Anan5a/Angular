@@ -121,6 +121,7 @@ export class VoiceCallService extends BaseNetworkService {
             null,
             false,
             false,
+            true,
             true
           );
         }
@@ -137,10 +138,13 @@ export class VoiceCallService extends BaseNetworkService {
     callback: any = null,
     showAccept: boolean = false,
     showReject: boolean = false,
-    showCancel: boolean = false
+    showCancel: boolean = false,
+    forceCloseDialog = false
   ) {
-    if (this.currentDialog) {
+    if (this.currentDialog && !forceCloseDialog) {
       return;
+    } else {
+      this.currentDialog.close();
     }
 
     this.currentDialog = this.callDialog.open(CallDialogComponent, {
