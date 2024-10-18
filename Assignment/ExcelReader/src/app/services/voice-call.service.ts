@@ -276,6 +276,14 @@ export class VoiceCallService extends BaseNetworkService {
       //@ts-ignore
       this.callUserName.set(remoteData.metadata.targetUserName);
     }
+    //check if we got a call request answer
+    if (((remoteData as any).callData as string).split(':').length > 2) {
+      //we got answer
+      console.log('Outgoing call answer...');
+      this.handleCallAnswer(remoteData);
+      return;
+    }
+
     //check if we got a call request
     if (((remoteData as any).callData as string).substring(0, 4) === 'call') {
       //yes, show notification and send answer
