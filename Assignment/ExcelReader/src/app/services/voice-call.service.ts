@@ -152,7 +152,7 @@ export class VoiceCallService extends BaseNetworkService {
           this.userSelection?.set('rejected');
           this.endCall();
         }
-        if (callback) {
+        if (callback != null) {
           console.log('invoke callback');
           callback();
         }
