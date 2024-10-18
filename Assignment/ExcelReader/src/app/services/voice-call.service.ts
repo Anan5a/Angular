@@ -5,7 +5,6 @@ import { ApiBaseUrl } from '../../constants';
 import { RTCConnModel, RTCRequestResponseModel } from '../app.models';
 import { MatDialog } from '@angular/material/dialog';
 import { CallDialogComponent } from '../dashboard/chat/call-dialog/call-dialog.component';
-import { RealtimeService } from './realtime.service';
 
 @Injectable({
   providedIn: 'root',
@@ -154,7 +153,8 @@ export class VoiceCallService extends BaseNetworkService {
           this.endCall();
         }
         if (callback) {
-          callback(result);
+          console.log('invoke callback');
+          callback();
         }
       }
     );
