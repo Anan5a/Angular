@@ -110,7 +110,10 @@ export class VoiceCallService extends BaseNetworkService {
       'Call from ' + this.callUserName() + '...',
       () => {
         if (this.userSelection && this.userSelection() == 'accepted') {
-          this.sendCallOfferAnswer(this.callUserId(), this.userSelection()!);
+          this.sendCallOfferAnswer(
+            this.callUserId(),
+            this.userSelection()!
+          ).subscribe();
         }
       },
       true,
