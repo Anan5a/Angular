@@ -84,6 +84,7 @@ export class VoiceCallService extends BaseNetworkService {
         true
       );
       this.endCall();
+      return;
     }
 
     this.showDialogAndGetAction(
@@ -114,6 +115,14 @@ export class VoiceCallService extends BaseNetworkService {
             this.callUserId(),
             this.userSelection()!
           ).subscribe();
+          this.showDialogAndGetAction(
+            'Ongoing call',
+            'Call from ' + this.callUserName() + '...',
+            null,
+            false,
+            false,
+            true
+          );
         }
       },
       true,
@@ -173,19 +182,38 @@ export class VoiceCallService extends BaseNetworkService {
       console.warn('Cannot start call: already in a call.');
       return;
     }
-    this.callUserId.set(userId);
-    this.callUserName.set(userName);
-    this.callState.set('calling');
-    //show a calling dialog and wait till we receive answer from other end
-    await this.showDialogAndGetAction(
-      'Outgoing call',
-      'Calling ' + this.callUserName() + '...',
-      null,
-      false,
-      false,
-      true
-    );
-    this.sendCallOffer(userId, '').subscribe();
+
+    this.checkMicAccess().then((accessGranted) => {
+      if (accessGranted) {
+        this.callUserId.set(userId);
+        this.callUserName.set(userName);
+        this.callState.set('calling');
+        //show a calling dialog and wait till we receive answer from other end
+
+        this.showDialogAndGetAction(
+          'Outgoing call',
+          'Calling ' + this.callUserName() + '...',
+          null,
+          false,
+          false,
+          true
+        );
+        this.sendCallOffer(userId, '').subscribe();
+      } else {
+        alert('Microphone access is required.');
+      }
+    });
+  }
+
+  async checkMicAccess() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach((track) => track.stop());
+      return true;
+    } catch (error) {
+      console.error('Microphone access denied:', error);
+      return false;
+    }
   }
 
   private async setupLocalStream() {
