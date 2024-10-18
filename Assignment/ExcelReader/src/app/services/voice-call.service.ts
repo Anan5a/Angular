@@ -177,6 +177,7 @@ export class VoiceCallService extends BaseNetworkService {
     await this.showDialogAndGetAction(
       'Outgoing call',
       'Calling ' + this.callUserName() + '...',
+      null,
       false,
       false,
       true
