@@ -143,8 +143,8 @@ export class VoiceCallService extends BaseNetworkService {
   ) {
     if (this.currentDialog && !forceCloseDialog) {
       return;
-    } else {
-      this.currentDialog.close();
+    } else if (forceCloseDialog) {
+      this.currentDialog?.close();
     }
 
     this.currentDialog = this.callDialog.open(CallDialogComponent, {
