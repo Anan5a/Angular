@@ -265,17 +265,19 @@ export class VoiceCallService extends BaseNetworkService {
   }
 
   async handleRTCSignal(remoteData: {}) {
-    //check if we got a call request
-    if (((remoteData as any).callData as string).substring(0, 4) === 'call') {
-      //yes, show notification and send answer
-    }
-
     if (this.callUserId() === 0) {
       console.log('Set incoming caller id...');
       //@ts-ignore
       this.callUserId.set(remoteData.metadata.targetUserId);
       //@ts-ignore
       this.callUserName.set(remoteData.metadata.targetUserName);
+    }
+    //check if we got a call request
+    if (((remoteData as any).callData as string).substring(0, 4) === 'call') {
+      //yes, show notification and send answer
+      console.log('Incoming call request...');
+      this.handleCallRequest(remoteData);
+      return;
     }
 
     const parsedSignal = JSON.parse(atob((remoteData as any).callData));
