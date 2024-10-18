@@ -71,9 +71,8 @@ export class VoiceCallService extends BaseNetworkService {
       this.endCall();
     }
 
-    this.currentDialog?.close();
-
     if (parts[2] == 'rejected') {
+      this.currentDialog?.close();
       console.warn('Call was rejected by remote, exiting...');
       this.showDialogAndGetAction(
         'Call rejected',
