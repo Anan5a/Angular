@@ -23,6 +23,7 @@ export class CallDialogComponent {
       message: string;
       showAccept: boolean;
       showReject: boolean;
+      showCancel: boolean;
     },
     private voiceCallService: VoiceCallService
   ) {}
@@ -34,6 +35,7 @@ export class CallDialogComponent {
 
   onReject(): void {
     this.actionEvent.emit('rejected');
+    this.dialogRef.close();
   }
   onCancel(): void {
     this.voiceCallService.endCall();

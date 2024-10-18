@@ -14,9 +14,14 @@
         <mat-icon>call_missed</mat-icon> Reject
       </button>
       }
+      @if (data.showCancel) {
+      <button mat-button color="warn" (click)="onReject()">
+        <mat-icon>call_missed</mat-icon> Cancel
+      </button>
+      }
     </div>
   </div>
   <div mat-dialog-actions>
-    <button mat-button (click)="onCancel()">Close</button>
+    <!-- <button mat-button (click)="onCancel()">Close</button> -->
   </div>
 </div>
