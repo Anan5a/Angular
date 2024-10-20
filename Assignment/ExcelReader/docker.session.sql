@@ -25,10 +25,10 @@ CREATE TABLE [roles] (
 	CONSTRAINT CK_Role_ValidRoles CHECK (role_name IN ('super_admin','admin', 'user', 'guest'))
 );
 
-CREATE TABLE [file_metadata] (
+CREATE TABLE [file_metadata] (	
 	[id] bigint IDENTITY(1,1) NOT NULL UNIQUE,
-	[file_name] nvarchar(32) NOT NULL,
-	[file_name_system] nvarchar(32) NOT NULL UNIQUE,
+	[file_name] nvarchar(255) NOT NULL,
+	[file_name_system] nvarchar(255) NOT NULL UNIQUE,
 	[user_id] bigint NOT NULL,
 	[filesize_bytes] bigint ,
 	[created_at] datetime2(7) NOT NULL,
