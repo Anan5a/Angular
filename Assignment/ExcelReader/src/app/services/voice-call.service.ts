@@ -15,7 +15,7 @@ export class VoiceCallService extends BaseNetworkService {
   public callUserId = signal(0);
   public callUserName = signal('');
   private currentDialog: any;
-  private userSelection? = signal<'accepted' | 'rejected' | null>(null);
+  private userSelection = signal<'accepted' | 'rejected' | null>(null);
   private callId = 'call:' + Math.random().toString().substring(0, 8);
   public callState = signal<'idle' | 'in-call' | 'calling' | 'disconnected'>(
     'idle'
@@ -126,7 +126,7 @@ export class VoiceCallService extends BaseNetworkService {
       this.showDialogAndGetAction(
         'Ongoing call',
         'Call from ' + this.callUserName() + '...',
-        this.callback,
+        null,
         false,
         false,
         true,
@@ -176,10 +176,10 @@ export class VoiceCallService extends BaseNetworkService {
       (result: string) => {
         if (result === 'accepted') {
           console.log('Call accepted');
-          this.userSelection?.set('accepted');
+          this.userSelection.set('accepted');
         } else if (result === 'rejected') {
           console.log('Call rejected');
-          this.userSelection?.set('rejected');
+          this.userSelection.set('rejected');
         }
         if (callback != null) {
           console.log('invoke callback');

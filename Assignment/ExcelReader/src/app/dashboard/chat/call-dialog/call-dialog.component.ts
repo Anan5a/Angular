@@ -38,6 +38,7 @@ export class CallDialogComponent {
     this.dialogRef.close();
   }
   onCancel(): void {
+    this.actionEvent.emit('rejected');
     this.voiceCallService.endCall();
     this.dialogRef.close();
   }
