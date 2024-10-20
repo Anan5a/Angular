@@ -114,7 +114,7 @@ export class VoiceCallService extends BaseNetworkService {
       false
     );
   }
-  private callback() {
+  private callback = () => {
     if (this.userSelection() == 'accepted') {
       this.sendCallOfferAnswer(
         this.callUserId(),
@@ -139,7 +139,7 @@ export class VoiceCallService extends BaseNetworkService {
 
       this.endCall();
     }
-  }
+  };
   private showDialogAndGetAction(
     title: string,
     message: string,
