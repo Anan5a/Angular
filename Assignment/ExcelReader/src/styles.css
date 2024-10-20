@@ -41,3 +41,7 @@ body {
 .hidden {
   display: none;
 }
+.mat-progress-spinner circle,
+.mat-spinner circle {
+  stroke: #797980;
+}
