@@ -123,7 +123,7 @@ export class VoiceCallService extends BaseNetworkService {
       this.showDialogAndGetAction(
         'Ongoing call',
         'Call from ' + this.callUserName() + '...',
-        null,
+        this.callback,
         false,
         false,
         true,
