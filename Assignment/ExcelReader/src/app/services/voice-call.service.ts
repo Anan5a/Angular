@@ -115,7 +115,10 @@ export class VoiceCallService extends BaseNetworkService {
     );
   }
   private callback() {
-    if (this.userSelection && this.userSelection() == 'accepted') {
+    if (
+      typeof this.userSelection != 'undefined' &&
+      this.userSelection() == 'accepted'
+    ) {
       this.sendCallOfferAnswer(
         this.callUserId(),
         this.userSelection()!
@@ -130,7 +133,10 @@ export class VoiceCallService extends BaseNetworkService {
         true
       );
     }
-    if (this.userSelection && this.userSelection() == 'rejected') {
+    if (
+      typeof this.userSelection != 'undefined' &&
+      this.userSelection() == 'rejected'
+    ) {
       console.log('rejecting...');
       this.sendCallOfferAnswer(
         this.callUserId(),
