@@ -436,6 +436,8 @@ export class VoiceCallService extends BaseNetworkService {
     this.peerConnection = null;
     this.callState.set('idle');
     this.userSelection?.set(null);
+    this.callUserId.set(0);
+    this.callUserName.set('');
     this.callId = 'call:' + Math.random().toString().substring(0, 8);
     console.info('Call ended.');
   }
