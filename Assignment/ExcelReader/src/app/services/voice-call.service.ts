@@ -123,11 +123,15 @@ export class VoiceCallService extends BaseNetworkService {
             true,
             true
           );
-        } else if (this.userSelection && this.userSelection() == 'rejected') {
+        }
+        if (this.userSelection && this.userSelection() == 'rejected') {
+          console.log('rejecting...');
           this.sendCallOfferAnswer(
             this.callUserId(),
             this.userSelection()!
           ).subscribe();
+
+          this.endCall();
         }
       },
       true,
@@ -170,7 +174,6 @@ export class VoiceCallService extends BaseNetworkService {
         } else if (result === 'rejected') {
           console.log('Call rejected');
           this.userSelection?.set('rejected');
-          this.endCall();
         }
         if (callback != null) {
           console.log('invoke callback');
