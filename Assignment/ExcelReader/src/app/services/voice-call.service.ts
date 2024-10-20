@@ -77,7 +77,7 @@ export class VoiceCallService extends BaseNetworkService {
       this.showDialogAndGetAction(
         'Call rejected',
         'Call with ' + this.callUserName() + '...',
-        null,
+        this.callback,
         false,
         false,
         true
@@ -123,7 +123,7 @@ export class VoiceCallService extends BaseNetworkService {
       this.showDialogAndGetAction(
         'Ongoing call',
         'Call from ' + this.callUserName() + '...',
-        null,
+        this.callback,
         false,
         false,
         true,
@@ -204,7 +204,7 @@ export class VoiceCallService extends BaseNetworkService {
         this.showDialogAndGetAction(
           'Outgoing call',
           'Calling ' + this.callUserName() + '...',
-          null,
+          this.callback,
           false,
           false,
           true
