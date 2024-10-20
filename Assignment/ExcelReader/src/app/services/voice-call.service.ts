@@ -89,7 +89,7 @@ export class VoiceCallService extends BaseNetworkService {
     this.showDialogAndGetAction(
       'Ongoing call',
       'In call with ' + this.callUserName() + '...',
-      null,
+      this.callback,
       false,
       false,
       true
@@ -108,38 +108,38 @@ export class VoiceCallService extends BaseNetworkService {
     this.showDialogAndGetAction(
       'Incoming call',
       'Call from ' + this.callUserName() + '...',
-      () => {
-        if (this.userSelection && this.userSelection() == 'accepted') {
-          this.sendCallOfferAnswer(
-            this.callUserId(),
-            this.userSelection()!
-          ).subscribe();
-          this.showDialogAndGetAction(
-            'Ongoing call',
-            'Call from ' + this.callUserName() + '...',
-            null,
-            false,
-            false,
-            true,
-            true
-          );
-        }
-        if (this.userSelection && this.userSelection() == 'rejected') {
-          console.log('rejecting...');
-          this.sendCallOfferAnswer(
-            this.callUserId(),
-            this.userSelection()!
-          ).subscribe();
-
-          this.endCall();
-        }
-      },
+      this.callback,
       true,
       true,
       false
     );
   }
+  private callback() {
+    if (this.userSelection && this.userSelection() == 'accepted') {
+      this.sendCallOfferAnswer(
+        this.callUserId(),
+        this.userSelection()!
+      ).subscribe();
+      this.showDialogAndGetAction(
+        'Ongoing call',
+        'Call from ' + this.callUserName() + '...',
+        null,
+        false,
+        false,
+        true,
+        true
+      );
+    }
+    if (this.userSelection && this.userSelection() == 'rejected') {
+      console.log('rejecting...');
+      this.sendCallOfferAnswer(
+        this.callUserId(),
+        this.userSelection()!
+      ).subscribe();
 
+      this.endCall();
+    }
+  }
   private showDialogAndGetAction(
     title: string,
     message: string,
