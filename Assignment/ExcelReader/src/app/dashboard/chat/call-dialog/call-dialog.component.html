@@ -3,25 +3,27 @@
   <div mat-dialog-content>
     <p>{{ data.message || "Call ongoing..." }}</p>
     <!-- data?.callStatus || -->
-    <p>status of the call</p>
+    <!-- <p>status of the call</p> -->
     <div class="button-container">
       @if (data.showAccept) {
       <button mat-button color="primary" (click)="onAccept()">
-        <mat-icon>call_received</mat-icon> Accept
+        <mat-icon>phone_in_talk</mat-icon> Answer
       </button>
       } @if (data.showReject) {
       <button mat-button color="warn" (click)="onReject()">
-        <mat-icon>call_missed</mat-icon> Reject
+        <mat-icon>call_end</mat-icon> Hang up
       </button>
-      }
-      @if (data.showCancel) {
+      } @if (data.showCancel) {
       <button mat-button color="warn" (click)="onReject()">
-        <mat-icon>call_missed</mat-icon> Cancel
+        <mat-icon>call_end</mat-icon> Cancel
       </button>
       }
     </div>
   </div>
   <div mat-dialog-actions>
-    <!-- <button mat-button (click)="onCancel()">Close</button> -->
+    @if (!data.showAccept && !data.showCancel && !data.showReject) {
+    <!-- for some reason no action buttons were presented?  -->
+    <button mat-button (click)="onCancel()">Close</button>
+    }
   </div>
 </div>

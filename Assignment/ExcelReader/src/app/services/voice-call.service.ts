@@ -123,6 +123,11 @@ export class VoiceCallService extends BaseNetworkService {
             true,
             true
           );
+        } else if (this.userSelection && this.userSelection() == 'rejected') {
+          this.sendCallOfferAnswer(
+            this.callUserId(),
+            this.userSelection()!
+          ).subscribe();
         }
       },
       true,
@@ -272,10 +277,10 @@ export class VoiceCallService extends BaseNetworkService {
       'Failed to call user!'
     );
   }
-  public sendCallOfferAnswer(userId: number, offer: string) {
+  public sendCallOfferAnswer(userId: number, offer: string, callId?: string) {
     return this.post<RTCConnModel, RTCRequestResponseModel>(
       `${ApiBaseUrl}/Calling/offerCallRequestAnswer`,
-      { targetUserId: userId, data: this.callId + ':' + offer },
+      { targetUserId: userId, data: (callId ?? this.callId) + ':' + offer },
       'Failed to call user!'
     );
   }
@@ -319,6 +324,23 @@ export class VoiceCallService extends BaseNetworkService {
     if (((remoteData as any).callData as string).substring(0, 4) === 'call') {
       //yes, show notification and send answer
       console.log('Incoming call request...');
+      //first check if we are in call already
+      if (
+        this.callState() != 'idle' &&
+        ((remoteData as any).callData as string).split(':').length > 1
+      ) {
+        //already in-call, reject by default
+        console.log('In-call, rejecting...');
+
+        this.sendCallOfferAnswer(
+          //@ts-ignore
+          remoteData.metadata.targetUserId,
+          'rejected',
+          ((remoteData as any).callData as string).split(':')[1]
+        ).subscribe();
+        return;
+      }
+
       this.handleCallRequest(remoteData);
       return;
     }
