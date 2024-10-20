@@ -80,6 +80,7 @@ export class VoiceCallService extends BaseNetworkService {
         this.callback,
         false,
         false,
+        true,
         true
       );
       this.endCall();
