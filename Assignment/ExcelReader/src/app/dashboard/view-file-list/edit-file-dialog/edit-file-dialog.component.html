@@ -1,37 +1,35 @@
 <div class="dialog-container">
   <h1 mat-dialog-title>Change filename</h1>
   <div mat-dialog-content>
-    <h4 *ngIf="errorMessage"><mat-error>{{errorMessage}}</mat-error></h4>
+    <h4 *ngIf="errorMessage">
+      <mat-error>{{ errorMessage }}</mat-error>
+    </h4>
 
     <form [formGroup]="form">
-      <mat-form-field
-        appearance="outline"
-        class="full-width"
-      >
+      <mat-form-field appearance="outline" class="full-width">
         <mat-label>Filename</mat-label>
         <input
           matInput
           formControlName="fileName"
           type="text"
-          [value]="data.fileMeta.fileName||''"
+          [value]="data.fileMeta.fileName || ''"
+        />
+        <mat-hint
+          >Hint: document.xlsx, No whitespace or special characters</mat-hint
         >
-        <mat-hint>Hint: document.xlsx, No whitespace or special
-          characters</mat-hint>
       </mat-form-field>
-
     </form>
   </div>
   <div mat-dialog-actions>
-    <button
-      mat-button
-      (click)="onCancel()"
-    >Cancel</button>
+    <button mat-button (click)="onCancel()">Cancel</button>
     <button
       mat-button
       [disabled]="form.invalid"
       color="primary"
       (click)="onSave()"
-    >Save</button>
+    >
+      Save
+      <mat-spinner *ngIf="showSpinner" [diameter]="16"></mat-spinner>
+    </button>
   </div>
-
 </div>

@@ -3,52 +3,46 @@
 <div
   *ngIf="!responseSuccess"
   class="center flex-container max-500"
-  style="flex-direction:column;"
+  style="flex-direction: column"
 >
-  <mat-form-field
-    appearance="outline"
-    class="full-width max-500"
-  >
-    <h2 *ngIf="errorMessage"><mat-error>{{errorMessage}}</mat-error>
+  <mat-form-field appearance="outline" class="full-width max-500">
+    <h2 *ngIf="errorMessage">
+      <mat-error>{{ errorMessage }}</mat-error>
     </h2>
     <mat-label>Select a file</mat-label>
     <div class="file-upload-wrapper">
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="triggerFileInput()"
-      >
+      <button mat-raised-button color="primary" (click)="triggerFileInput()">
         <mat-icon>attach_file_add</mat-icon>
-        Select file</button>
+        Select file
+      </button>
       <input
         matInput
         [value]="inputFileName || 'Choose a file...'"
         readonly
         placeholder="Choose a file"
-      >
+      />
       <input
         #fileUpload
         type="file"
         class="hidden"
         (change)="onFileChange($event)"
         [accept]="accept"
-      >
+      />
     </div>
   </mat-form-field>
-  <mat-form-field
-    appearance="outline"
-    class="full-width"
-  >
+  <mat-form-field appearance="outline" class="full-width">
     <mat-label>File name</mat-label>
     <input
       matInput
       placeholder="Enter a custom file name"
       [value]="fileNameCustom"
       [(ngModel)]="fileNameCustom"
-    >
+    />
     <mat-icon matSuffix>file</mat-icon>
-    <mat-hint>Hint: important-document.xlsx, No whitespace or special
-      characters</mat-hint>
+    <mat-hint
+      >Hint: important-document.xlsx, No whitespace or special
+      characters</mat-hint
+    >
   </mat-form-field>
 
   <mat-progress-bar
@@ -61,17 +55,20 @@
     class="right"
     [disabled]="form.invalid"
     (click)="onClickUpload()"
-  ><mat-icon>upload</mat-icon>Upload</button>
+  >
+    <mat-icon>upload</mat-icon>Upload
+    <mat-spinner *ngIf="progressActive" [diameter]="16"></mat-spinner>
+  </button>
 </div>
 <div
   *ngIf="responseSuccess"
   class="center flex-container max-500"
-  style="flex-direction:column;"
+  style="flex-direction: column"
 >
-  <h2 style="color: cadetblue;">File uploaded succesfully!</h2>
-  <h2><a
-      [routerLink]="['/view-list']"
-      routerLinkActive="router-link-active"
-    >View Files</a>
+  <h2 style="color: cadetblue">File uploaded succesfully!</h2>
+  <h2>
+    <a [routerLink]="['/view-list']" routerLinkActive="router-link-active"
+      >View Files</a
+    >
   </h2>
 </div>
