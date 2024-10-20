@@ -16,7 +16,7 @@ export class VoiceCallService extends BaseNetworkService {
   public callUserName = signal('');
   private currentDialog: any;
   private userSelection? = signal<'accepted' | 'rejected' | null>(null);
-  private callId = 'call:' + Math.random().toString().substring(0, 4);
+  private callId = 'call:' + Math.random().toString().substring(0, 8);
   public callState = signal<'idle' | 'in-call' | 'calling' | 'disconnected'>(
     'idle'
   );
@@ -433,7 +433,7 @@ export class VoiceCallService extends BaseNetworkService {
     this.peerConnection = null;
     this.callState.set('idle');
     this.userSelection?.set(null);
-    this.callId = 'call:' + Math.random().toString().substring(0, 4);
+    this.callId = 'call:' + Math.random().toString().substring(0, 8);
     console.info('Call ended.');
   }
 }
