@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, effect, OnInit, signal, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  effect,
+  OnInit,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -22,83 +29,113 @@ import { MatChipsModule } from '@angular/material/chips';
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [MatTableModule, MatInputModule, MatProgressSpinnerModule, FormsModule, MatPaginatorModule, MatIconModule, MatProgressBarModule, MatButtonModule, NgIf, DatePipe, MatButtonToggleModule, RouterLink, MatChipsModule],
+  imports: [
+    MatTableModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    FormsModule,
+    MatPaginatorModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatButtonModule,
+    NgIf,
+    DatePipe,
+    MatButtonToggleModule,
+    RouterLink,
+    MatChipsModule,
+  ],
   templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.css'
+  styleUrl: './user-list.component.css',
 })
 export class UserListComponent implements OnInit, AfterViewInit {
   disableExport = false;
 
   dataSource = new MatTableDataSource<User>([]);
 
-  remoteData = signal<User[]>([])
+  remoteData = signal<User[]>([]);
 
   searchText: string = '';
 
-  displayedColumns: string[] = ['id', 'name', 'email', 'create-date', 'status', 'role', ];
-  remoteDataLoaded = false
+  displayedColumns: string[] = [
+    'id',
+    'name',
+    'email',
+    'create-date',
+    'status',
+    'role',
+  ];
+  remoteDataLoaded = false;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private userService: UserService, private dialog: MatDialog, private toastrService: ToastrService) {
+  constructor(
+    private userService: UserService,
+    private dialog: MatDialog,
+    private toastrService: ToastrService
+  ) {
     effect(() => {
-      this.dataSource.data = this.remoteData()
-    })
-
+      this.dataSource.data = this.remoteData();
+    });
   }
 
   ngOnInit(): void {
     this.dataSource.filterPredicate = this.customFilter;
-    this.remoteDataLoaded = false
+    this.remoteDataLoaded = false;
     this.dataSource.paginator = this.paginator;
-    this.loadList()
+    this.loadList();
   }
 
-  ngAfterViewInit(): void {
-
-  }
+  ngAfterViewInit(): void {}
   customFilter = (data: User, filter: string) => {
-    return data.name != undefined ? data.name.toLowerCase()?.indexOf(filter.toLocaleLowerCase()) >= 0 : false;
-  };
+    const lowerCaseFilter = filter.toLowerCase();
 
+    return Object.values(data).some((value) => {
+      if (typeof value === 'string') {
+        return value.toLowerCase().includes(lowerCaseFilter);
+      }
+      return false;
+    });
+  };
 
   applyFilter() {
     this.dataSource.filter = this.searchText;
   }
   onDelete(fileId: number) {
-    if (window.confirm("The file will be deleted permanently")) {
-      this.remoteDataLoaded = false
+    if (window.confirm('The file will be deleted permanently')) {
+      this.remoteDataLoaded = false;
       this.userService.deleteFile(fileId).subscribe({
         next: (response) => {
-          this.remoteDataLoaded = true
-          this.toastrService.success(response?.data)
+          this.remoteDataLoaded = true;
+          this.toastrService.success(response?.data);
           //remove item from list
-          const newList = [...this.remoteData().filter((item) => item.id !== fileId)]
-          this.remoteData.set(newList)
-        }, error: () => {
-          this.remoteDataLoaded = false
-        }
-      })
+          const newList = [
+            ...this.remoteData().filter((item) => item.id !== fileId),
+          ];
+          this.remoteData.set(newList);
+        },
+        error: () => {
+          this.remoteDataLoaded = false;
+        },
+      });
     }
   }
 
   onDownload(fileId: number) {
-    this.remoteDataLoaded = false
+    this.remoteDataLoaded = false;
     this.userService.downloadFile(fileId).subscribe({
       next: (response) => {
-        this.toastrService.success("Download link generated successfully.")
+        this.toastrService.success('Download link generated successfully.');
 
         const downloadUrl = `${ApiBaseImageUrl}${response.data}`;
-        this.remoteDataLoaded = true
-        window.open(downloadUrl, '_blank')
-      }
-    })
+        this.remoteDataLoaded = true;
+        window.open(downloadUrl, '_blank');
+      },
+    });
   }
   onEdit(fileMeta: FileMetadataResponse) {
-
     const dialogRef = this.dialog.open(EditFileDialogComponent, {
       maxWidth: '500px',
       width: '450px',
-      data: { fileMeta }
+      data: { fileMeta },
     });
 
     // dialogRef.afterClosed().subscribe(result => {
@@ -112,7 +149,6 @@ export class UserListComponent implements OnInit, AfterViewInit {
     //     this.remoteData.set(oldList);
     //   }
     // });
-
   }
   onShare() {
     throw new Error('Method not implemented.');
@@ -121,28 +157,27 @@ export class UserListComponent implements OnInit, AfterViewInit {
   loadList() {
     this.userService.loadUsersList().subscribe({
       next: (response) => {
-        this.remoteDataLoaded = true
-        this.remoteData.set(response.data!)
+        this.remoteDataLoaded = true;
+        this.remoteData.set(response.data!);
       },
       error: (error) => {
-        this.remoteDataLoaded = true
-
-      }
-    })
+        this.remoteDataLoaded = true;
+      },
+    });
   }
   onClickExport() {
-    this.disableExport = true
+    this.disableExport = true;
     this.userService.exportAll().subscribe({
       next: (response) => {
-        console.log(response)
-        this.disableExport = false
-        this.downloadClientBlob(response)
+        console.log(response);
+        this.disableExport = false;
+        this.downloadClientBlob(response);
       },
       error: (error) => {
-        this.disableExport = false
-        window.alert("Failed to export the list!.");
-      }
-    })
+        this.disableExport = false;
+        window.alert('Failed to export the list!.');
+      },
+    });
   }
 
   private downloadClientBlob(blob: Blob, filename?: string) {
@@ -164,9 +199,4 @@ export class UserListComponent implements OnInit, AfterViewInit {
 
     return `${parseFloat((length / Math.pow(1024, i)).toFixed(2))} ${sizes[i]}`;
   }
-
-
-
-
-
 }

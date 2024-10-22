@@ -1,4 +1,12 @@
-import { AfterViewInit, Component, effect, Input, OnInit, signal, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  effect,
+  Input,
+  OnInit,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { FileEvent, FileMetadataResponse } from '../../app.models';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -21,112 +29,139 @@ import { RealtimeService } from '../../services/realtime.service';
 @Component({
   selector: 'app-view-file-list',
   standalone: true,
-  imports: [MatTableModule, MatInputModule, MatProgressSpinnerModule, FormsModule, MatPaginatorModule, MatIconModule, MatProgressBarModule, MatButtonModule, NgIf, DatePipe, MatButtonToggleModule, RouterLink],
+  imports: [
+    MatTableModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+    FormsModule,
+    MatPaginatorModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatButtonModule,
+    NgIf,
+    DatePipe,
+    MatButtonToggleModule,
+    RouterLink,
+  ],
   templateUrl: './view-file-list.component.html',
-  styleUrl: './view-file-list.component.css'
+  styleUrl: './view-file-list.component.css',
 })
 export class ViewFileListComponent implements OnInit, AfterViewInit {
-
-  @Input({ required: false }) showSystemFileList?: boolean
+  @Input({ required: false }) showSystemFileList?: boolean;
   disableExport = false;
 
   dataSource = new MatTableDataSource<FileMetadataResponse>([]);
 
-  remoteData = signal<FileMetadataResponse[]>([])
+  remoteData = signal<FileMetadataResponse[]>([]);
 
   searchText: string = '';
 
   displayedColumns: string[] = ['name', 'size', 'date', 'action'];
-  remoteDataLoaded = false
+  remoteDataLoaded = false;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-
-  pageTitle = "Files you uploaded"
-  constructor(private userService: UserService, private dialog: MatDialog, private toastrService: ToastrService, private realtimeService: RealtimeService, private activatedRoute: ActivatedRoute) {
+  pageTitle = 'Files you uploaded';
+  constructor(
+    private userService: UserService,
+    private dialog: MatDialog,
+    private toastrService: ToastrService,
+    private realtimeService: RealtimeService,
+    private activatedRoute: ActivatedRoute
+  ) {
     effect(() => {
-      this.dataSource.data = this.remoteData()
-    })
+      this.dataSource.data = this.remoteData();
+    });
 
     //configure realtime service for files
-    this.realtimeService.addReceiveMessageListener<FileEvent[]>('FileChannel', (fileEvent: FileEvent) => {
-      this.handleFileEvent(fileEvent)
-    })
+    this.realtimeService.addReceiveMessageListener<FileEvent[]>(
+      'FileChannel',
+      (fileEvent: FileEvent) => {
+        this.handleFileEvent(fileEvent);
+      }
+    );
   }
 
   ngOnInit(): void {
-
-
-    this.remoteDataLoaded = false
-    this.showSystemFileList = this.activatedRoute.snapshot.data['systemFiles'] || null
+    this.remoteDataLoaded = false;
+    this.showSystemFileList =
+      this.activatedRoute.snapshot.data['systemFiles'] || null;
     if (this.showSystemFileList) {
-      this.pageTitle = "Files in the system"
-      this.displayedColumns.splice(this.displayedColumns.length - 1, 0, 'user_name');
-
-
+      this.pageTitle = 'Files in the system';
+      this.displayedColumns.splice(
+        this.displayedColumns.length - 1,
+        0,
+        'user_name'
+      );
     }
 
-    this.loadList()
+    this.loadList();
   }
-
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
     this.dataSource.filterPredicate = this.customFilter;
   }
   customFilter = (data: FileMetadataResponse, filter: string) => {
-    return data.fileName != undefined ? data.fileName.toLowerCase()?.indexOf(filter.toLocaleLowerCase()) >= 0 : false;
-  };
+    const lowerCaseFilter = filter.toLowerCase();
 
+    return Object.values(data).some((value) => {
+      if (typeof value === 'string') {
+        return value.toLowerCase().includes(lowerCaseFilter);
+      }
+      return false;
+    });
+  };
 
   applyFilter() {
     this.dataSource.filter = this.searchText;
   }
   onDelete(fileId: number) {
-    if (window.confirm("The file will be deleted permanently")) {
-      this.remoteDataLoaded = false
+    if (window.confirm('The file will be deleted permanently')) {
+      this.remoteDataLoaded = false;
       this.userService.deleteFile(fileId).subscribe({
         next: (response) => {
-          this.remoteDataLoaded = true
-          this.toastrService.success(response?.data)
+          this.remoteDataLoaded = true;
+          this.toastrService.success(response?.data);
           //remove item from list
-          const newList = [...this.remoteData().filter((item) => item.id !== fileId)]
-          this.remoteData.set(newList)
+          const newList = [
+            ...this.remoteData().filter((item) => item.id !== fileId),
+          ];
+          this.remoteData.set(newList);
         },
         error: () => {
-          this.remoteDataLoaded = true
-        }
-      })
+          this.remoteDataLoaded = true;
+        },
+      });
     }
   }
 
   onDownload(fileId: number) {
-    this.remoteDataLoaded = false
+    this.remoteDataLoaded = false;
     this.userService.downloadFile(fileId).subscribe({
       next: (response) => {
-        this.toastrService.success("Download link generated successfully.")
+        this.toastrService.success('Download link generated successfully.');
 
         const downloadUrl = `${ApiBaseImageUrl}${response.data}`;
-        this.remoteDataLoaded = true
-        window.open(downloadUrl, '_blank')
+        this.remoteDataLoaded = true;
+        window.open(downloadUrl, '_blank');
       },
       error: (error) => {
-        this.remoteDataLoaded = true
+        this.remoteDataLoaded = true;
       },
-    })
+    });
   }
   onEdit(fileMeta: FileMetadataResponse) {
-
     const dialogRef = this.dialog.open(EditFileDialogComponent, {
       maxWidth: '500px',
       width: '450px',
-      data: { fileMeta }
+      data: { fileMeta },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result?.status === true) {
         //update list
-        const oldList = [... this.remoteData()];
-        const index = oldList.findIndex(item => item.id === fileMeta.id);
+        const oldList = [...this.remoteData()];
+        const index = oldList.findIndex((item) => item.id === fileMeta.id);
         if (index !== -1) {
           oldList[index].fileName = result?.fileName;
           // + '.' + oldList[index].fileName.split('.')[oldList[index].fileName.split('.').length - 1];
@@ -134,39 +169,35 @@ export class ViewFileListComponent implements OnInit, AfterViewInit {
         this.remoteData.set(oldList);
       }
     });
-
   }
   onShare() {
     throw new Error('Method not implemented.');
   }
 
   loadList() {
-
     this.userService.loadFileList(this.showSystemFileList).subscribe({
       next: (response) => {
-        this.remoteDataLoaded = true
-        this.remoteData.set(response.data!)
+        this.remoteDataLoaded = true;
+        this.remoteData.set(response.data!);
       },
       error: (error) => {
-        this.remoteDataLoaded = true
+        this.remoteDataLoaded = true;
       },
-
-
-    })
+    });
   }
   onClickExport() {
-    this.disableExport = true
+    this.disableExport = true;
     this.userService.exportAll().subscribe({
       next: (response) => {
-        console.log(response)
-        this.disableExport = false
-        this.downloadClientBlob(response)
+        console.log(response);
+        this.disableExport = false;
+        this.downloadClientBlob(response);
       },
       error: (error) => {
-        this.disableExport = false
-        window.alert("Failed to export the list!.");
-      }
-    })
+        this.disableExport = false;
+        window.alert('Failed to export the list!.');
+      },
+    });
   }
 
   private downloadClientBlob(blob: Blob, filename?: string) {
@@ -191,47 +222,40 @@ export class ViewFileListComponent implements OnInit, AfterViewInit {
 
   handleFileEvent(event: FileEvent) {
     // console.log(event)
-    this.toastrService.info(event.message)
+    this.toastrService.info(event.message);
 
     if (event.shouldRefetchList) {
       //re-fetch whole list
-      this.loadList()
-
+      this.loadList();
     }
     if (event.wasFileDeleted) {
       //remove from list
-      const newList = [...this.remoteData()].filter((item) => item.id !== event.fileId)
+      const newList = [...this.remoteData()].filter(
+        (item) => item.id !== event.fileId
+      );
 
-      this.remoteData.set(newList)
-
+      this.remoteData.set(newList);
     }
     if (event.wasFileModified && event.fileMetadata == null) {
       //update file from server
       this.userService.getFileById(event.fileId).subscribe({
         next: (response) => {
-          this.remoteDataLoaded = true
+          this.remoteDataLoaded = true;
           const oldList = [...this.remoteData()];
-          const index = oldList.findIndex(item => item.id === event.fileId);
+          const index = oldList.findIndex((item) => item.id === event.fileId);
           if (index !== -1) {
-            oldList[index] = response.data!
+            oldList[index] = response.data!;
           }
           this.remoteData.set(oldList);
         },
         error: (error) => {
-          this.remoteDataLoaded = true
-
-        }
-      })
-
+          this.remoteDataLoaded = true;
+        },
+      });
     }
     if (event.fileMetadata != null) {
-      const newList = [... this.remoteData(), event.fileMetadata]
-      this.remoteData.set(newList)
-
+      const newList = [...this.remoteData(), event.fileMetadata];
+      this.remoteData.set(newList);
     }
   }
-
-
-
-
 }
