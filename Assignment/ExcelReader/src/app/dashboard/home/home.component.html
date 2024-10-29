@@ -2,17 +2,17 @@
   <mat-card
     class="card card-image"
     [routerLink]="['/view-list']"
-    [style.backgroundImage]="'url(/files.png)'"
+    [style.backgroundImage]="'url(/ui/files.png)'"
   >
     <div class="overlay">
-      <p class="tile-text">My Files ({{dashboardData?.fileCount||0}})</p>
+      <p class="tile-text">My Files ({{ dashboardData?.fileCount || 0 }})</p>
     </div>
   </mat-card>
 
   <mat-card
     class="card card-image"
     [routerLink]="['/upload']"
-    [style.backgroundImage]="'url(/file-upload.png)'"
+    [style.backgroundImage]="'url(/ui/file-upload.png)'"
   >
     <div class="overlay">
       <p class="tile-text">Upload</p>
@@ -22,7 +22,7 @@
   <mat-card
     class="card card-image"
     [routerLink]="['/profile']"
-    [style.backgroundImage]="'url(/profile.png)'"
+    [style.backgroundImage]="'url(/ui/profile.png)'"
   >
     <div class="overlay">
       <p class="tile-text">Profile</p>
@@ -33,7 +33,7 @@
     *ngIf="canAddUser"
     class="card card-image"
     [routerLink]="['/admin', 'add-user']"
-    [style.backgroundImage]="'url(/add-user.png)'"
+    [style.backgroundImage]="'url(/ui/add-user.png)'"
   >
     <div class="overlay">
       <p class="tile-text">Add user</p>
