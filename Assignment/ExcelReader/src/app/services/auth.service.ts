@@ -55,7 +55,6 @@ export class AuthService extends BaseNetworkService {
     //erase tokens
     this._user.set(null);
     this.eraseCurrentUser();
-    window.location.reload();
   }
 
   signup(formData: SignupRequestModel) {
