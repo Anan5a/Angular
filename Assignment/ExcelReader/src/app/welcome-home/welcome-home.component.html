@@ -1,0 +1,5 @@
+<h2 class="center">Welcome to FileKeeper</h2>
+<h3 class="center">
+  <a routerLink="/dashboard" *ngIf="isAuthenticated$()">Dashboard</a>
+  <a routerLink="/login" *ngIf="!isAuthenticated$()">Login</a>
+</h3>

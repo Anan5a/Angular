@@ -106,7 +106,6 @@ export class AppComponent implements OnInit, OnDestroy {
   ///////private function to declutter oninit/////
   private _navigationAutoClose() {
     this.navigationSubscription = this.router.events.subscribe((event) => {
-      console.log(event);
       if (
         event instanceof NavigationStart ||
         event instanceof NavigationCancel ||

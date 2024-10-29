@@ -1,16 +1,16 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+
+import {Routes } from '@angular/router';
 import {
   isAdminGuard,
   isAuthenticatedGuard,
   isNotAuthenticatedGuard,
 } from './services/auth.guards';
+import { WelcomeHomeComponent } from './welcome-home/welcome-home.component';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full',
+    component: WelcomeHomeComponent,
   },
   {
     path: 'dashboard',
