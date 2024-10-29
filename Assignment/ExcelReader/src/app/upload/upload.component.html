@@ -52,12 +52,17 @@
   <button
     mat-stroked-button
     color="primary"
-    class="right"
+    class="right upload-button"
     [disabled]="form.invalid"
     (click)="onClickUpload()"
   >
-    <mat-icon>upload</mat-icon>Upload
-    <mat-spinner *ngIf="progressActive" [diameter]="22"></mat-spinner>
+    <mat-icon>upload</mat-icon> Upload
+    <mat-spinner
+      *ngIf="progressActive"
+      [diameter]="22"
+      color="accent"
+      class="inline-spinner"
+    ></mat-spinner>
   </button>
 </div>
 <div

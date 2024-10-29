@@ -1,101 +1,120 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav
-    #sidenav
-    [mode]="'over'"
-    [opened]="false"
-  >
-
+  <mat-sidenav #sidenav [mode]="'over'" [opened]="false">
     <mat-nav-list class="sidenav">
       <a
         *ngIf="isAuthenticated()"
         mat-list-item
         routerLink="/dashboard"
-      ><mat-icon>dashboard</mat-icon> Dashboard</a>
+        routerLinkActive="active-nav"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ><mat-icon>dashboard</mat-icon> Dashboard</a
+      >
       <a
         *ngIf="isAuthenticated()"
         mat-list-item
         routerLink="/profile"
-      ><mat-icon>account_circle</mat-icon> Profile</a>
+        routerLinkActive="active-nav"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ><mat-icon>account_circle</mat-icon> Profile</a
+      >
       <!-- <a
         mat-list-item
         routerLink="/about"
+        routerLinkActive="active-nav"
+        [routerLinkActiveOptions]="{ exact: true }"
       >About</a>
       <a
         mat-list-item
         routerLink="/services"
+        routerLinkActive="active-nav"
+        [routerLinkActiveOptions]="{ exact: true }"
       >Services</a> -->
       <a
         *ngIf="isAuthenticated()"
         mat-list-item
         [routerLink]="['/upload']"
-      ><mat-icon>cloud_upload</mat-icon> Upload</a>
+        routerLinkActive="active-nav"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ><mat-icon>cloud_upload</mat-icon> Upload</a
+      >
       <a
         *ngIf="isAuthenticated()"
         mat-list-item
         [routerLink]="['/view-list']"
-      ><mat-icon>list_alt</mat-icon> My Files</a>
+        routerLinkActive="active-nav"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ><mat-icon>list_alt</mat-icon> My Files</a
+      >
       <a
         *ngIf="isAdmin()"
         mat-list-item
-        [routerLink]="['/admin','system-files']"
-      ><mat-icon>dynamic_form</mat-icon> System Files</a>
+        [routerLink]="['/admin', 'system-files']"
+        routerLinkActive="active-nav"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ><mat-icon>dynamic_form</mat-icon> System Files</a
+      >
       <a
         *ngIf="isAuthenticated()"
         mat-list-item
         [routerLink]="['/chat']"
-      ><mat-icon>chat</mat-icon> Chat</a>
+        routerLinkActive="active-nav"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ><mat-icon>chat</mat-icon> Chat</a
+      >
       <a
         *ngIf="isAdmin()"
         mat-list-item
-        [routerLink]="['/admin','add-user']"
-      ><mat-icon>person_add</mat-icon> Create user</a>
+        [routerLink]="['/admin', 'add-user']"
+        routerLinkActive="active-nav"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ><mat-icon>person_add</mat-icon> Create user</a
+      >
       <a
         *ngIf="isAdmin()"
         mat-list-item
-        [routerLink]="['/admin','user-list']"
-      ><mat-icon>people_alt</mat-icon> System Users</a>
+        [routerLink]="['/admin', 'user-list']"
+        routerLinkActive="active-nav"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ><mat-icon>people_alt</mat-icon> System Users</a
+      >
       <a
         *ngIf="!isAuthenticated()"
         mat-list-item
         [routerLink]="['/login']"
-      ><mat-icon>login</mat-icon>Login</a>
+        routerLinkActive="active-nav"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ><mat-icon>login</mat-icon>Login</a
+      >
       <a
         *ngIf="!isAuthenticated()"
         mat-list-item
         [routerLink]="['/signup']"
-      ><mat-icon>account_circle</mat-icon>Signup</a>
-      <a
-        *ngIf="isAuthenticated()"
-        mat-list-item
-        (click)="logout()"
-      ><mat-icon>logout </mat-icon> Logout</a>
+        routerLinkActive="active-nav"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ><mat-icon>account_circle</mat-icon>Signup</a
+      >
+      <a *ngIf="isAuthenticated()" mat-list-item (click)="logout()"
+        ><mat-icon>logout </mat-icon> Logout</a
+      >
     </mat-nav-list>
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <mat-toolbar
-      color="primary"
-      class="fixedToolbar"
-    >
-      <button
-        mat-icon-button
-        (click)="sidenav.toggle()"
-      >
+    <mat-toolbar color="primary" class="fixedToolbar">
+      <button mat-icon-button (click)="sidenav.toggle()">
         <mat-icon>menu</mat-icon>
       </button>
-      <span routerLink="/"><mat-icon
-          style="line-height: 1.4;">home</mat-icon>{{title}}</span>
+      <span routerLink="/"
+        ><mat-icon style="line-height: 1.4">home</mat-icon>{{ title }}</span
+      >
       <span class="spacer"></span>
-
     </mat-toolbar>
-
 
     <div class="content">
       <!-- <app-home></app-home>
       <app-login></app-login>
       <app-signup></app-signup> -->
       <!-- <app-chat></app-chat> -->
-
 
       <router-outlet></router-outlet>
     </div>

@@ -1,13 +1,13 @@
 <mat-card class="form-card">
   <mat-card-header>
-    <mat-card-title class="center">Login</mat-card-title>
+    <mat-card-title>Login</mat-card-title>
   </mat-card-header>
 
   <form [formGroup]="form" (submit)="formOnSubmit()">
-    <h3 *ngIf="formErrorMessage() !== null">
-      <mat-error>{{ formErrorMessage() }}</mat-error>
-    </h3>
     <mat-card-content>
+      <h3 *ngIf="formErrorMessage() !== null">
+        <mat-error>{{ formErrorMessage() }}</mat-error>
+      </h3>
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Email</mat-label>
         <input
@@ -37,7 +37,7 @@
       </mat-form-field>
     </mat-card-content>
 
-    <mat-card-actions>
+    <mat-card-actions class="p-16">
       <p><a [routerLink]="['/signup']">I don't have an account</a></p>
       <button
         mat-raised-button
@@ -45,8 +45,13 @@
         class="right"
         [disabled]="!form.valid"
       >
-        Submit
-        <mat-spinner *ngIf="showSpinner" [diameter]="22"></mat-spinner>
+        <span>Submit</span>
+        <mat-spinner
+          *ngIf="showSpinner"
+          color="accent"
+          [diameter]="22"
+          class="inline-spinner"
+        ></mat-spinner>
       </button>
     </mat-card-actions>
   </form>

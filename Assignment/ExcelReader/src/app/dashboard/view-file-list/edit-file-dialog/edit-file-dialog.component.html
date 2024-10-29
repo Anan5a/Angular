@@ -28,8 +28,13 @@
       color="primary"
       (click)="onSave()"
     >
-      Save
-      <mat-spinner *ngIf="showSpinner" [diameter]="22"></mat-spinner>
+      <span>Save</span>
+      <mat-spinner
+        *ngIf="showSpinner"
+        [diameter]="22"
+        class="inline-spinner"
+        color="accent"
+      ></mat-spinner>
     </button>
   </div>
 </div>

@@ -65,7 +65,7 @@
       </mat-form-field>
     </mat-card-content>
 
-    <mat-card-actions>
+    <mat-card-actions class="p-16">
       <p><a [routerLink]="['/login']">I have an account</a></p>
 
       <button
@@ -74,8 +74,13 @@
         class="right"
         [disabled]="!form.valid"
       >
-        Submit
-        <mat-spinner *ngIf="showSpinner" [diameter]="22"></mat-spinner>
+        <span>Submit</span>
+        <mat-spinner
+          *ngIf="showSpinner"
+          [diameter]="22"
+          class="inline-spinner"
+          color="accent"
+        ></mat-spinner>
       </button>
     </mat-card-actions>
   </form>

@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { ApiBaseUrl } from '../../constants';
 import { tap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +21,7 @@ export class AuthService extends BaseNetworkService {
 
   private currentUserKey = 'CurrentUser';
 
-  constructor(httpClient: HttpClient) {
+  constructor(httpClient: HttpClient, private router: Router) {
     super(httpClient);
 
     this.getCurrentUser();
@@ -55,6 +56,7 @@ export class AuthService extends BaseNetworkService {
     //erase tokens
     this._user.set(null);
     this.eraseCurrentUser();
+    this.router.navigate(['/']);
   }
 
   signup(formData: SignupRequestModel) {

@@ -5,6 +5,7 @@ import {
   NavigationStart,
   Router,
   RouterLink,
+  RouterLinkActive,
   RouterOutlet,
 } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -50,6 +51,7 @@ import { UserListComponent } from './dashboard/chat/user-list/user-list.componen
     SignupComponent,
     ChatComponent,
     UserListComponent,
+    RouterLinkActive,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -86,7 +88,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   logout() {
     this.authService.logout();
-    this.router.navigate(['/']);
   }
 
   onSocialAuth(idToen: string) {

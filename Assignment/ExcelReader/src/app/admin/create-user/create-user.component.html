@@ -84,8 +84,13 @@
         class="right"
         [disabled]="!form.valid"
       >
-        Submit
-        <mat-spinner *ngIf="showSpinner" [diameter]="22"></mat-spinner>
+        <span>Submit</span>
+        <mat-spinner
+          *ngIf="showSpinner"
+          [diameter]="22"
+          color="accent"
+          class="inline-spinner"
+        ></mat-spinner>
       </button>
     </mat-card-actions>
   </form>
