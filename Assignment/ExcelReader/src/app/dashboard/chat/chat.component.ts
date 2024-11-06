@@ -46,7 +46,7 @@ export class ChatComponent {
     .pipe(map((result) => result.matches));
   onlineUsers = signal<ChatUserLimited[]>([]);
   selectedUser = this.chatService.currentUser;
-  callUser = computed(() => this.voiceCallService.callUserId());
+  // callUser = computed(() => this.voiceCallService.callUserId());
 
   @ViewChild('callDialog', { static: false }) dialogContent!: TemplateRef<any>;
 

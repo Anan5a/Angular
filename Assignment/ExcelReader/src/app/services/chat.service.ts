@@ -67,10 +67,7 @@ export class ChatService {
   }
 
   callUser() {
-    this.voiceCallService.startCall(
-      this.currentUser()?.id!,
-      this.currentUser()?.name!
-    );
+    this.voiceCallService.startCall();
   }
   endCall() {
     this.voiceCallService.endCall();

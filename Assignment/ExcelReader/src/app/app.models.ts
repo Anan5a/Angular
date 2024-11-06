@@ -12,7 +12,7 @@ export interface ResponseModelGeneric<T> {
 }
 
 export interface RTCConnModel {
-  targetUserId: number
+  // targetUserId: number
   data: string
 
 }

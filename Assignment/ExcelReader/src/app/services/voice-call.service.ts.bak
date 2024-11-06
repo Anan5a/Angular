@@ -12,6 +12,7 @@ import { CallDialogComponent } from '../dashboard/chat/call-dialog/call-dialog.c
 export class VoiceCallService extends BaseNetworkService {
   private localStream!: MediaStream;
   private peerConnection?: RTCPeerConnection | null;
+  public callUserId = signal(0);
   public callUserName = signal('');
   private currentDialog: any;
   private userSelection = signal<'accepted' | 'rejected' | null>(null);
@@ -95,7 +96,7 @@ export class VoiceCallService extends BaseNetworkService {
       true
     );
     await this.setupLocalStream();
-    await this.createAndSendOffer();
+    await this.createAndSendOffer(this.callUserId());
     this.userSelection?.set('accepted');
   }
 
@@ -117,7 +118,8 @@ export class VoiceCallService extends BaseNetworkService {
   private callback = () => {
     if (this.userSelection() == 'accepted') {
       this.sendCallOfferAnswer(
-         this.userSelection()!
+        this.callUserId(),
+        this.userSelection()!
       ).subscribe();
       this.showDialogAndGetAction(
         'Ongoing call',
@@ -132,6 +134,7 @@ export class VoiceCallService extends BaseNetworkService {
     if (this.userSelection() == 'rejected') {
       console.log('rejecting...');
       this.sendCallOfferAnswer(
+        this.callUserId(),
         this.userSelection()!
       ).subscribe();
 
@@ -185,7 +188,7 @@ export class VoiceCallService extends BaseNetworkService {
     });
   }
 
-  public async startCall() {
+  public async startCall(userId: number, userName: string) {
     if (this.callState() !== 'idle') {
       alert('Cannot call. Incosistent state.');
       console.warn('Cannot start call: already in a call.');
@@ -194,18 +197,20 @@ export class VoiceCallService extends BaseNetworkService {
 
     this.checkMicAccess().then((accessGranted) => {
       if (accessGranted) {
+        this.callUserId.set(userId);
+        this.callUserName.set(userName);
         this.callState.set('calling');
         //show a calling dialog and wait till we receive answer from other end
 
         this.showDialogAndGetAction(
           'Outgoing call',
-          'Calling ...',
+          'Calling ' + this.callUserName() + '...',
           this.callback,
           false,
           false,
           true
         );
-        this.sendCallOffer('').subscribe();
+        this.sendCallOffer(userId, '').subscribe();
       } else {
         alert('Microphone access is required.');
       }
@@ -237,6 +242,7 @@ export class VoiceCallService extends BaseNetworkService {
     this.peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
         this.sendIceCandidate(
+          this.callUserId(),
           JSON.stringify(event.candidate)
         ).subscribe();
       } else {
@@ -255,45 +261,45 @@ export class VoiceCallService extends BaseNetworkService {
     };
   }
 
-  private async createAndSendOffer() {
+  private async createAndSendOffer(userId: number) {
     const offer = await this.peerConnection?.createOffer();
     await this.peerConnection?.setLocalDescription(offer);
-    await this.sendOffer( JSON.stringify(offer)).subscribe();
+    await this.sendOffer(userId, JSON.stringify(offer)).subscribe();
   }
 
-  public sendOffer( offer: string) {
+  public sendOffer(userId: number, offer: string) {
     return this.post<RTCConnModel, RTCRequestResponseModel>(
       `${ApiBaseUrl}/Calling/offerCall`,
-      {  data: this.encodeB64(offer) },
+      { targetUserId: userId, data: this.encodeB64(offer) },
       'Failed to call user!'
     );
   }
-  public sendCallOffer(offer: string) {
+  public sendCallOffer(userId: number, offer: string) {
     return this.post<RTCConnModel, RTCRequestResponseModel>(
       `${ApiBaseUrl}/Calling/offerCallRequest`,
-      { data: this.callId },
+      { targetUserId: userId, data: this.callId },
       'Failed to call user!'
     );
   }
-  public sendCallOfferAnswer( offer: string, callId?: string) {
+  public sendCallOfferAnswer(userId: number, offer: string, callId?: string) {
     return this.post<RTCConnModel, RTCRequestResponseModel>(
       `${ApiBaseUrl}/Calling/offerCallRequestAnswer`,
-      {  data: (callId ?? this.callId) + ':' + offer },
+      { targetUserId: userId, data: (callId ?? this.callId) + ':' + offer },
       'Failed to call user!'
     );
   }
-  public sendAnswer(answer: string) {
+  public sendAnswer(userId: number, answer: string) {
     return this.post<RTCConnModel, RTCRequestResponseModel>(
       `${ApiBaseUrl}/Calling/answerCall`,
-      {  data: this.encodeB64(answer) },
+      { targetUserId: userId, data: this.encodeB64(answer) },
       'Failed to answer call!'
     );
   }
 
-  public sendIceCandidate( candidate: string) {
+  public sendIceCandidate(userId: number, candidate: string) {
     return this.post<RTCConnModel, RTCRequestResponseModel>(
       `${ApiBaseUrl}/Calling/sendICECandidate`,
-      {  data: this.encodeB64(candidate) },
+      { targetUserId: userId, data: this.encodeB64(candidate) },
       'Failed to send ICE data!'
     );
   }
@@ -303,8 +309,10 @@ export class VoiceCallService extends BaseNetworkService {
   }
 
   async handleRTCSignal(remoteData: {}) {
-    if (this.callState() == 'calling') {
+    if (this.callUserId() === 0) {
       console.log('Set incoming caller id...');
+      //@ts-ignore
+      this.callUserId.set(remoteData.metadata.targetUserId);
       //@ts-ignore
       this.callUserName.set(remoteData.metadata.targetUserName);
     }
@@ -330,6 +338,7 @@ export class VoiceCallService extends BaseNetworkService {
 
         this.sendCallOfferAnswer(
           //@ts-ignore
+          remoteData.metadata.targetUserId,
           'rejected',
           ((remoteData as any).callData as string).split(':')[1]
         ).subscribe();
@@ -383,6 +392,7 @@ export class VoiceCallService extends BaseNetworkService {
     const answer = await this.peerConnection?.createAnswer();
     await this.peerConnection?.setLocalDescription(answer);
     this.sendAnswer(
+      remoteData.metadata.targetUserId,
       JSON.stringify(answer)
     ).subscribe();
   }
@@ -427,6 +437,7 @@ export class VoiceCallService extends BaseNetworkService {
     this.peerConnection = null;
     this.callState.set('idle');
     this.userSelection?.set(null);
+    this.callUserId.set(0);
     this.callUserName.set('');
     this.callId = 'call:' + Math.random().toString().substring(0, 8);
     console.info('Call ended.');
