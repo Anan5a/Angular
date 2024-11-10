@@ -3,6 +3,7 @@ import {
   AfterViewInit,
   Component,
   computed,
+  effect,
   EventEmitter,
   Input,
   OnInit,
@@ -44,6 +45,7 @@ export class ChatWindowComponent implements OnInit {
   @Output() onCloseChatWindow = new EventEmitter<boolean>();
 
   selectedUser = this.chatService.currentUser;
+  selectedUsername = this.selectedUser()?.name;
   messages = computed(() => {
     const index = this.chatService
       .chats()
@@ -60,7 +62,11 @@ export class ChatWindowComponent implements OnInit {
     private chatService: ChatService,
     private voiceCallService: VoiceCallService,
     private callDialog: MatDialog
-  ) {}
+  ) {
+    effect(() => {
+      this.selectedUsername = this.selectedUser()?.name;
+    });
+  }
 
   ngOnInit(): void {}
 

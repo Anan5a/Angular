@@ -1,21 +1,21 @@
 <mat-card *ngIf="selectedUser">
   <mat-card-header>
     <mat-toolbar>
-      <span>Chat with <b>{{ selectedUser()?.name }}</b></span>
+      <span
+        >Chat with <b>{{ selectedUsername }}</b></span
+      >
       <!-- {{fromUser.name}} => -->
       <span class="spacer"></span>
-      <button
-        mat-button
-        (click)="callUser()"
-      ><mat-icon>phone</mat-icon> Call</button>
+      <button mat-button (click)="callUser()">
+        <mat-icon>phone</mat-icon> Call
+      </button>
       <!-- <button
         mat-button
         (click)="endCall()"
       ><mat-icon>phone</mat-icon> End</button> -->
-      <button
-        mat-button
-        (click)="closeChat()"
-      ><mat-icon>close</mat-icon> Close</button>
+      <button mat-button (click)="closeChat()">
+        <mat-icon>close</mat-icon> Close
+      </button>
     </mat-toolbar>
   </mat-card-header>
   <mat-card-content>
@@ -32,23 +32,18 @@
     </div>
   </mat-card-content>
   <mat-card-actions>
-    <mat-form-field style="flex: 1;">
+    <mat-form-field style="flex: 1">
       <mat-label>Type a message</mat-label>
       <input
         matInput
         [(ngModel)]="newMessage"
         (keydown.enter)="sendOutgoingMessageEvent()"
-      >
+      />
     </mat-form-field>
-    <button
-      mat-button
-      (click)="sendOutgoingMessageEvent()"
-    >Send<mat-icon>
-        send
-      </mat-icon></button>
+    <button mat-button (click)="sendOutgoingMessageEvent()">
+      Send<mat-icon> send </mat-icon>
+    </button>
   </mat-card-actions>
 </mat-card>
 
-<ng-template #callDialog>
-  Incoming call from ID {{callUser()}}
-</ng-template>
+<ng-template #callDialog> Incoming call from ID {{ callUser() }} </ng-template>

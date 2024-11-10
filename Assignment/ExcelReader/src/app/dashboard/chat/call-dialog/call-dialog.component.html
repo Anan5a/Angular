@@ -3,7 +3,9 @@
   <div mat-dialog-content>
     <p>{{ data.message || "Call ongoing..." }}</p>
     <!-- data?.callStatus || -->
-    <!-- <p>status of the call</p> -->
+    <p>
+      status: <i>{{ callStateLive() }}</i>
+    </p>
     <div class="button-container">
       @if (data.showAccept) {
       <button mat-button color="primary" (click)="onAccept()">

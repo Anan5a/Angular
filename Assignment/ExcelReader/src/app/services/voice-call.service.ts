@@ -12,8 +12,8 @@ import { CallDialogComponent } from '../dashboard/chat/call-dialog/call-dialog.c
 export class VoiceCallService extends BaseNetworkService {
   private localStream!: MediaStream;
   private peerConnection?: RTCPeerConnection | null;
-  public callUserName = signal('');
-  private customerId = signal(0);
+  public callUserId = signal(0); //coming from signaling server
+  public callUserName = signal(''); //coming from signaling server
   private currentDialog: any;
   private userSelection = signal<'accepted' | 'rejected' | null>(null);
   private callId = 'call:' + Math.random().toString().substring(0, 8);
@@ -51,7 +51,9 @@ export class VoiceCallService extends BaseNetworkService {
   constructor(httpClient: HttpClient, private callDialog: MatDialog) {
     super(httpClient);
   }
-
+  get callStateLive() {
+    return this.callState.asReadonly()
+  }
   //handles the answer of the other party
   async handleCallAnswer(message: any) {
     //after we got answer start the rtc comm.
@@ -71,19 +73,19 @@ export class VoiceCallService extends BaseNetworkService {
       this.endCall();
     }
 
-    if (parts[2] == 'rejected') {
+    if (parts[2] == 'rejected' || parts[2] == 'end') {
       this.currentDialog?.close();
       console.warn('Call was rejected by remote, exiting...');
       this.showDialogAndGetAction(
-        'Call rejected',
-        'Call with ' + this.callUserName() + '...',
+        `Call ${parts[2]}`,
+        'Call ended',
         this.callback,
         false,
         false,
         true,
         true
       );
-      this.endCall();
+      this.endCall(id);
       return;
     }
 
@@ -96,8 +98,26 @@ export class VoiceCallService extends BaseNetworkService {
       true
     );
     await this.setupLocalStream();
-    await this.createAndSendOffer();
+    await this.createAndSendOffer(this.callUserId());
     this.userSelection?.set('accepted');
+  }
+  async handleUserAssignmentFromRTCSignal(message: any) {
+    //after we got answer start the rtc comm.
+    //change the dialog
+
+    //check call id
+    const parts = (message.callData as string).split(':');
+    if (parts.length < 3) {
+      console.warn('Invalid Call ID, exiting...');
+      this.endCall();
+    }
+    const id = parts[0] + ':' + parts[1];
+
+    if (this.callId != id) {
+      //id mismatch, cleanup
+      console.warn('Call ID mismatch, exiting...');
+      this.endCall();
+    }
   }
 
   //handles incoming request
@@ -105,7 +125,6 @@ export class VoiceCallService extends BaseNetworkService {
     //after we got answer start the rtc comm.
     //change the dialog
     this.callId = message.callData;
-    //set customerId and name, only available to agents
     this.currentDialog?.close();
     this.showDialogAndGetAction(
       'Incoming call',
@@ -118,7 +137,10 @@ export class VoiceCallService extends BaseNetworkService {
   }
   private callback = () => {
     if (this.userSelection() == 'accepted') {
-      this.sendCallOfferAnswer(this.userSelection()!).subscribe();
+      this.sendCallOfferAnswer(
+        this.callUserId(),
+        this.userSelection()!
+      ).subscribe();
       this.showDialogAndGetAction(
         'Ongoing call',
         'Call from ' + this.callUserName() + '...',
@@ -131,7 +153,10 @@ export class VoiceCallService extends BaseNetworkService {
     }
     if (this.userSelection() == 'rejected') {
       console.log('rejecting...');
-      this.sendCallOfferAnswer(this.userSelection()!).subscribe();
+      this.sendCallOfferAnswer(
+        this.callUserId(),
+        this.userSelection()!
+      ).subscribe();
 
       this.endCall();
     }
@@ -182,13 +207,14 @@ export class VoiceCallService extends BaseNetworkService {
       this.currentDialog = null;
     });
   }
-
-  public async startCall() {
+  public async startCall(userId: number, userName: string) {
     if (this.callState() !== 'idle') {
       alert('Cannot call. Incosistent state.');
       console.warn('Cannot start call: already in a call.');
       return;
     }
+    this.callUserId.set(userId);
+    this.callUserName.set(userName);
     this.setupLocalStream();
     this.checkMicAccess().then((accessGranted) => {
       if (accessGranted) {
@@ -197,7 +223,7 @@ export class VoiceCallService extends BaseNetworkService {
 
         this.showDialogAndGetAction(
           'Outgoing call',
-          'Calling ...',
+          `Calling ${this.callUserName()} ...`,
           this.callback,
           false,
           false,
@@ -222,10 +248,6 @@ export class VoiceCallService extends BaseNetworkService {
   }
 
   private async setupLocalStream() {
-    if (this.peerConnection != null) {
-      console.log('Peer instance seems to exist, skip...');
-      return;
-    }
     this.localStream = await navigator.mediaDevices.getUserMedia({
       audio: true,
     });
@@ -238,7 +260,10 @@ export class VoiceCallService extends BaseNetworkService {
 
     this.peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
-        this.sendIceCandidate(JSON.stringify(event.candidate)).subscribe();
+        this.sendIceCandidate(
+          this.callUserId(),
+          JSON.stringify(event.candidate)
+        ).subscribe();
       } else {
         console.log('All ICE candidates have been sent.');
       }
@@ -255,48 +280,45 @@ export class VoiceCallService extends BaseNetworkService {
     };
   }
 
-  private async createAndSendOffer() {
+  private async createAndSendOffer(userId: number) {
     const offer = await this.peerConnection?.createOffer();
     await this.peerConnection?.setLocalDescription(offer);
-    await this.sendOffer(JSON.stringify(offer)).subscribe();
+    await this.sendOffer(userId, JSON.stringify(offer)).subscribe();
   }
 
-  public sendOffer(offer: string) {
+  public sendOffer(userId: number, offer: string) {
     return this.post<RTCConnModel, RTCRequestResponseModel>(
       `${ApiBaseUrl}/Calling/offerCall`,
-      { data: this.encodeB64(offer) },
+      { targetUserId: userId, data: this.encodeB64(offer) },
       'Failed to call user!'
     );
   }
   public sendCallOffer(offer: string) {
     return this.post<RTCConnModel, RTCRequestResponseModel>(
       `${ApiBaseUrl}/Calling/offerCallRequest`,
-      { data: this.callId },
+      { targetUserId: this.callUserId(), data: this.callId },
       'Failed to call user!'
     );
   }
-  public sendCallOfferAnswer(offer: string, callId?: string) {
+  public sendCallOfferAnswer(userId: number, offer: string, callId?: string) {
     return this.post<RTCConnModel, RTCRequestResponseModel>(
       `${ApiBaseUrl}/Calling/offerCallRequestAnswer`,
-      {
-        targetUserId: this.customerId(),
-        data: (callId ?? this.callId) + ':' + offer,
-      },
+      { targetUserId: userId, data: (callId ?? this.callId) + ':' + offer },
       'Failed to call user!'
     );
   }
-  public sendAnswer(answer: string) {
+  public sendAnswer(userId: number, answer: string) {
     return this.post<RTCConnModel, RTCRequestResponseModel>(
       `${ApiBaseUrl}/Calling/answerCall`,
-      { data: this.encodeB64(answer) },
+      { targetUserId: userId, data: this.encodeB64(answer) },
       'Failed to answer call!'
     );
   }
 
-  public sendIceCandidate(candidate: string) {
+  public sendIceCandidate(userId: number, candidate: string) {
     return this.post<RTCConnModel, RTCRequestResponseModel>(
       `${ApiBaseUrl}/Calling/sendICECandidate`,
-      { targetUserId: this.customerId(), data: this.encodeB64(candidate) },
+      { targetUserId: userId, data: this.encodeB64(candidate) },
       'Failed to send ICE data!'
     );
   }
@@ -306,8 +328,10 @@ export class VoiceCallService extends BaseNetworkService {
   }
 
   async handleRTCSignal(remoteData: {}) {
-    if (this.callState() == 'calling') {
+    if (this.callUserId() === 0) {
       console.log('Set incoming caller id...');
+      //@ts-ignore
+      this.callUserId.set(remoteData.metadata.targetUserId);
       //@ts-ignore
       this.callUserName.set(remoteData.metadata.targetUserName);
     }
@@ -333,14 +357,12 @@ export class VoiceCallService extends BaseNetworkService {
 
         this.sendCallOfferAnswer(
           //@ts-ignore
+          remoteData.metadata.targetUserId,
           'rejected',
           ((remoteData as any).callData as string).split(':')[1]
         ).subscribe();
         return;
       }
-      //set customerId
-      //@ts-ignore
-      this.customerId.set(remoteData.metadata.targetUserId);
 
       this.handleCallRequest(remoteData);
       return;
@@ -388,7 +410,10 @@ export class VoiceCallService extends BaseNetworkService {
     );
     const answer = await this.peerConnection?.createAnswer();
     await this.peerConnection?.setLocalDescription(answer);
-    this.sendAnswer(JSON.stringify(answer)).subscribe();
+    this.sendAnswer(
+      remoteData.metadata.targetUserId,
+      JSON.stringify(answer)
+    ).subscribe();
   }
 
   private async handleIceCandidate(candidate: RTCIceCandidateInit) {
@@ -425,13 +450,21 @@ export class VoiceCallService extends BaseNetworkService {
     }
   }
 
-  endCall() {
-    this.sendCallOfferAnswer('end').subscribe();
+  endCall(incomingCallId: string = '') {
+    //only end valid call id
+    if (
+      incomingCallId.length > 1 &&
+      incomingCallId.substring(0, 13) == this.callId
+    ) {
+      this.sendCallOfferAnswer(this.callUserId(), 'end').subscribe();
+    }
+
     this.localStream?.getTracks().forEach((track) => track.stop());
     this.peerConnection?.close();
     this.peerConnection = null;
     this.callState.set('idle');
     this.userSelection?.set(null);
+    this.callUserId.set(0);
     this.callUserName.set('');
     this.callId = 'call:' + Math.random().toString().substring(0, 8);
     console.info('Call ended.');

@@ -22,7 +22,8 @@
       (onCloseChatWindow)="closeChatWindow()"
     ></app-chat-window>
     }@else if (!(isHandset$|async)) {
-    <h2 class="center">Select a user to start conversation.</h2>
+      <!-- <h2 class="center">Select a user to start conversation.</h2> -->
+      <h2 class="center">Waiting for agent...</h2>
     }
   </div>
 </div>

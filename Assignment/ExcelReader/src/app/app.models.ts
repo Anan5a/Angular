@@ -12,9 +12,9 @@ export interface ResponseModelGeneric<T> {
 }
 
 export interface RTCConnModel {
-  targetUserId?: number
-  data: string
-
+  targetUserId: number;
+  data: string;
+  targetUserName?:string;
 }
 
 export interface DataUserLoginResponseModel {

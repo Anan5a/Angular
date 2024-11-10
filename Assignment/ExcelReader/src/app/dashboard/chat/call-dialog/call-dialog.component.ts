@@ -14,7 +14,7 @@ import { VoiceCallService } from '../../../services/voice-call.service';
 })
 export class CallDialogComponent {
   @Output() actionEvent = new EventEmitter<'accepted' | 'rejected'>();
-
+  callStateLive = this.voiceCallService.callStateLive;
   constructor(
     public dialogRef: MatDialogRef<CallDialogComponent>,
     @Inject(MAT_DIALOG_DATA)

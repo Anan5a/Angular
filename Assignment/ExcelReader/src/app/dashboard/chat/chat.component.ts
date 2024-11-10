@@ -1,6 +1,7 @@
 import {
   Component,
   computed,
+  effect,
   Input,
   signal,
   TemplateRef,
@@ -59,6 +60,10 @@ export class ChatComponent {
     private voiceCallService: VoiceCallService,
     private callDialog: MatDialog
   ) {
+    effect(() => {
+      console.log(this.selectedUser());
+    });
+
     this.user = authService.user()?.user!;
   }
 
@@ -89,6 +94,9 @@ export class ChatComponent {
         this.voiceCallService.handleRTCSignal(message);
       }
     );
+
+    this.chatService.RTC_GetAgentAssignment();
+    this.sendAgentRequestQueue();
   }
 
   loadOnlineUsers() {
@@ -122,7 +130,11 @@ export class ChatComponent {
         },
       });
   }
-
+  sendAgentRequestQueue() {
+    if (!this.authService.isAdmin()) {
+      this.userService.agentRequest().subscribe();
+    }
+  }
   closeChatWindow() {
     this.chatService.setCurrentUser(null);
   }

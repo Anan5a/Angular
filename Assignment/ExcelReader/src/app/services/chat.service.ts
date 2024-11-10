@@ -3,9 +3,11 @@ import {
   ChatMessageModel,
   ChatRepositoryModel,
   ChatUserLimited,
+  VoiceCallEvent,
 } from '../app.models';
 import { AuthService } from './auth.service';
 import { VoiceCallService } from './voice-call.service';
+import { RealtimeService } from './realtime.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,8 +17,11 @@ export class ChatService {
   private selectedUser = signal<ChatUserLimited | null>(null);
   constructor(
     private authService: AuthService,
-    private voiceCallService: VoiceCallService
-  ) {}
+    private voiceCallService: VoiceCallService,
+    private realtimeService: RealtimeService
+  ) {
+    // this.RTC_GetAgentAssignment();
+  }
 
   get chats() {
     return this.chatRepository.asReadonly();
@@ -30,7 +35,21 @@ export class ChatService {
 
     this.selectedUser.set(cuser);
   }
+  RTC_GetAgentAssignment() {
+    //gets agent assignment from server
+    this.realtimeService.addReceiveMessageListener<VoiceCallEvent[]>(
+      'AgentChannel',
+      (message: VoiceCallEvent) => {
+        //set user id and name
+        this.selectedUser.set({
+          id: message.metadata.targetUserId,
+          name: message.metadata.targetUserName,
+        } as ChatUserLimited);
 
+        console.log(message);
+      }
+    );
+  }
   markChatViewed(recpId: number | undefined | null) {
     if (!recpId) {
       return;
@@ -67,7 +86,10 @@ export class ChatService {
   }
 
   callUser() {
-    this.voiceCallService.startCall();
+    this.voiceCallService.startCall(
+      this.selectedUser()?.id!,
+      this.selectedUser()?.name!
+    );
   }
   endCall() {
     this.voiceCallService.endCall();
