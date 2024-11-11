@@ -21,4 +21,26 @@ app-user-list {
 
 .app-chat-window {
   flex: 2;
+  /* border: 2px solid red; */
+}
+.app-user-info {
+  flex: 2;
+  margin-left: 20px;
+  max-width: 25%;
+  /* border: 2px solid green; */
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.info-row mat-icon {
+  margin-right: 8px;
 }

@@ -43,6 +43,7 @@ export class ChatWindowComponent implements OnInit {
   @Input({ required: true }) fromUser!: User;
   @Output() onOutgoingMessage = new EventEmitter<string>();
   @Output() onCloseChatWindow = new EventEmitter<boolean>();
+  @Output() chatWindowLoaded = new EventEmitter<boolean>();
 
   selectedUser = this.chatService.currentUser;
   selectedUsername = this.selectedUser()?.name;
@@ -68,7 +69,10 @@ export class ChatWindowComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    //emit event so that user info can be loaded
+    this.chatWindowLoaded.emit(true);
+  }
 
   sendOutgoingMessageEvent() {
     if (this.newMessage.trim()) {

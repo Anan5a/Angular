@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { RealtimeService } from '../../services/realtime.service';
 import { FormsModule } from '@angular/forms';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, DatePipe, NgFor, NgIf } from '@angular/common';
 import { UserListComponent } from './user-list/user-list.component';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
@@ -25,6 +25,7 @@ import { AuthService } from '../../services/auth.service';
 import { ChatService } from '../../services/chat.service';
 import { VoiceCallService } from '../../services/voice-call.service';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-chat',
@@ -36,6 +37,8 @@ import { MatDialog } from '@angular/material/dialog';
     ChatWindowComponent,
     UserListComponent,
     AsyncPipe,
+    MatIconModule,
+    DatePipe,
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css',
@@ -47,7 +50,10 @@ export class ChatComponent {
     .pipe(map((result) => result.matches));
   onlineUsers = signal<ChatUserLimited[]>([]);
   selectedUser = this.chatService.currentUser;
+  selectedUserInfo?: User;
+
   // callUser = computed(() => this.voiceCallService.callUserId());
+  isAdmin = this.authService.isAdmin;
 
   @ViewChild('callDialog', { static: false }) dialogContent!: TemplateRef<any>;
 
@@ -60,16 +66,12 @@ export class ChatComponent {
     private voiceCallService: VoiceCallService,
     private callDialog: MatDialog
   ) {
-    effect(() => {
-      console.log(this.selectedUser());
-    });
-
     this.user = authService.user()?.user!;
   }
 
   ngOnInit(): void {
     //load online users
-    this.loadOnlineUsers();
+    // this.loadOnlineUsers(); //not needed
     this.realtimeService.startConnection();
     this.realtimeService.addReceiveMessageListener<ChatEvent[]>(
       'ChatChannel',
@@ -136,6 +138,19 @@ export class ChatComponent {
     }
   }
   closeChatWindow() {
+    this.userService.closeChat().subscribe();
     this.chatService.setCurrentUser(null);
+    this.selectedUserInfo = undefined;
+  }
+
+  loadUserInfo() {
+    //only admins can view this
+    if (this.isAdmin()) {
+      this.userService.getUserInfo(this.selectedUser()?.id!).subscribe({
+        next: (resp) => {
+          this.selectedUserInfo = resp.data;
+        },
+      });
+    }
   }
 }

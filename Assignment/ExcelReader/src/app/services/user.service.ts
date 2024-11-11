@@ -14,6 +14,7 @@ import {
   SendMessageToUserResponseModel,
   UserListResponseModel,
   RTCConnModel,
+  UserInfoResponseModel,
 } from '../app.models';
 import { HttpClient } from '@angular/common/http';
 
@@ -38,6 +39,12 @@ export class UserService extends BaseNetworkService {
     return this.get<UserListResponseModel>(url, errorMessage);
   }
 
+  getUserInfo(uid: number) {
+    const url = `${ApiBaseUrl}/admin/user-info/${uid}`;
+    const errorMessage = 'Failed to fetch user info!';
+    return this.get<UserInfoResponseModel>(url, errorMessage);
+  }
+
   getFileById(fileId: number) {
     const url = `${ApiBaseUrl}/File/file/` + fileId;
     const errorMessage = 'Failed to fetch file details!';
@@ -56,8 +63,21 @@ export class UserService extends BaseNetworkService {
 
   agentRequest() {
     const url = `${ApiBaseUrl}/User/enter-chat-queue`;
-    const errorMessage = 'Failed to upload file!';
-    return this.post<null, UploadResponseModel>(url, null, errorMessage);
+    const errorMessage = 'Failed to enter queue!';
+    return this.post<null, ResponseModelGeneric<boolean>>(
+      url,
+      null,
+      errorMessage
+    );
+  }
+  closeChat() {
+    const url = `${ApiBaseUrl}/User/close-chat`;
+    const errorMessage = 'Failed to close chat!';
+    return this.post<null, ResponseModelGeneric<boolean>>(
+      url,
+      null,
+      errorMessage
+    );
   }
   dashboardData() {
     const url = `${ApiBaseUrl}/User/dashboard`;

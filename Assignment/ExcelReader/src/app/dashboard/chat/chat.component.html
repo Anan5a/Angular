@@ -1,6 +1,6 @@
 <!-- Mobile Version -->
 <div class="container">
-  @if (!selectedUser()) {
+  <!-- @if (!selectedUser()) {
   <app-user-list
     [users]="onlineUsers()"
     (onRefreshUserList)="loadOnlineUsers()"
@@ -12,7 +12,7 @@
     (onRefreshUserList)="loadOnlineUsers()"
   ></app-user-list>
 
-  }
+  } -->
 
   <div class="app-chat-window">
     @if (selectedUser()) {
@@ -20,15 +20,69 @@
       [fromUser]="user"
       (onOutgoingMessage)="sendMessageToSelectedUser($event)"
       (onCloseChatWindow)="closeChatWindow()"
+      (chatWindowLoaded)="loadUserInfo()"
     ></app-chat-window>
     }@else if (!(isHandset$|async)) {
-      <!-- <h2 class="center">Select a user to start conversation.</h2> -->
-      <h2 class="center">Waiting for agent...</h2>
+    <!-- <h2 class="center">Select a user to start conversation.</h2> -->
+    <h2 class="center">
+      Waiting for {{ isAdmin() ? "customer" : "agent" }}...
+    </h2>
     }
   </div>
+  @if (isAdmin() && selectedUser()) {
+  <!-- only show to admin -->
+  <div class="app-user-info">
+    <div class="profile-info">
+      <div class="info-row">
+        <mat-icon>info</mat-icon>
+        <span
+          >Name: <b>{{ selectedUserInfo?.name || "N/A" }}</b></span
+        >
+      </div>
+      <div class="info-row">
+        <mat-icon>email</mat-icon>
+        <span
+          >Email: <b>{{ selectedUserInfo?.email || "N/A" }}</b></span
+        >
+      </div>
+      <div class="info-row">
+        <mat-icon>calendar_today</mat-icon>
+        <span
+          >Created At:
+          <b>{{ (selectedUserInfo?.createdAt | date) || "N/A" }}</b></span
+        >
+      </div>
+      <div class="info-row" *ngIf="selectedUserInfo?.updatedAt">
+        <mat-icon>calendar_today</mat-icon>
+        <span
+          >Updated At:
+          <b>{{ (selectedUserInfo?.updatedAt | date) || "N/A" }}</b></span
+        >
+      </div>
+      <div class="info-row" *ngIf="selectedUserInfo?.deletedAt">
+        <mat-icon>delete</mat-icon>
+        <span
+          >Deleted At:
+          <b>{{ (selectedUserInfo?.deletedAt | date) || "N/A" }}</b></span
+        >
+      </div>
+      <div class="info-row">
+        <mat-icon>badge</mat-icon>
+        <span
+          >Role: <b>{{ selectedUserInfo?.role?.roleName || "N/A" }}</b></span
+        >
+      </div>
+      <div class="info-row">
+        <mat-icon>verified_user</mat-icon>
+        <span
+          >Status: <b>{{ selectedUserInfo?.status || "N/A" }}</b></span
+        >
+      </div>
+    </div>
+  </div>
+  }
 </div>
 
-
 <ng-template #callDialog>
-  Incoming call from ID {{'callUser()'}}
+  Incoming call from ID {{ "callUser()" }}
 </ng-template>
