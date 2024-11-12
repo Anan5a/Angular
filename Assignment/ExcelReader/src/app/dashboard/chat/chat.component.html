@@ -1,18 +1,17 @@
 <!-- Mobile Version -->
 <div class="container">
-  <!-- @if (!selectedUser()) {
+  <!-- Only displayed to admin/agent -->
+  @if (!selectedUser() && isAdmin()) {
+  <app-user-list
+    [users]="onlineUsers()"
+    (onRefreshUserList)="loadOnlineUsers()"
+  ></app-user-list>
+  } @if (!(isHandset$|async) && selectedUser() && isAdmin()) {
   <app-user-list
     [users]="onlineUsers()"
     (onRefreshUserList)="loadOnlineUsers()"
   ></app-user-list>
   }
-  @if (!(isHandset$|async) && selectedUser()) {
-  <app-user-list
-    [users]="onlineUsers()"
-    (onRefreshUserList)="loadOnlineUsers()"
-  ></app-user-list>
-
-  } -->
 
   <div class="app-chat-window">
     @if (selectedUser()) {

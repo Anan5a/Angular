@@ -70,8 +70,6 @@ export class ChatComponent {
   }
 
   ngOnInit(): void {
-    //load online users
-    // this.loadOnlineUsers(); //not needed
     this.realtimeService.startConnection();
     this.realtimeService.addReceiveMessageListener<ChatEvent[]>(
       'ChatChannel',
@@ -99,6 +97,10 @@ export class ChatComponent {
 
     this.chatService.RTC_GetAgentAssignment();
     this.sendAgentRequestQueue();
+    if (this.isAdmin()) {
+      //load online users
+      this.loadOnlineUsers();
+    }
   }
 
   loadOnlineUsers() {

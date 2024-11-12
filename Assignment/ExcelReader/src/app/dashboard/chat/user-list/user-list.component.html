@@ -1,29 +1,43 @@
 <mat-card>
-  <mat-card-title>Online users
-    <button
-      mat-button
-      (click)="refreshUsersList()"
-    ><mat-icon>refresh</mat-icon></button>
-
+  <mat-card-title
+    >Online users
+    <button mat-button (click)="refreshUsersList()">
+      <mat-icon>refresh</mat-icon>
+    </button>
   </mat-card-title>
   <mat-list>
-
-
     @for (user of users; track user.id) {
     <mat-list-item
       matRipple
       (click)="selectUser(user)"
-      [class.highlight]="activeChatUser()?.id==user.id"
+      [class.highlight]="activeChatUser()?.id == user.id"
     >
       <mat-icon matListItemIcon>person</mat-icon>
       <div
         matListItemTitle
-        [style.font-weight]="lastMessageForId(user.id)()?.didView ==false ? 'bold':'normal'"
-      >{{user.name}}</div>
+        [style.font-weight]="
+          lastMessageForId(user.id)()?.didView == false ? 'bold' : 'normal'
+        "
+      >
+        {{ user.name }}
+      </div>
       <div
         matListItemLine
-        [style.font-weight]="lastMessageForId(user.id)()?.didView ==false ? 'bold':'normal'"
-      >{{ lastMessageForId(user.id)()?.text }}</div>
+        [style.font-weight]="
+          lastMessageForId(user.id)()?.didView == false ? 'bold' : 'normal'
+        "
+      >
+        <mat-icon>support_agent</mat-icon>
+        {{ user.agentInfo?.name || "\<Unassigned\>" }}
+      </div>
+      <div
+        matListItemLine
+        [style.font-weight]="
+          lastMessageForId(user.id)()?.didView == false ? 'bold' : 'normal'
+        "
+      >
+        {{ lastMessageForId(user.id)()?.text }}
+      </div>
     </mat-list-item>
     }
   </mat-list>

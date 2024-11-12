@@ -4,3 +4,7 @@ mat-card-title {
 .highlight {
   background-color: #a37fe0;
 }
+mat-list {
+  overflow-y: scroll;
+  max-height: 60vh;
+}
