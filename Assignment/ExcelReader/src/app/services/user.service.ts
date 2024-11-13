@@ -61,24 +61,6 @@ export class UserService extends BaseNetworkService {
     );
   }
 
-  agentRequest() {
-    const url = `${ApiBaseUrl}/User/enter-chat-queue`;
-    const errorMessage = 'Failed to enter queue!';
-    return this.post<null, ResponseModelGeneric<boolean>>(
-      url,
-      null,
-      errorMessage
-    );
-  }
-  closeChat() {
-    const url = `${ApiBaseUrl}/User/close-chat`;
-    const errorMessage = 'Failed to close chat!';
-    return this.post<null, ResponseModelGeneric<boolean>>(
-      url,
-      null,
-      errorMessage
-    );
-  }
   dashboardData() {
     const url = `${ApiBaseUrl}/User/dashboard`;
     const errorMessage = 'Failed to fetch dashboard!';
@@ -127,18 +109,49 @@ export class UserService extends BaseNetworkService {
       errorMessage
     );
   }
+
+  //
+
   /////////messaging features
   getOnlineUsers() {
-    const url = `${ApiBaseUrl}/User/online-users`;
+    const url = `${ApiBaseUrl}/Communication/online-users`;
     const errorMessage = 'Failed to fetch online users!';
     return this.get<OnlineUserListResponseModel>(url, errorMessage);
   }
   sendMessageToUser(model: SendMessageModel) {
-    const url = `${ApiBaseUrl}/User/send-message`;
+    const url = `${ApiBaseUrl}/Communication/send-message`;
     const errorMessage = 'Failed to send message!';
     return this.post<SendMessageModel, SendMessageToUserResponseModel>(
       url,
       model,
+      errorMessage
+    );
+  }
+
+  agentRequest() {
+    const url = `${ApiBaseUrl}/Communication/enter-chat-queue`;
+    const errorMessage = 'Failed to enter queue!';
+    return this.post<null, ResponseModelGeneric<boolean>>(
+      url,
+      null,
+      errorMessage
+    );
+  }
+  closeChat() {
+    const url = `${ApiBaseUrl}/Communication/close-chat`;
+    const errorMessage = 'Failed to close chat!';
+    return this.post<null, ResponseModelGeneric<boolean>>(
+      url,
+      null,
+      errorMessage
+    );
+  }
+  acceptUserIntoChat(userId: number) {
+    const url = `${ApiBaseUrl}/Communication/accept-user-into-chat`;
+    const errorMessage = 'Failed to accept user!';
+    return this.post<{ Id: number }, ResponseModelGeneric<boolean>>(
+      url,
+      { Id: userId },
       errorMessage
     );
   }

@@ -44,9 +44,11 @@ export class ChatService {
         this.selectedUser.set({
           id: message.metadata.targetUserId,
           name: message.metadata.targetUserName,
+          agentInfo: {
+            id: this.authService.user()?.user.id,
+            name: this.authService.user()?.user.name,
+          },
         } as ChatUserLimited);
-
-        console.log(message);
       }
     );
   }

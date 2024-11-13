@@ -28,7 +28,7 @@
         "
       >
         <mat-icon>support_agent</mat-icon>
-        {{ user.agentInfo?.name || "\<Unassigned\>" }}
+        {{ ((activeChatUser()?.id == user.id) ? activeChatUser()?.agentInfo?.name  : user.agentInfo?.name)|| "\<Unassigned\>" }}
       </div>
       <div
         matListItemLine
