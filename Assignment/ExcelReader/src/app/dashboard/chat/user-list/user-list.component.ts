@@ -64,7 +64,7 @@ export class UserListComponent implements OnInit {
 
   selectUser(user: ChatUserLimited) {
     //check if user was assigned an agent, if yes, prevent assignment
-
+    //actual selection is determined by the server
     if (
       user.agentInfo != null &&
       user.agentInfo.id != this.authService.user()?.user.id

@@ -20,6 +20,9 @@ export class VoiceCallService extends BaseNetworkService {
   public callState = signal<'idle' | 'in-call' | 'calling' | 'disconnected'>(
     'idle'
   );
+  private ringtoneAudio = new Audio('/call_ring_1.wav');
+  private outRingtoneAudio = new Audio('/ring_tone.mp3');
+
   private rtcConfig: RTCConfiguration = {
     iceServers: [
       {
@@ -52,7 +55,7 @@ export class VoiceCallService extends BaseNetworkService {
     super(httpClient);
   }
   get callStateLive() {
-    return this.callState.asReadonly()
+    return this.callState.asReadonly();
   }
   //handles the answer of the other party
   async handleCallAnswer(message: any) {
@@ -72,6 +75,8 @@ export class VoiceCallService extends BaseNetworkService {
       console.warn('Call ID mismatch, exiting...');
       this.endCall();
     }
+    this.stopOutgoingRingtone();
+    this.stopRingtone();
 
     if (parts[2] == 'rejected' || parts[2] == 'end') {
       this.currentDialog?.close();
@@ -124,6 +129,8 @@ export class VoiceCallService extends BaseNetworkService {
   async handleCallRequest(message: any) {
     //after we got answer start the rtc comm.
     //change the dialog
+    //start ringing
+    this.playRingtone();
     this.callId = message.callData;
     this.currentDialog?.close();
     this.showDialogAndGetAction(
@@ -136,6 +143,8 @@ export class VoiceCallService extends BaseNetworkService {
     );
   }
   private callback = () => {
+    this.stopRingtone();
+    this.stopOutgoingRingtone();
     if (this.userSelection() == 'accepted') {
       this.sendCallOfferAnswer(
         this.callUserId(),
@@ -220,7 +229,7 @@ export class VoiceCallService extends BaseNetworkService {
       if (accessGranted) {
         this.callState.set('calling');
         //show a calling dialog and wait till we receive answer from other end
-
+        this.playOutgoingRingtone();
         this.showDialogAndGetAction(
           'Outgoing call',
           `Calling ${this.callUserName()} ...`,
@@ -448,6 +457,30 @@ export class VoiceCallService extends BaseNetworkService {
         this.endCall();
         break;
     }
+  }
+
+  playRingtone(): void {
+    this.ringtoneAudio.loop = true; // Loop the audio if needed
+    this.ringtoneAudio
+      .play()
+      .catch((error) => console.error('Error playing audio:', error));
+  }
+
+  stopRingtone(): void {
+    this.ringtoneAudio.pause();
+    this.ringtoneAudio.currentTime = 0; // Reset to the beginning
+  }
+
+  playOutgoingRingtone(): void {
+    this.outRingtoneAudio.loop = true; // Loop the audio if needed
+    this.outRingtoneAudio
+      .play()
+      .catch((error) => console.error('Error playing audio:', error));
+  }
+
+  stopOutgoingRingtone(): void {
+    this.outRingtoneAudio.pause();
+    this.outRingtoneAudio.currentTime = 0; // Reset to the beginning
   }
 
   endCall(incomingCallId: string = '') {
