@@ -19,7 +19,7 @@
     </mat-toolbar>
   </mat-card-header>
   <mat-card-content>
-    <div class="chat-window">
+    <div class="chat-window" #chatWindow>
       <mat-card
         *ngFor="let message of messages()"
         class="message"

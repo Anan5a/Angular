@@ -1,13 +1,16 @@
 import { NgFor, NgIf } from '@angular/common';
 import {
+  AfterViewChecked,
   AfterViewInit,
   Component,
   computed,
   effect,
+  ElementRef,
   EventEmitter,
   Input,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -39,11 +42,13 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: './chat-window.component.html',
   styleUrl: './chat-window.component.css',
 })
-export class ChatWindowComponent implements OnInit {
+export class ChatWindowComponent implements OnInit, AfterViewChecked {
   @Input({ required: true }) fromUser!: User;
   @Output() onOutgoingMessage = new EventEmitter<string>();
   @Output() onCloseChatWindow = new EventEmitter<boolean>();
   @Output() chatWindowLoaded = new EventEmitter<boolean>();
+
+  @ViewChild('chatWindow') chatWindow!: ElementRef;
 
   selectedUser = this.chatService.currentUser;
   selectedUsername = this.selectedUser()?.name;
@@ -73,7 +78,9 @@ export class ChatWindowComponent implements OnInit {
     //emit event so that user info can be loaded
     this.chatWindowLoaded.emit(true);
   }
-
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
   sendOutgoingMessageEvent() {
     if (this.newMessage.trim()) {
       this.onOutgoingMessage.emit(this.newMessage.trim());
@@ -94,5 +101,13 @@ export class ChatWindowComponent implements OnInit {
   endCall() {
     //check permission
     this.chatService.endCall();
+  }
+  scrollToBottom(): void {
+    try {
+      this.chatWindow.nativeElement.scrollTop =
+        this.chatWindow.nativeElement.scrollHeight;
+    } catch (err) {
+      console.error('Error scrolling to bottom:', err);
+    }
   }
 }

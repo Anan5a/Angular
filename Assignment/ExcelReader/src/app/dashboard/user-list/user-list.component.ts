@@ -11,8 +11,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
 import { ApiBaseImageUrl } from '../../../constants';
-import { FileMetadataResponse, FileEvent, User } from '../../app.models';
-import { RealtimeService } from '../../services/realtime.service';
+import { FileMetadataResponse, User } from '../../app.models';
 import { UserService } from '../../services/user.service';
 import { EditFileDialogComponent } from '../view-file-list/edit-file-dialog/edit-file-dialog.component';
 import { NgIf, DatePipe } from '@angular/common';
@@ -23,7 +22,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { RouterLink } from '@angular/router';
 import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
@@ -41,7 +39,6 @@ import { MatChipsModule } from '@angular/material/chips';
     NgIf,
     DatePipe,
     MatButtonToggleModule,
-    RouterLink,
     MatChipsModule,
   ],
   templateUrl: './user-list.component.html',

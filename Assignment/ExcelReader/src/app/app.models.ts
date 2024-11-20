@@ -39,6 +39,14 @@ export interface ChatUserLimited {
   name: string;
   agentInfo?: ChatUserLimited;
 }
+export interface ChatMessageHistoryModel {
+  chatHistoryId: number;
+  senderId: number;
+  receiverId: number;
+  content: string;
+  createdAt: string;
+}
+
 export interface Role {
   id: number;
   roleName: string;

@@ -15,6 +15,7 @@ import {
   UserListResponseModel,
   RTCConnModel,
   UserInfoResponseModel,
+  ChatMessageHistoryModel,
 } from '../app.models';
 import { HttpClient } from '@angular/common/http';
 
@@ -118,6 +119,18 @@ export class UserService extends BaseNetworkService {
     const errorMessage = 'Failed to fetch online users!';
     return this.get<OnlineUserListResponseModel>(url, errorMessage);
   }
+
+  getLastMessages(userId?: number) {
+    const url =
+      `${ApiBaseUrl}/Communication/chat-history` + (userId ? `/${userId}` : '');
+
+    const errorMessage = 'Failed to fetch chat history!';
+    return this.get<ResponseModelGeneric<ChatMessageHistoryModel[]>>(
+      url,
+      errorMessage
+    );
+  }
+
   sendMessageToUser(model: SendMessageModel) {
     const url = `${ApiBaseUrl}/Communication/send-message`;
     const errorMessage = 'Failed to send message!';

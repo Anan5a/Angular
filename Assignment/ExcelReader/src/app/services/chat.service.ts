@@ -8,6 +8,7 @@ import {
 import { AuthService } from './auth.service';
 import { VoiceCallService } from './voice-call.service';
 import { RealtimeService } from './realtime.service';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,8 @@ export class ChatService {
   constructor(
     private authService: AuthService,
     private voiceCallService: VoiceCallService,
-    private realtimeService: RealtimeService
+    private realtimeService: RealtimeService,
+    private userService: UserService
   ) {
     // this.RTC_GetAgentAssignment();
   }
@@ -34,14 +36,53 @@ export class ChatService {
     this.markChatViewed(cuser?.id);
 
     this.selectedUser.set(cuser);
+    if (cuser) {
+      this.loadChatHistory(cuser);
+    }
   }
+
+  loadChatHistory(cuser: ChatUserLimited) {
+    let promise;
+    if (this.authService.isAdmin() && cuser) {
+      //load selected user
+      promise = this.userService.getLastMessages(cuser.id!);
+    } else {
+      //load self
+      promise = this.userService.getLastMessages();
+    }
+    promise.subscribe({
+      next: (response) => {
+        response.data
+          ?.slice()
+          ?.reverse()
+          ?.forEach((message, index) => {
+            const from = message.senderId;
+            const to = message.receiverId;
+
+            this.storeChat(
+              {
+                from: from,
+                text: message.content,
+                time: message.createdAt,
+                to: to,
+                didView: true,
+              },
+              message.senderId == this.authService.user()?.user.id
+                ? message.receiverId
+                : message.senderId
+            );
+          });
+      },
+    });
+  }
+
   RTC_GetAgentAssignment() {
     //gets agent assignment from server
     this.realtimeService.addReceiveMessageListener<VoiceCallEvent[]>(
       'AgentChannel',
       (message: VoiceCallEvent) => {
         //set user id and name
-        this.selectedUser.set({
+        this.setCurrentUser({
           id: message.metadata.targetUserId,
           name: message.metadata.targetUserName,
           agentInfo: {

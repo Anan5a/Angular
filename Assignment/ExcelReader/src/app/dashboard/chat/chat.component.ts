@@ -134,11 +134,13 @@ export class ChatComponent {
         },
       });
   }
+
   sendAgentRequestQueue() {
     if (!this.authService.isAdmin()) {
       this.userService.agentRequest().subscribe();
     }
   }
+
   closeChatWindow() {
     this.userService.closeChat().subscribe();
     this.chatService.setCurrentUser(null);
