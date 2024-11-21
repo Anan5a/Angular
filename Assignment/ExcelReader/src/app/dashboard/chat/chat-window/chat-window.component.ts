@@ -1,7 +1,6 @@
 import { NgFor, NgIf } from '@angular/common';
 import {
   AfterViewChecked,
-  AfterViewInit,
   Component,
   computed,
   effect,
@@ -18,11 +17,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ChatMessageModel, ChatUserLimited, User } from '../../../app.models';
+import { ChatMessageModel, User } from '../../../app.models';
 import { ChatService } from '../../../services/chat.service';
 import { MatIconModule } from '@angular/material/icon';
 import { VoiceCallService } from '../../../services/voice-call.service';
-import { DialogRef } from '@angular/cdk/dialog';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({

@@ -53,3 +53,6 @@ button .inline-spinner {
 .p-16 {
   padding: 16px !important;
 }
+.muted {
+  color: #797980;
+}

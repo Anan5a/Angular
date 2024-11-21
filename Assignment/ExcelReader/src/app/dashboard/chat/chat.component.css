@@ -44,3 +44,9 @@ app-user-list {
 .info-row mat-icon {
   margin-right: 8px;
 }
+
+.waiting-message {
+  margin-top: 20px;
+  text-align: center;
+  background-color: #f3f4f6;
+}

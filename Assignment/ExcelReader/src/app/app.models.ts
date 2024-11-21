@@ -93,6 +93,8 @@ export interface ChatEvent {
   message: string;
   from: number;
   content: string;
+  isSystemMessage?: boolean;
+  sent_at: string;
 }
 export interface VoiceCallEvent {
   message: string;
@@ -112,8 +114,9 @@ export interface ChatMessageModel {
   from: number;
   to: number;
   text: string;
-  time: string | null;
+  sent_at: string | null;
   didView?: boolean;
+  isSystemMessage?: boolean;
 }
 
 //creating types to make code more readable

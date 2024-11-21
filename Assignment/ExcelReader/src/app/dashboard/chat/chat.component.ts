@@ -1,12 +1,4 @@
-import {
-  Component,
-  computed,
-  effect,
-  Input,
-  signal,
-  TemplateRef,
-  ViewChild,
-} from '@angular/core';
+import { Component, signal, TemplateRef, ViewChild } from '@angular/core';
 import { RealtimeService } from '../../services/realtime.service';
 import { FormsModule } from '@angular/forms';
 import { AsyncPipe, DatePipe, NgFor, NgIf } from '@angular/common';
@@ -17,28 +9,31 @@ import { ChatWindowComponent } from './chat-window/chat-window.component';
 import { UserService } from '../../services/user.service';
 import {
   ChatEvent,
+  ChatMessageModel,
   ChatUserLimited,
   User,
-  VoiceCallEvent,
 } from '../../app.models';
 import { AuthService } from '../../services/auth.service';
 import { ChatService } from '../../services/chat.service';
 import { VoiceCallService } from '../../services/voice-call.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
   imports: [
     FormsModule,
-    NgFor,
     NgIf,
     ChatWindowComponent,
     UserListComponent,
     AsyncPipe,
     MatIconModule,
     DatePipe,
+    MatCardModule,
+    MatButtonModule,
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css',
@@ -56,7 +51,7 @@ export class ChatComponent {
   isAdmin = this.authService.isAdmin;
 
   @ViewChild('callDialog', { static: false }) dialogContent!: TemplateRef<any>;
-
+  askedForAgent = false;
   constructor(
     private realtimeService: RealtimeService,
     private breakpointObserver: BreakpointObserver,
@@ -80,8 +75,9 @@ export class ChatComponent {
             from: message.from,
             to: this.user.id,
             text: message.content,
-            time: new Date().toISOString(),
-          },
+            sent_at: message.sent_at, //new Date().toISOString(),
+            isSystemMessage: message?.isSystemMessage,
+          } as ChatMessageModel,
           message.from
         );
       }
@@ -96,7 +92,7 @@ export class ChatComponent {
     );
 
     this.chatService.RTC_GetAgentAssignment();
-    this.sendAgentRequestQueue();
+    // this.sendAgentRequestQueue();
     if (this.isAdmin()) {
       //load online users
       this.loadOnlineUsers();
@@ -127,8 +123,8 @@ export class ChatComponent {
               from: this.user.id,
               to: this.selectedUser()?.id!,
               text: message,
-              time: new Date().toISOString(),
-            },
+              sent_at: new Date().toISOString(),
+            } as ChatMessageModel,
             this.selectedUser()?.id!
           );
         },
@@ -137,6 +133,7 @@ export class ChatComponent {
 
   sendAgentRequestQueue() {
     if (!this.authService.isAdmin()) {
+      this.askedForAgent = true;
       this.userService.agentRequest().subscribe();
     }
   }
@@ -145,6 +142,7 @@ export class ChatComponent {
     this.userService.closeChat().subscribe();
     this.chatService.setCurrentUser(null);
     this.selectedUserInfo = undefined;
+    this.askedForAgent = false;
   }
 
   loadUserInfo() {

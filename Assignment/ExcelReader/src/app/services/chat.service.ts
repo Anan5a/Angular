@@ -63,7 +63,7 @@ export class ChatService {
               {
                 from: from,
                 text: message.content,
-                time: message.createdAt,
+                sent_at: message.createdAt,
                 to: to,
                 didView: true,
               },

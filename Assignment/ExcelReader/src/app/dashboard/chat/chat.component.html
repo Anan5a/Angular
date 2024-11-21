@@ -23,9 +23,27 @@
     ></app-chat-window>
     }@else if (!(isHandset$|async)) {
     <!-- <h2 class="center">Select a user to start conversation.</h2> -->
-    <h2 class="center">
-      Waiting for {{ isAdmin() ? "customer" : "agent" }}...
-    </h2>
+    <div class="center">
+      <!-- show user a button? -->
+      <button
+        *ngIf="!askedForAgent && !isAdmin()"
+        mat-button
+        mat-raised-button
+        color="primary"
+        (click)="sendAgentRequestQueue()"
+      >
+        <mat-icon>play_arrow</mat-icon> Start Conversation
+      </button>
+
+      <!-- Waiting message visible after button is clicked -->
+      <mat-card *ngIf="askedForAgent || isAdmin()" class="waiting-message">
+        <mat-card-title>
+          <mat-icon>hourglass_empty</mat-icon> Waiting for
+          {{ isAdmin() ? "customer" : "agent" }}...
+        </mat-card-title>
+      </mat-card>
+      <!-- Waiting for {{ isAdmin() ? "customer" : "agent" }}... -->
+    </div>
     }
   </div>
   @if (isAdmin() && selectedUser()) {
