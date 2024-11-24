@@ -22,7 +22,7 @@
     <div class="chat-window" #chatWindow>
       @for (message of messages(); track $index) { @if(message?.isSystemMessage)
       {
-      <p class="center muted">this is a info message</p>
+      <p class="center muted">{{ message.text }}</p>
       }@else{
 
       <mat-card

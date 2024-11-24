@@ -3,7 +3,7 @@ import {
   ChatMessageModel,
   ChatRepositoryModel,
   ChatUserLimited,
-  VoiceCallEvent,
+  AgentChannelMessage,
 } from '../app.models';
 import { AuthService } from './auth.service';
 import { VoiceCallService } from './voice-call.service';
@@ -50,37 +50,42 @@ export class ChatService {
       //load self
       promise = this.userService.getLastMessages();
     }
-    promise.subscribe({
-      next: (response) => {
-        response.data
-          ?.slice()
-          ?.reverse()
-          ?.forEach((message, index) => {
-            const from = message.senderId;
-            const to = message.receiverId;
+    promise
+      .subscribe
+      //   {
+      //   next: (response) => {
+      //     response.data
+      //       ?.slice()
+      //       ?.reverse()
+      //       ?.forEach((message, index) => {
+      //         const from = message.senderId;
+      //         const to = message.receiverId;
 
-            this.storeChat(
-              {
-                from: from,
-                text: message.content,
-                sent_at: message.createdAt,
-                to: to,
-                didView: true,
-              },
-              message.senderId == this.authService.user()?.user.id
-                ? message.receiverId
-                : message.senderId
-            );
-          });
-      },
-    });
+      //         this.storeChat(
+      //           {
+      //             from: from,
+      //             text: message.content,
+      //             sentAt: message.createdAt,
+      //             to: to,
+      //             didView: true,
+      //           },
+      //           message.senderId == this.authService.user()?.user.id
+      //             ? message.receiverId
+      //             : message.senderId
+      //         );
+      //       });
+      //   },
+      // }
+      ();
   }
 
   RTC_GetAgentAssignment() {
     //gets agent assignment from server
-    this.realtimeService.addReceiveMessageListener<VoiceCallEvent[]>(
+    this.realtimeService.addReceiveMessageListener<AgentChannelMessage[]>(
       'AgentChannel',
-      (message: VoiceCallEvent) => {
+      (message: AgentChannelMessage) => {
+        console.log(message);
+
         //set user id and name
         this.setCurrentUser({
           id: message.metadata.targetUserId,
@@ -107,7 +112,7 @@ export class ChatService {
     }
   }
 
-  storeChat(chat: ChatMessageModel, recpId: number) {
+  storeChat(chat: ChatMessageModel, recpId: number, append: boolean = true) {
     const repository = [...this.chatRepository()];
     chat.didView =
       this.selectedUser()?.id == chat.from ||
@@ -122,8 +127,23 @@ export class ChatService {
       } as ChatRepositoryModel);
     } else {
       //update
-      repository[recv].chatList.push(chat);
+      // check for duplicate
+      const hasId = repository[recv].chatList.findIndex(
+        (m) => m.messageId == chat.messageId
+      );
+      if (chat.isSystemMessage) {
+        repository[recv].chatList.push(chat);
+      }
+      if (hasId == -1 && !chat.isSystemMessage) {
+        if (append) {
+          repository[recv].chatList.push(chat);
+        } else {
+          repository[recv].chatList.unshift(chat);
+        }
+      }
     }
+
+    console.log(repository);
     //change the signal
     this.chatRepository.set(repository);
   }

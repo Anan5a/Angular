@@ -94,13 +94,23 @@ export interface ChatEvent {
   from: number;
   content: string;
   isSystemMessage?: boolean;
-  sent_at: string;
+  sentAt: string;
+  messageId?: number;
 }
-export interface VoiceCallEvent {
+export interface AgentChannelMessage<MetaT = any> {
   message: string;
-  metadata: RTCConnModel;
-  callData: string;
+  callData?: string | null;
+  metadata?: MetaT | null;
+  isSystemMessage?: boolean | null;
 }
+
+// export interface AgentChannelMessage<MetaT = any> {
+//   message: string;
+//   callData?: string | null;
+//   metadata?: MetaT | null;
+//   isSystemMessage?: boolean | null;
+// }
+
 ////////////
 export interface SendMessageModel {
   to: number;
@@ -108,15 +118,17 @@ export interface SendMessageModel {
 }
 export interface ChatRepositoryModel {
   recpId: number;
+
   chatList: ChatMessageModel[];
 }
 export interface ChatMessageModel {
   from: number;
   to: number;
   text: string;
-  sent_at: string | null;
+  sentAt: string | null;
   didView?: boolean;
   isSystemMessage?: boolean;
+  messageId?: number;
 }
 
 //creating types to make code more readable
@@ -138,7 +150,7 @@ export type OnlineUserListResponseModel = ResponseModelGeneric<
   ChatUserLimited[]
 >;
 export type SendMessageToUserResponseModel = ResponseModelGeneric<
-  string | null
+  string | null | number
 >;
 
 export type CallbackFunction<TArgs extends any[]> = (...args: TArgs) => void;

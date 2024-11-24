@@ -66,20 +66,27 @@ export class ChatComponent {
 
   ngOnInit(): void {
     this.realtimeService.startConnection();
-    this.realtimeService.addReceiveMessageListener<ChatEvent[]>(
+    this.realtimeService.addReceiveMessageListener<ChatEvent[][]>(
       'ChatChannel',
-      (message: ChatEvent) => {
+      (messages: ChatEvent[]) => {
         //send this to chat window
-        this.chatService.storeChat(
-          {
-            from: message.from,
-            to: this.user.id,
-            text: message.content,
-            sent_at: message.sent_at, //new Date().toISOString(),
-            isSystemMessage: message?.isSystemMessage,
-          } as ChatMessageModel,
-          message.from
-        );
+        console.log(messages);
+        messages.forEach((message, i) => {
+          this.chatService.storeChat(
+            {
+              from: message.from,
+              to: this.user.id,
+              text: message.content,
+              sentAt: message.sentAt, //new Date().toISOString(),
+              isSystemMessage: message?.isSystemMessage,
+              messageId: message.messageId,
+            } as ChatMessageModel,
+            this.user.id == message.from
+              ? this.selectedUser()?.id!
+              : message.from,
+            messages.length > 1 ? false : true
+          );
+        });
       }
     );
 
@@ -123,7 +130,8 @@ export class ChatComponent {
               from: this.user.id,
               to: this.selectedUser()?.id!,
               text: message,
-              sent_at: new Date().toISOString(),
+              sentAt: new Date().toISOString(),
+              messageId: x.data,
             } as ChatMessageModel,
             this.selectedUser()?.id!
           );
