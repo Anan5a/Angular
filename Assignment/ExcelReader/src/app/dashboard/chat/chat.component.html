@@ -17,9 +17,11 @@
     @if (selectedUser()) {
     <app-chat-window
       [fromUser]="user"
+      [chatActivityState]="chatActivityState"
       (onOutgoingMessage)="sendMessageToSelectedUser($event)"
       (onCloseChatWindow)="closeChatWindow()"
       (chatWindowLoaded)="loadUserInfo()"
+      
     ></app-chat-window>
     }@else if (!(isHandset$|async)) {
     <!-- <h2 class="center">Select a user to start conversation.</h2> -->

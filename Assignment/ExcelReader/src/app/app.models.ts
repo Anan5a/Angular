@@ -13,7 +13,7 @@ export interface ResponseModelGeneric<T> {
 
 export interface RTCConnModel {
   targetUserId: number;
-  data: string;
+  data?: string;
   targetUserName?: string;
 }
 
@@ -96,20 +96,24 @@ export interface ChatEvent {
   isSystemMessage?: boolean;
   sentAt: string;
   messageId?: number;
+  endOfChatMarker?: true;
 }
-export interface AgentChannelMessage<MetaT = any> {
-  message: string;
-  callData?: string | null;
-  metadata?: MetaT | null;
-  isSystemMessage?: boolean | null;
-}
-
 // export interface AgentChannelMessage<MetaT = any> {
 //   message: string;
 //   callData?: string | null;
 //   metadata?: MetaT | null;
 //   isSystemMessage?: boolean | null;
 // }
+export interface AgentChannelMessage<MetaT> {
+  message: string;
+  callData?: string | null;
+  metadata?: MetaT | null;
+  isSystemMessage?: boolean | null;
+  containsUser?: boolean | null;
+  containsCallData?: boolean | null;
+  acceptIntoChat?: boolean | null;
+  removeUserFromList?: boolean | null;
+}
 
 ////////////
 export interface SendMessageModel {

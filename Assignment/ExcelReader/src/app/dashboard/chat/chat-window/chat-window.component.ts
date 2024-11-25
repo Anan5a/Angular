@@ -34,7 +34,6 @@ import { MatDialog } from '@angular/material/dialog';
     MatInputModule,
     MatButtonModule,
     NgIf,
-    NgFor,
     MatIconModule,
   ],
   templateUrl: './chat-window.component.html',
@@ -42,6 +41,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class ChatWindowComponent implements OnInit, AfterViewChecked {
   @Input({ required: true }) fromUser!: User;
+  @Input({ required: true }) chatActivityState = 'active';
   @Output() onOutgoingMessage = new EventEmitter<string>();
   @Output() onCloseChatWindow = new EventEmitter<boolean>();
   @Output() chatWindowLoaded = new EventEmitter<boolean>();

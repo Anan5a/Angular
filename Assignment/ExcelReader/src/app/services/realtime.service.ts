@@ -4,61 +4,57 @@ import { ApiRealtimeUrl } from '../../constants';
 import { AuthService } from './auth.service';
 import { CallbackFunction } from '../app.models';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RealtimeService {
-
-  private hubConnection: HubConnection
-  private authService = inject(AuthService)
-  private registeredMethodList: string[] = []
+  private hubConnection: HubConnection;
+  private authService = inject(AuthService);
+  private registeredMethodList: string[] = [];
 
   constructor() {
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl(ApiRealtimeUrl,
-        {
-          accessTokenFactory: this.authService.token
-        }
-      )
+      .withUrl(ApiRealtimeUrl, {
+        accessTokenFactory: this.authService.token,
+      })
       .withAutomaticReconnect()
       .build();
   }
 
   public startConnection() {
-    console.log("Establishing realtime channel...")
+    console.log('Establishing realtime channel...');
     this.hubConnection
       .start()
-      .then(() => console.log("Established realtime signalR connection..."))
+      .then(() => console.log('Established realtime signalR connection...'))
       .catch((reason) => {
-        console.error("Realtime connection establish failed: " + reason)
+        console.error('Realtime connection establish failed: ' + reason);
       })
-      .finally(() => console.log("Channel establish process ended."))
-
+      .finally(() => console.log('Channel establish process ended.'));
   }
 
-  public addReceiveMessageListener<TArgs extends any[]>(method: string, callback: CallbackFunction<TArgs>) {
-    if (this.registeredMethodList.includes(method)) {
-      console.warn("Method/Channel '" + method + "' already registered, overriding with new callback")
+  public addReceiveMessageListener<TArgs extends any[]>(
+    method: string,
+    callback: CallbackFunction<TArgs>
+  ) {
+    if (this.registeredMethodList.includes(method + callback.toString())) {
+      console.warn(
+        "Method/Channel '" +
+          method +
+          "' already registered, overriding with new callback"
+      );
       this.hubConnection.off(method);
     }
-    this.registeredMethodList.push(method)
-    console.info("Method/Channel '" + method + "' registered")
+    this.registeredMethodList.push(method + callback.toString());
+    console.info("Method/Channel '" + method + "' registered");
 
     this.hubConnection.on(method, (...args: TArgs) => {
       callback(...args);
     });
-
   }
 
   public sendMessage(message: string) {
     this.hubConnection
       .invoke('SendMessage', message)
-      .catch(err => console.error("Send message failed: " + err))
+      .catch((err) => console.error('Send message failed: ' + err));
   }
-
-
-
-
-
 }

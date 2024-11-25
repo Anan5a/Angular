@@ -43,10 +43,10 @@ export class ChatComponent {
   isHandset$ = this.breakpointObserver
     .observe(Breakpoints.Handset)
     .pipe(map((result) => result.matches));
-  onlineUsers = signal<ChatUserLimited[]>([]);
+  onlineUsers = this.chatService.onlineUsers;
   selectedUser = this.chatService.currentUser;
   selectedUserInfo?: User;
-
+  chatActivityState = <'active' | 'inactive'>'active';
   // callUser = computed(() => this.voiceCallService.callUserId());
   isAdmin = this.authService.isAdmin;
 
@@ -72,6 +72,11 @@ export class ChatComponent {
         //send this to chat window
         console.log(messages);
         messages.forEach((message, i) => {
+          if (message.endOfChatMarker) {
+            //end chat
+            this.chatActivityState = 'inactive';
+          }
+
           this.chatService.storeChat(
             {
               from: message.from,
@@ -107,13 +112,7 @@ export class ChatComponent {
   }
 
   loadOnlineUsers() {
-    this.userService.getOnlineUsers().subscribe({
-      next: (users) => {
-        if (users.data) {
-          this.onlineUsers.set(users.data);
-        }
-      },
-    });
+    this.chatService.loadOnlineUsers();
   }
 
   sendMessageToSelectedUser(message: string) {

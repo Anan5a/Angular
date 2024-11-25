@@ -6,7 +6,11 @@
       >
       <!-- {{fromUser.name}} => -->
       <span class="spacer"></span>
-      <button mat-button (click)="callUser()">
+      <button
+        mat-button
+        (click)="callUser()"
+        [disabled]="chatActivityState == 'inactive'"
+      >
         <mat-icon>phone</mat-icon> Call
       </button>
       <!-- <button
@@ -43,9 +47,14 @@
         matInput
         [(ngModel)]="newMessage"
         (keydown.enter)="sendOutgoingMessageEvent()"
+        [disabled]="chatActivityState == 'inactive'"
       />
     </mat-form-field>
-    <button mat-button (click)="sendOutgoingMessageEvent()">
+    <button
+      mat-button
+      (click)="sendOutgoingMessageEvent()"
+      [disabled]="chatActivityState == 'inactive'"
+    >
       Send<mat-icon> send </mat-icon>
     </button>
   </mat-card-actions>

@@ -4,6 +4,7 @@ import {
   ChatRepositoryModel,
   ChatUserLimited,
   AgentChannelMessage,
+  RTCConnModel,
 } from '../app.models';
 import { AuthService } from './auth.service';
 import { VoiceCallService } from './voice-call.service';
@@ -16,6 +17,8 @@ import { UserService } from './user.service';
 export class ChatService {
   private chatRepository = signal<ChatRepositoryModel[]>([]);
   private selectedUser = signal<ChatUserLimited | null>(null);
+  private _onlineUsers = signal<ChatUserLimited[]>([]);
+
   constructor(
     private authService: AuthService,
     private voiceCallService: VoiceCallService,
@@ -31,7 +34,9 @@ export class ChatService {
   get currentUser() {
     return this.selectedUser.asReadonly();
   }
-
+  get onlineUsers() {
+    return this._onlineUsers.asReadonly();
+  }
   setCurrentUser(cuser: ChatUserLimited | null) {
     this.markChatViewed(cuser?.id);
 
@@ -50,54 +55,73 @@ export class ChatService {
       //load self
       promise = this.userService.getLastMessages();
     }
-    promise
-      .subscribe
-      //   {
-      //   next: (response) => {
-      //     response.data
-      //       ?.slice()
-      //       ?.reverse()
-      //       ?.forEach((message, index) => {
-      //         const from = message.senderId;
-      //         const to = message.receiverId;
-
-      //         this.storeChat(
-      //           {
-      //             from: from,
-      //             text: message.content,
-      //             sentAt: message.createdAt,
-      //             to: to,
-      //             didView: true,
-      //           },
-      //           message.senderId == this.authService.user()?.user.id
-      //             ? message.receiverId
-      //             : message.senderId
-      //         );
-      //       });
-      //   },
-      // }
-      ();
+    promise.subscribe();
   }
 
+  loadOnlineUsers() {
+    this.userService.getOnlineUsers().subscribe({
+      next: (users) => {
+        if (users.data) {
+          this._onlineUsers.set(users.data);
+        }
+      },
+    });
+  }
+
+  private addNewOnlineUser(newUser: ChatUserLimited) {
+    //check if already in
+    const idx = this.onlineUsers().findIndex((u) => u.id == newUser.id);
+
+    if (idx != -1) {
+      return;
+    }
+    const newList = [...this.onlineUsers(), newUser];
+    this._onlineUsers.set(newList);
+  }
+
+  private removeFromOnlineUsers(oldUser: ChatUserLimited) {
+    const filtered = [...this.onlineUsers()].filter((u) => u.id != oldUser.id);
+    console.log('After filter: ', filtered);
+    this._onlineUsers.set(filtered);
+  }
+  endCurrentChat() {}
   RTC_GetAgentAssignment() {
     //gets agent assignment from server
-    this.realtimeService.addReceiveMessageListener<AgentChannelMessage[]>(
-      'AgentChannel',
-      (message: AgentChannelMessage) => {
-        console.log(message);
-
-        //set user id and name
+    this.realtimeService.addReceiveMessageListener<
+      AgentChannelMessage<RTCConnModel>[]
+    >('AgentChannel', (message: AgentChannelMessage<RTCConnModel>) => {
+      //set user id and name
+      if (message.acceptIntoChat) {
         this.setCurrentUser({
-          id: message.metadata.targetUserId,
-          name: message.metadata.targetUserName,
+          id: message.metadata?.targetUserId,
+          name: message.metadata?.targetUserName,
           agentInfo: {
             id: this.authService.user()?.user.id,
             name: this.authService.user()?.user.name,
           },
         } as ChatUserLimited);
       }
-    );
+    });
+
+    this.realtimeService.addReceiveMessageListener<
+      AgentChannelMessage<ChatUserLimited>[]
+    >('AgentChannel', (message: AgentChannelMessage<ChatUserLimited>) => {
+      const user = {
+        id: message.metadata?.id,
+        name: message.metadata?.name,
+      } as ChatUserLimited;
+      if (message.containsUser) {
+        console.log('Add user to list: ', message);
+
+        this.addNewOnlineUser(user);
+      }
+      if (message.removeUserFromList) {
+        console.log('Remove user from list: ', message);
+        this.removeFromOnlineUsers(user);
+      }
+    });
   }
+
   markChatViewed(recpId: number | undefined | null) {
     if (!recpId) {
       return;
@@ -143,7 +167,7 @@ export class ChatService {
       }
     }
 
-    console.log(repository);
+    // console.log(repository);
     //change the signal
     this.chatRepository.set(repository);
   }
