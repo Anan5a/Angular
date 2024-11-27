@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -28,7 +28,7 @@ export class CallDialogComponent {
     private voiceCallService: VoiceCallService
   ) {}
 
-  onSave(): void {}
+  // onSave(): void {}
   onAccept(): void {
     this.actionEvent.emit('accepted');
   }

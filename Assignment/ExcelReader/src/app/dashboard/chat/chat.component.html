@@ -6,7 +6,7 @@
     [users]="onlineUsers()"
     (onRefreshUserList)="loadOnlineUsers()"
   ></app-user-list>
-  } @if (!(isHandset$|async) && selectedUser() && isAdmin()) {
+  } @if ((isHandset$|async) ===false && selectedUser() && isAdmin()) {
   <app-user-list
     [users]="onlineUsers()"
     (onRefreshUserList)="loadOnlineUsers()"
@@ -18,12 +18,12 @@
     <app-chat-window
       [fromUser]="user"
       [chatActivityState]="chatActivityState"
-      (onOutgoingMessage)="sendMessageToSelectedUser($event)"
-      (onCloseChatWindow)="closeChatWindow()"
+      (EmitOutgoingMessage)="sendMessageToSelectedUser($event)"
+      (EmitCloseChatWindow)="closeChatWindow()"
       (chatWindowLoaded)="loadUserInfo()"
       
     ></app-chat-window>
-    }@else if (!(isHandset$|async)) {
+    }@else if ((isHandset$|async)===false) {
     <!-- <h2 class="center">Select a user to start conversation.</h2> -->
     <div class="center">
       <!-- show user a button? -->

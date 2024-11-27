@@ -1,18 +1,13 @@
-import { Component, signal, TemplateRef, ViewChild } from '@angular/core';
+import { Component, TemplateRef, ViewChild, OnInit } from '@angular/core';
 import { RealtimeService } from '../../services/realtime.service';
 import { FormsModule } from '@angular/forms';
-import { AsyncPipe, DatePipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, DatePipe, NgIf } from '@angular/common';
 import { UserListComponent } from './user-list/user-list.component';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
 import { ChatWindowComponent } from './chat-window/chat-window.component';
 import { UserService } from '../../services/user.service';
-import {
-  ChatEvent,
-  ChatMessageModel,
-  ChatUserLimited,
-  User,
-} from '../../app.models';
+import { ChatEvent, ChatMessageModel, User } from '../../app.models';
 import { AuthService } from '../../services/auth.service';
 import { ChatService } from '../../services/chat.service';
 import { VoiceCallService } from '../../services/voice-call.service';
@@ -38,7 +33,7 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.css',
 })
-export class ChatComponent {
+export class ChatComponent implements OnInit {
   user: User;
   isHandset$ = this.breakpointObserver
     .observe(Breakpoints.Handset)
@@ -46,11 +41,12 @@ export class ChatComponent {
   onlineUsers = this.chatService.onlineUsers;
   selectedUser = this.chatService.currentUser;
   selectedUserInfo?: User;
-  chatActivityState = <'active' | 'inactive'>'active';
+  chatActivityState = 'active' as 'active' | 'inactive';
   // callUser = computed(() => this.voiceCallService.callUserId());
   isAdmin = this.authService.isAdmin;
 
-  @ViewChild('callDialog', { static: false }) dialogContent!: TemplateRef<any>;
+  @ViewChild('callDialog', { static: false })
+  dialogContent!: TemplateRef<unknown>;
   askedForAgent = false;
   constructor(
     private realtimeService: RealtimeService,
@@ -61,7 +57,7 @@ export class ChatComponent {
     private voiceCallService: VoiceCallService,
     private callDialog: MatDialog
   ) {
-    this.user = authService.user()?.user!;
+    this.user = authService.user()?.user ?? ({} as User);
   }
 
   ngOnInit(): void {
@@ -70,8 +66,8 @@ export class ChatComponent {
       'ChatChannel',
       (messages: ChatEvent[]) => {
         //send this to chat window
-        console.log(messages);
-        messages.forEach((message, i) => {
+        // console.log(messages);
+        messages.forEach((message) => {
           if (message.endOfChatMarker) {
             //end chat
             this.chatActivityState = 'inactive';
@@ -95,7 +91,7 @@ export class ChatComponent {
       }
     );
 
-    this.realtimeService.addReceiveMessageListener<any[]>(
+    this.realtimeService.addReceiveMessageListener<unknown[]>(
       'CallingChannel',
       (message: any) => {
         // console.log(message)

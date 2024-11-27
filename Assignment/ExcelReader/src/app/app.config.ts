@@ -10,7 +10,6 @@ import { SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
 
 import {
   GoogleLoginProvider,
-  FacebookLoginProvider
 } from '@abacritt/angularx-social-login';
 import { GoogleClientId } from '../constants';
 

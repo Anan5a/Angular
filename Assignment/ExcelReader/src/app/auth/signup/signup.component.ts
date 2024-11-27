@@ -1,11 +1,9 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
-  ValidationErrors,
   ValidatorFn,
   Validators,
 } from '@angular/forms';
@@ -20,7 +18,6 @@ import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import {
   GoogleSigninButtonModule,
-  SocialAuthService,
   SocialLoginModule,
 } from '@abacritt/angularx-social-login';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';

@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import {  NgIf } from '@angular/common';
 import {
   AfterViewChecked,
   Component,
@@ -42,8 +42,8 @@ import { MatDialog } from '@angular/material/dialog';
 export class ChatWindowComponent implements OnInit, AfterViewChecked {
   @Input({ required: true }) fromUser!: User;
   @Input({ required: true }) chatActivityState = 'active';
-  @Output() onOutgoingMessage = new EventEmitter<string>();
-  @Output() onCloseChatWindow = new EventEmitter<boolean>();
+  @Output() EmitOutgoingMessage = new EventEmitter<string>();
+  @Output() EmitCloseChatWindow = new EventEmitter<boolean>();
   @Output() chatWindowLoaded = new EventEmitter<boolean>();
 
   @ViewChild('chatWindow') chatWindow!: ElementRef;
@@ -60,7 +60,7 @@ export class ChatWindowComponent implements OnInit, AfterViewChecked {
     }
     return chats;
   });
-  newMessage: string = '';
+  newMessage = '';
 
   constructor(
     private chatService: ChatService,
@@ -81,7 +81,7 @@ export class ChatWindowComponent implements OnInit, AfterViewChecked {
   }
   sendOutgoingMessageEvent() {
     if (this.newMessage.trim()) {
-      this.onOutgoingMessage.emit(this.newMessage.trim());
+      this.EmitOutgoingMessage.emit(this.newMessage.trim());
     }
     //clear input
     this.newMessage = '';
@@ -89,7 +89,7 @@ export class ChatWindowComponent implements OnInit, AfterViewChecked {
 
   closeChat() {
     this.chatService.setCurrentUser(null);
-    this.onCloseChatWindow.emit();
+    this.EmitCloseChatWindow.emit();
   }
 
   callUser() {

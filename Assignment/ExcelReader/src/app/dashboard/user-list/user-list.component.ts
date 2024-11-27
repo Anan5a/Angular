@@ -51,7 +51,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
 
   remoteData = signal<User[]>([]);
 
-  searchText: string = '';
+  searchText = '';
 
   displayedColumns: string[] = [
     'id',

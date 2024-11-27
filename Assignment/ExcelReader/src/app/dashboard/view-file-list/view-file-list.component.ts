@@ -54,7 +54,7 @@ export class ViewFileListComponent implements OnInit, AfterViewInit {
 
   remoteData = signal<FileMetadataResponse[]>([]);
 
-  searchText: string = '';
+  searchText = '';
 
   displayedColumns: string[] = ['name', 'size', 'date', 'action'];
   remoteDataLoaded = false;

@@ -93,9 +93,16 @@
         [routerLinkActiveOptions]="{ exact: true }"
         ><mat-icon>account_circle</mat-icon>Signup</a
       >
-      <a *ngIf="isAuthenticated()" mat-list-item (click)="logout()"
-        ><mat-icon>logout </mat-icon> Logout</a
+      <a
+        *ngIf="isAuthenticated()"
+        mat-list-item
+        (click)="logout()"
+        (keydown.enter)="logout()"
+        (keydown.space)="logout()"
+        tabindex="0"
       >
+        <mat-icon>logout</mat-icon> Logout
+      </a>
     </mat-nav-list>
   </mat-sidenav>
 

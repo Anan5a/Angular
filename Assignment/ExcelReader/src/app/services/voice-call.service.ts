@@ -174,9 +174,9 @@ export class VoiceCallService extends BaseNetworkService {
     title: string,
     message: string,
     callback: any = null,
-    showAccept: boolean = false,
-    showReject: boolean = false,
-    showCancel: boolean = false,
+    showAccept = false,
+    showReject = false,
+    showCancel = false,
     forceCloseDialog = false
   ) {
     if (this.currentDialog && !forceCloseDialog) {
@@ -337,6 +337,7 @@ export class VoiceCallService extends BaseNetworkService {
   }
 
   async handleRTCSignal(remoteData: {}) {
+    // console.log(remoteData);
     if (this.callUserId() === 0) {
       console.log('Set incoming caller id...');
       //@ts-ignore
@@ -483,7 +484,7 @@ export class VoiceCallService extends BaseNetworkService {
     this.outRingtoneAudio.currentTime = 0; // Reset to the beginning
   }
 
-  endCall(incomingCallId: string = '') {
+  endCall(incomingCallId = '') {
     //only end valid call id
     if (
       incomingCallId.length > 1 &&

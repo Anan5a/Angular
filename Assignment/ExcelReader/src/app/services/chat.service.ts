@@ -81,7 +81,7 @@ export class ChatService {
 
   private removeFromOnlineUsers(oldUser: ChatUserLimited) {
     const filtered = [...this.onlineUsers()].filter((u) => u.id != oldUser.id);
-    console.log('After filter: ', filtered);
+    // console.log('After filter: ', filtered);
     this._onlineUsers.set(filtered);
   }
   endCurrentChat() {}
@@ -111,12 +111,12 @@ export class ChatService {
         name: message.metadata?.name,
       } as ChatUserLimited;
       if (message.containsUser) {
-        console.log('Add user to list: ', message);
+        // console.log('Add user to list: ', message);
 
         this.addNewOnlineUser(user);
       }
       if (message.removeUserFromList) {
-        console.log('Remove user from list: ', message);
+        // console.log('Remove user from list: ', message);
         this.removeFromOnlineUsers(user);
       }
     });
@@ -136,7 +136,7 @@ export class ChatService {
     }
   }
 
-  storeChat(chat: ChatMessageModel, recpId: number, append: boolean = true) {
+  storeChat(chat: ChatMessageModel, recpId: number, append = true) {
     const repository = [...this.chatRepository()];
     chat.didView =
       this.selectedUser()?.id == chat.from ||

@@ -157,4 +157,6 @@ export type SendMessageToUserResponseModel = ResponseModelGeneric<
   string | null | number
 >;
 
-export type CallbackFunction<TArgs extends any[]> = (...args: TArgs) => void;
+export type CallbackFunction<TArgs extends unknown[]> = (
+  ...args: TArgs
+) => void;

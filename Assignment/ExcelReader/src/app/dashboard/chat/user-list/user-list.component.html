@@ -10,13 +10,13 @@
     <mat-list-item
       matRipple
       (click)="selectUser(user)"
-      [class.highlight]="activeChatUser()?.id == user.id"
+      [class.highlight]="activeChatUser()?.id === user.id"
     >
       <mat-icon matListItemIcon>person</mat-icon>
       <div
         matListItemTitle
         [style.font-weight]="
-          lastMessageForId(user.id)()?.didView == false ? 'bold' : 'normal'
+          lastMessageForId(user.id)()?.didView === false ? 'bold' : 'normal'
         "
       >
         {{ user.name }}
@@ -24,16 +24,16 @@
       <div
         matListItemLine
         [style.font-weight]="
-          lastMessageForId(user.id)()?.didView == false ? 'bold' : 'normal'
+          lastMessageForId(user.id)()?.didView === false ? 'bold' : 'normal'
         "
       >
         <mat-icon>support_agent</mat-icon>
-        {{ ((activeChatUser()?.id == user.id) ? activeChatUser()?.agentInfo?.name  : user.agentInfo?.name)|| "\<Unassigned\>" }}
+        {{ ((activeChatUser()?.id === user.id) ? activeChatUser()?.agentInfo?.name  : user.agentInfo?.name)|| "\<Unassigned\>" }}
       </div>
       <div
         matListItemLine
         [style.font-weight]="
-          lastMessageForId(user.id)()?.didView == false ? 'bold' : 'normal'
+          lastMessageForId(user.id)()?.didView === false ? 'bold' : 'normal'
         "
       >
         {{ lastMessageForId(user.id)()?.text }}

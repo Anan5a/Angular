@@ -14,7 +14,6 @@ import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import {
   BreakpointObserver,
   Breakpoints,
-  MediaMatcher,
 } from '@angular/cdk/layout';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';

@@ -4,7 +4,6 @@ import {
   FormGroup,
   FormControl,
   Validators,
-  ReactiveFormsModule,
   FormsModule,
   AbstractControl,
 } from '@angular/forms';
@@ -106,7 +105,7 @@ export class UploadComponent {
           .split('.')
           .slice(0, -1)
           .join('.')
-          .replace(/[^a-zA-Z0-9\(\)\.]/g, '_');
+          .replace(/[^a-zA-Z0-9().]/g, '_');
       } else {
         this.inputFileName = '';
         // this.form.get('excelFile')?.setValue(null);

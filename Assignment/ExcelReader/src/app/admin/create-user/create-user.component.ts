@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { AfterViewInit, Component, OnInit, signal } from '@angular/core';
+import { AfterViewInit, Component, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -17,7 +17,6 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { Role } from '../../app.models';
-import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
@@ -33,7 +32,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatButtonModule,
     ReactiveFormsModule,
     NgIf,
-    RouterLink,
     MatSelectModule,
     MatInputModule,
   ],
