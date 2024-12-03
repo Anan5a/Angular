@@ -19,7 +19,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { UserService } from '../../services/user.service';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { ApiBaseImageUrl, ApiBaseUrl } from '../../../constants';
+import { ApiBaseImageUrl } from '../../../constants';
 import { MatDialog } from '@angular/material/dialog';
 import { EditFileDialogComponent } from './edit-file-dialog/edit-file-dialog.component';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -145,7 +145,7 @@ export class ViewFileListComponent implements OnInit, AfterViewInit {
         this.remoteDataLoaded = true;
         window.open(downloadUrl, '_blank');
       },
-      error: (error) => {
+      error: () => {
         this.remoteDataLoaded = true;
       },
     });
@@ -180,7 +180,7 @@ export class ViewFileListComponent implements OnInit, AfterViewInit {
         this.remoteDataLoaded = true;
         this.remoteData.set(response.data!);
       },
-      error: (error) => {
+      error: () => {
         this.remoteDataLoaded = true;
       },
     });
@@ -248,7 +248,7 @@ export class ViewFileListComponent implements OnInit, AfterViewInit {
           }
           this.remoteData.set(oldList);
         },
-        error: (error) => {
+        error: () => {
           this.remoteDataLoaded = true;
         },
       });

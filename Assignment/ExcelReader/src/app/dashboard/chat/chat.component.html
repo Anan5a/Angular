@@ -17,13 +17,12 @@
     @if (selectedUser()) {
     <app-chat-window
       [fromUser]="user"
-      [chatActivityState]="chatActivityState"
+      [chatActivityState]="chatActivityState()"
       (EmitOutgoingMessage)="sendMessageToSelectedUser($event)"
       (EmitCloseChatWindow)="closeChatWindow()"
       (chatWindowLoaded)="loadUserInfo()"
-      
     ></app-chat-window>
-    }@else if ((isHandset$|async)===false) {
+    }@else if ((isHandset$|async)===false ||selectedUser() === null ) {
     <!-- <h2 class="center">Select a user to start conversation.</h2> -->
     <div class="center">
       <!-- show user a button? -->
@@ -97,6 +96,17 @@
           >Status: <b>{{ selectedUserInfo?.status || "N/A" }}</b></span
         >
       </div>
+    </div>
+    <div>
+      <button
+        mat-button
+        mat-raised-button
+        color="primary"
+        (click)="requestTransferUser(selectedUser()?.id)"
+        [disabled]="disableTransferButton"
+      >
+        Transfer chat
+      </button>
     </div>
   </div>
   }

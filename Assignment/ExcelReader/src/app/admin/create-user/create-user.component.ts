@@ -11,7 +11,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { passwordMatchValidator } from '../../auth/signup/signup.component';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../services/auth.service';
@@ -75,7 +75,9 @@ export class CreateUserComponent implements AfterViewInit {
     //get roles
     this.userService.getNewUserConfig().subscribe({
       next: (response) => {
-        this.assignableRoles.set(response.data?.roles!);
+        if (response.data) {
+          this.assignableRoles.set(response.data.roles);
+        }
       },
     });
   }

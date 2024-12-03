@@ -44,7 +44,7 @@ import { MatChipsModule } from '@angular/material/chips';
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css',
 })
-export class UserListComponent implements OnInit, AfterViewInit {
+export class UserListComponent implements OnInit {
   disableExport = false;
 
   dataSource = new MatTableDataSource<User>([]);
@@ -81,7 +81,6 @@ export class UserListComponent implements OnInit, AfterViewInit {
     this.loadList();
   }
 
-  ngAfterViewInit(): void {}
   customFilter = (data: User, filter: string) => {
     const lowerCaseFilter = filter.toLowerCase();
 
@@ -129,23 +128,12 @@ export class UserListComponent implements OnInit, AfterViewInit {
     });
   }
   onEdit(fileMeta: FileMetadataResponse) {
-    const dialogRef = this.dialog.open(EditFileDialogComponent, {
+    this.dialog.open(EditFileDialogComponent, {
       maxWidth: '500px',
       width: '450px',
       data: { fileMeta },
     });
 
-    // dialogRef.afterClosed().subscribe(result => {
-    //   if (result?.status === true) {
-    //     //update list
-    //     const oldList = [... this.remoteData()];
-    //     const index = oldList.findIndex(item => item.id === fileMeta.id);
-    //     if (index !== -1) {
-    //       oldList[index].fileName = result?.fileName;
-    //     }
-    //     this.remoteData.set(oldList);
-    //   }
-    // });
   }
   onShare() {
     throw new Error('Method not implemented.');
@@ -157,7 +145,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
         this.remoteDataLoaded = true;
         this.remoteData.set(response.data!);
       },
-      error: (error) => {
+      error: () => {
         this.remoteDataLoaded = true;
       },
     });
@@ -170,7 +158,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
         this.disableExport = false;
         this.downloadClientBlob(response);
       },
-      error: (error) => {
+      error: () => {
         this.disableExport = false;
         window.alert('Failed to export the list!.');
       },

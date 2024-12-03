@@ -41,13 +41,14 @@ export class ChatComponent implements OnInit {
   onlineUsers = this.chatService.onlineUsers;
   selectedUser = this.chatService.currentUser;
   selectedUserInfo?: User;
-  chatActivityState = 'active' as 'active' | 'inactive';
+  chatActivityState = this.chatService.chatActivityState;
   // callUser = computed(() => this.voiceCallService.callUserId());
   isAdmin = this.authService.isAdmin;
 
   @ViewChild('callDialog', { static: false })
   dialogContent!: TemplateRef<unknown>;
   askedForAgent = false;
+  disableTransferButton = false;
   constructor(
     private realtimeService: RealtimeService,
     private breakpointObserver: BreakpointObserver,
@@ -70,7 +71,7 @@ export class ChatComponent implements OnInit {
         messages.forEach((message) => {
           if (message.endOfChatMarker) {
             //end chat
-            this.chatActivityState = 'inactive';
+            this.chatService.setChatActivityState('inactive');
           }
 
           this.chatService.storeChat(
@@ -85,7 +86,7 @@ export class ChatComponent implements OnInit {
             this.user.id == message.from
               ? this.selectedUser()?.id!
               : message.from,
-            messages.length > 1 ? false : true
+            !(messages.length > 1)
           );
         });
       }
@@ -146,6 +147,17 @@ export class ChatComponent implements OnInit {
     this.chatService.setCurrentUser(null);
     this.selectedUserInfo = undefined;
     this.askedForAgent = false;
+  }
+
+  requestTransferUser(id?: number) {
+    if (id) {
+      this.disableTransferButton = true;
+      this.userService.chatTransferRequest(id).subscribe({
+        next: () => {
+          this.disableTransferButton = false;
+        },
+      });
+    }
   }
 
   loadUserInfo() {

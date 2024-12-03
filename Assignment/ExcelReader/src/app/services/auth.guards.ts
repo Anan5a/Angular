@@ -5,13 +5,12 @@ import { HttpHeaders, HttpInterceptorFn } from "@angular/common/http";
 
 //contains guard functions to authenticate
 
-
+//@ts-nocheck
 export const isNotAuthenticatedGuard: CanActivateFn = (route, segments) => {
   const authService = inject(AuthService)
   return !authService.isAuthenticated();
 };
-
-
+//@ts-nocheck
 export const isAuthenticatedGuard: CanActivateFn = (route, segments) => {
   const authService = inject(AuthService)
 
@@ -26,7 +25,7 @@ export const isAuthenticatedGuard: CanActivateFn = (route, segments) => {
   return authService.isAuthenticated();
 }
 
-
+//@ts-nocheck
 export const isAdminGuard: CanActivateFn = (route, segments) => {
   const authService = inject(AuthService)
 

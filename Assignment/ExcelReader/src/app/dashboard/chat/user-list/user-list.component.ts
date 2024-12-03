@@ -1,13 +1,11 @@
-import { NgClass, NgFor } from '@angular/common';
+
 import {
   Component,
   computed,
-  effect,
   EventEmitter,
   Input,
   OnInit,
   Output,
-  signal,
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -26,22 +24,21 @@ import { UserService } from '../../../services/user.service';
   imports: [
     MatCardModule,
     MatListModule,
-    NgFor,
     MatButtonModule,
     MatIconModule,
     MatRippleModule,
-    NgClass,
   ],
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css',
 })
-export class UserListComponent implements OnInit {
+export class UserListComponent  {
   @Input({ required: true }) users!: ChatUserLimited[];
-  @Output() onRefreshUserList = new EventEmitter<boolean>();
-
+  @Output() RefreshUserListEvent = new EventEmitter<boolean>();
+  activityState = this.chatService.chatActivityState;
+  
   recentMessages = computed(() => {
     const chatHistory: ChatMessageModel[] = [];
-    this.chatService.chats().forEach((chatRepository, index) => {
+    this.chatService.chats().forEach((chatRepository) => {
       chatHistory.push(
         chatRepository.chatList[chatRepository.chatList.length - 1]
       );
@@ -57,10 +54,6 @@ export class UserListComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService
   ) {}
-
-  ngOnInit(): void {
-    //todo: show last message in the list
-  }
 
   selectUser(user: ChatUserLimited) {
     //check if user was assigned an agent, if yes, prevent assignment
@@ -91,13 +84,13 @@ export class UserListComponent implements OnInit {
         }
       },
       error: () => {
-        this.toastrService.error('User accepted failed.', 'Accept failed');
+        this.toastrService.error('User accept failed.', 'Accept failed');
       },
     });
   }
 
   refreshUsersList() {
-    this.onRefreshUserList.emit();
+    this.RefreshUserListEvent.emit();
   }
 
   lastMessageForId(id: number) {

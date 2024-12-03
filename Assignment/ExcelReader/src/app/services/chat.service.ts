@@ -18,6 +18,7 @@ export class ChatService {
   private chatRepository = signal<ChatRepositoryModel[]>([]);
   private selectedUser = signal<ChatUserLimited | null>(null);
   private _onlineUsers = signal<ChatUserLimited[]>([]);
+  private _chatActivityState = signal<'active' | 'inactive'>('active');
 
   constructor(
     private authService: AuthService,
@@ -31,6 +32,13 @@ export class ChatService {
   get chats() {
     return this.chatRepository.asReadonly();
   }
+  get chatActivityState() {
+    return this._chatActivityState.asReadonly();
+  }
+  setChatActivityState(state: 'active' | 'inactive') {
+    this._chatActivityState.set(state);
+  }
+
   get currentUser() {
     return this.selectedUser.asReadonly();
   }
@@ -70,13 +78,18 @@ export class ChatService {
 
   private addNewOnlineUser(newUser: ChatUserLimited) {
     //check if already in
-    const idx = this.onlineUsers().findIndex((u) => u.id == newUser.id);
+    const newList = [...this.onlineUsers()];
 
+    const idx = newList.findIndex((u) => u.id == newUser.id);
+
+    console.log(newUser);
     if (idx != -1) {
-      return;
+      newList[idx] = newUser;
+    } else {
+      newList.push(newUser);
     }
-    const newList = [...this.onlineUsers(), newUser];
-    this._onlineUsers.set(newList);
+    console.log('Changed list of online users', newList);
+    this._onlineUsers.set([...newList]);
   }
 
   private removeFromOnlineUsers(oldUser: ChatUserLimited) {
@@ -84,7 +97,7 @@ export class ChatService {
     // console.log('After filter: ', filtered);
     this._onlineUsers.set(filtered);
   }
-  endCurrentChat() {}
+
   RTC_GetAgentAssignment() {
     //gets agent assignment from server
     this.realtimeService.addReceiveMessageListener<
@@ -111,12 +124,15 @@ export class ChatService {
         name: message.metadata?.name,
       } as ChatUserLimited;
       if (message.containsUser) {
-        // console.log('Add user to list: ', message);
-
-        this.addNewOnlineUser(user);
+        console.log('Add user to list: ', message);
+        this.addNewOnlineUser(message.metadata!);
       }
       if (message.removeUserFromList) {
         // console.log('Remove user from list: ', message);
+        //check if currently active, if yes remove
+        if (this.selectedUser()?.id === user.id) {
+          this.setCurrentUser(null);
+        }
         this.removeFromOnlineUsers(user);
       }
     });

@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import {
   DataUserLoginResponseModel,
   LoginRequestModel,
@@ -10,7 +10,6 @@ import { BaseNetworkService } from './base-network.service';
 import { HttpClient } from '@angular/common/http';
 import { ApiBaseUrl } from '../../constants';
 import { tap } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -89,7 +88,7 @@ export class AuthService extends BaseNetworkService {
   socialAuth(idToken: string) {
     const url = ApiBaseUrl + '/User/social-auth';
     const errorMessage = 'Failed to login user!';
-    return this.post<{}, LoginResponseModel>(
+    return this.post<object, LoginResponseModel>(
       url,
       { idToken: idToken },
       errorMessage

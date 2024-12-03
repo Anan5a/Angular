@@ -1,19 +1,17 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { MatGridListModule } from '@angular/material/grid-list';
+import {  Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
-import { NgIf, NgStyle } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs';
 import { DashboardDataModel } from '../../app.models';
-import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [MatCardModule, RouterLink, NgIf, NgStyle],
+  imports: [MatCardModule, RouterLink, NgIf],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })

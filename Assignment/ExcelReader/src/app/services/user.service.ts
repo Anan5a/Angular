@@ -6,14 +6,12 @@ import {
   FileListResponseModel,
   ResponseModelGeneric,
   Role,
-  DashboardDataModel,
   FileSingleResponseModel,
   DashboardResponseModel,
   OnlineUserListResponseModel,
   SendMessageModel,
   SendMessageToUserResponseModel,
   UserListResponseModel,
-  RTCConnModel,
   UserInfoResponseModel,
   ChatMessageHistoryModel,
 } from '../app.models';
@@ -147,6 +145,15 @@ export class UserService extends BaseNetworkService {
     return this.post<null, ResponseModelGeneric<boolean>>(
       url,
       null,
+      errorMessage
+    );
+  }
+  chatTransferRequest(id: number) {
+    const url = `${ApiBaseUrl}/Communication/transfer-chat`;
+    const errorMessage = 'Failed to transfer chat!';
+    return this.post<{ Id: number }, ResponseModelGeneric<boolean>>(
+      url,
+      { Id: id },
       errorMessage
     );
   }

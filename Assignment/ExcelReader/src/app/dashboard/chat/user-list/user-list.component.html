@@ -10,7 +10,8 @@
     <mat-list-item
       matRipple
       (click)="selectUser(user)"
-      [class.highlight]="activeChatUser()?.id === user.id"
+      [class.highlight]="(activeChatUser()?.id === user.id) && (activityState() === 'active') "
+      [class.highlight-warn]="(activeChatUser()?.id !== user.id) && (activityState() === 'inactive') "
     >
       <mat-icon matListItemIcon>person</mat-icon>
       <div

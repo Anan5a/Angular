@@ -33,7 +33,7 @@ export class ProfileComponent {
       data: { user: this.user }
     });
 
-    dialogRef.afterClosed().subscribe(result => { });
+    dialogRef.afterClosed().subscribe();
   }
 
 }

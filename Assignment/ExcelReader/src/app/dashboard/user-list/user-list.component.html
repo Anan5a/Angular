@@ -86,7 +86,7 @@
         *matCellDef="let user"
       > <mat-chip-set aria-label="Fish selection">
           <mat-chip>{{user.status}}</mat-chip>
-          <mat-chip>{{user.deletedAt != null ? 'deleted':'active'}}</mat-chip>
+          <mat-chip>{{user.deletedAt !== null ? 'deleted':'active'}}</mat-chip>
         </mat-chip-set></td>
 
     </ng-container>
