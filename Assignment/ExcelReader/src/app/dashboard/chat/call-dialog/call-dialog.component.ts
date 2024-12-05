@@ -1,4 +1,4 @@
-import { NgIf } from '@angular/common';
+
 import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -8,7 +8,7 @@ import { VoiceCallService } from '../../../services/voice-call.service';
 @Component({
   selector: 'app-call-dialog',
   standalone: true,
-  imports: [MatIconModule, MatButtonModule, NgIf],
+  imports: [MatIconModule, MatButtonModule],
   templateUrl: './call-dialog.component.html',
   styleUrl: './call-dialog.component.css',
 })

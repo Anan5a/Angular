@@ -194,6 +194,8 @@ export class VoiceCallService extends BaseNetworkService {
         showCancel,
       },
       disableClose: true,
+      width: '30vw',
+      height: '30vh',
     });
 
     this.currentDialog.componentInstance.actionEvent.subscribe(
