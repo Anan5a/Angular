@@ -1,0 +1,46 @@
+<!-- app.component.html -->
+<mat-card class="form-card">
+  <mat-card-header>
+    <mat-card-title class="center">Create new group</mat-card-title>
+  </mat-card-header>
+
+  <form [formGroup]="form" (submit)="formOnSubmit()">
+    <mat-card-content>
+      <h4 *ngIf="errorMessage()">
+        <mat-error>{{ errorMessage() }}</mat-error>
+      </h4>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Group Name</mat-label>
+        <input
+          matInput
+          placeholder="Enter your group name"
+          formControlName="name"
+        />
+        <mat-icon matSuffix>groups</mat-icon>
+        <mat-error *ngIf="form.value.name"
+          >Group Name is required, and it must be at-least 4 character
+          long</mat-error
+        >
+        <mat-hint>Hint: TopicName</mat-hint>
+      </mat-form-field>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button
+        mat-raised-button
+        color="primary"
+        class="right"
+        [disabled]="!form.valid"
+      >
+        <span>Submit</span>
+        <mat-spinner
+          *ngIf="showSpinner"
+          [diameter]="22"
+          color="accent"
+          class="inline-spinner"
+        ></mat-spinner>
+      </button>
+    </mat-card-actions>
+  </form>
+</mat-card>

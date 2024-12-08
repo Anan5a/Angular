@@ -14,6 +14,7 @@ import {
   UserListResponseModel,
   UserInfoResponseModel,
   ChatMessageHistoryModel,
+  GroupListResponseModel,
 } from '../app.models';
 import { HttpClient } from '@angular/common/http';
 
@@ -36,6 +37,12 @@ export class UserService extends BaseNetworkService {
     const url = `${ApiBaseUrl}/User/list`;
     const errorMessage = 'Failed to fetch user list!';
     return this.get<UserListResponseModel>(url, errorMessage);
+  }
+
+  loadGroupsList() {
+    const url = `${ApiBaseUrl}/Group/list`;
+    const errorMessage = 'Failed to fetch group list!';
+    return this.get<GroupListResponseModel>(url, errorMessage);
   }
 
   getUserInfo(uid: number) {
@@ -188,6 +195,15 @@ export class UserService extends BaseNetworkService {
     const url = `${ApiBaseUrl}/Admin/create-user`;
     const errorMessage = 'Failed to create new user!';
     return this.post<{}, ResponseModelGeneric<null>>(
+      url,
+      formData,
+      errorMessage
+    );
+  }
+  createNewGroup(formData: {}) {
+    const url = `${ApiBaseUrl}/Group/create-group`;
+    const errorMessage = 'Failed to create new group!';
+    return this.post<{}, ResponseModelGeneric<boolean | null>>(
       url,
       formData,
       errorMessage

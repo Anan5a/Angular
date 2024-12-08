@@ -124,7 +124,9 @@ export class ViewFileListComponent implements OnInit, AfterViewInit {
           this.toastrService.success(response?.data);
           //remove item from list
           const newList = [
-            ...this.remoteData().filter((item) => item.id !== fileId),
+            ...this.remoteData().filter(
+              (item) => item.fileMetadataId !== fileId
+            ),
           ];
           this.remoteData.set(newList);
         },
@@ -161,7 +163,9 @@ export class ViewFileListComponent implements OnInit, AfterViewInit {
       if (result?.status === true) {
         //update list
         const oldList = [...this.remoteData()];
-        const index = oldList.findIndex((item) => item.id === fileMeta.id);
+        const index = oldList.findIndex(
+          (item) => item.fileMetadataId === fileMeta.fileMetadataId
+        );
         if (index !== -1) {
           oldList[index].fileName = result?.fileName;
           // + '.' + oldList[index].fileName.split('.')[oldList[index].fileName.split('.').length - 1];
@@ -231,7 +235,7 @@ export class ViewFileListComponent implements OnInit, AfterViewInit {
     if (event.wasFileDeleted) {
       //remove from list
       const newList = [...this.remoteData()].filter(
-        (item) => item.id !== event.fileId
+        (item) => item.fileMetadataId !== event.fileId
       );
 
       this.remoteData.set(newList);
@@ -242,7 +246,9 @@ export class ViewFileListComponent implements OnInit, AfterViewInit {
         next: (response) => {
           this.remoteDataLoaded = true;
           const oldList = [...this.remoteData()];
-          const index = oldList.findIndex((item) => item.id === event.fileId);
+          const index = oldList.findIndex(
+            (item) => item.fileMetadataId === event.fileId
+          );
           if (index !== -1) {
             oldList[index] = response.data!;
           }

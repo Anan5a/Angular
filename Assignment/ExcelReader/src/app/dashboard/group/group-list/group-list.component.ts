@@ -10,10 +10,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ToastrService } from 'ngx-toastr';
-import { ApiBaseImageUrl } from '../../../constants';
-import { FileMetadataResponse, User } from '../../app.models';
-import { UserService } from '../../services/user.service';
-import { EditFileDialogComponent } from '../view-file-list/edit-file-dialog/edit-file-dialog.component';
+import { ApiBaseImageUrl } from '../../../../constants';
+import { FileMetadataResponse, GroupModel, User } from '../../../app.models';
+import { UserService } from '../../../services/user.service';
+import { EditFileDialogComponent } from '../../view-file-list/edit-file-dialog/edit-file-dialog.component';
 import { NgIf, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,6 +23,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-user-list',
@@ -40,26 +41,25 @@ import { MatChipsModule } from '@angular/material/chips';
     DatePipe,
     MatButtonToggleModule,
     MatChipsModule,
+    RouterLink,
   ],
-  templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.css',
+  templateUrl: './group-list.component.html',
+  styleUrl: './group-list.component.css',
 })
-export class UserListComponent implements OnInit, AfterViewInit {
+export class GroupListComponent implements OnInit, AfterViewInit {
   disableExport = false;
 
-  dataSource = new MatTableDataSource<User>([]);
+  dataSource = new MatTableDataSource<GroupModel>([]);
 
-  remoteData = signal<User[]>([]);
+  remoteData = signal<GroupModel[]>([]);
 
   searchText = '';
 
   displayedColumns: string[] = [
-    'id',
-    'name',
-    'email',
+    'group_id',
+    'group_name',
     'create-date',
-    'status',
-    'role',
+    'action',
   ];
   remoteDataLoaded = false;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -82,7 +82,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
     this.dataSource.filterPredicate = this.customFilter;
     this.dataSource.paginator = this.paginator;
   }
-  customFilter = (data: User, filter: string) => {
+  customFilter = (data: GroupModel, filter: string) => {
     const lowerCaseFilter = filter.toLowerCase();
 
     return Object.values(data).some((value) => {
@@ -97,23 +97,23 @@ export class UserListComponent implements OnInit, AfterViewInit {
     this.dataSource.filter = this.searchText;
   }
   onDelete(fileId: number) {
-    if (window.confirm('The file will be deleted permanently')) {
-      this.remoteDataLoaded = false;
-      this.userService.deleteFile(fileId).subscribe({
-        next: (response) => {
-          this.remoteDataLoaded = true;
-          this.toastrService.success(response?.data);
-          //remove item from list
-          const newList = [
-            ...this.remoteData().filter((item) => item.userId !== fileId),
-          ];
-          this.remoteData.set(newList);
-        },
-        error: () => {
-          this.remoteDataLoaded = false;
-        },
-      });
-    }
+    // if (window.confirm('The file will be deleted permanently')) {
+    //   this.remoteDataLoaded = false;
+    //   this.userService.deleteFile(fileId).subscribe({
+    //     next: (response) => {
+    //       this.remoteDataLoaded = true;
+    //       this.toastrService.success(response?.data);
+    //       //remove item from list
+    //       const newList = [
+    //         ...this.remoteData().filter((item) => item.userId !== fileId),
+    //       ];
+    //       this.remoteData.set(newList);
+    //     },
+    //     error: () => {
+    //       this.remoteDataLoaded = false;
+    //     },
+    //   });
+    // }
   }
 
   onDownload(fileId: number) {
@@ -140,7 +140,7 @@ export class UserListComponent implements OnInit, AfterViewInit {
   }
 
   loadList() {
-    this.userService.loadUsersList().subscribe({
+    this.userService.loadGroupsList().subscribe({
       next: (response) => {
         this.remoteDataLoaded = true;
         this.remoteData.set(response.data!);
@@ -149,39 +149,5 @@ export class UserListComponent implements OnInit, AfterViewInit {
         this.remoteDataLoaded = true;
       },
     });
-  }
-  onClickExport() {
-    this.disableExport = true;
-    this.userService.exportAll().subscribe({
-      next: (response) => {
-        console.log(response);
-        this.disableExport = false;
-        this.downloadClientBlob(response);
-      },
-      error: () => {
-        this.disableExport = false;
-        window.alert('Failed to export the list!.');
-      },
-    });
-  }
-
-  private downloadClientBlob(blob: Blob, filename?: string) {
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename || 'export.xlsx';
-    document.body.appendChild(link);
-    link.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(link);
-  }
-
-  convertBytes(length: number): string {
-    if (length === 0) return '0 B';
-
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    const i = Math.floor(Math.log(length) / Math.log(1024));
-
-    return `${parseFloat((length / Math.pow(1024, i)).toFixed(2))} ${sizes[i]}`;
   }
 }

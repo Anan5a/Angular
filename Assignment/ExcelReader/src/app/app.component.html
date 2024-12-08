@@ -78,6 +78,14 @@
         ><mat-icon>people_alt</mat-icon> System Users</a
       >
       <a
+        *ngIf="isAdmin()"
+        mat-list-item
+        [routerLink]="['/admin', 'group', 'list']"
+        routerLinkActive="active-nav"
+        [routerLinkActiveOptions]="{ exact: true }"
+        ><mat-icon>groups</mat-icon> Groups</a
+      >
+      <a
         *ngIf="!isAuthenticated()"
         mat-list-item
         [routerLink]="['/login']"

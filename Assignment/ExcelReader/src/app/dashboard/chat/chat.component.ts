@@ -77,13 +77,13 @@ export class ChatComponent implements OnInit {
           this.chatService.storeChat(
             {
               from: message.from,
-              to: this.user.id,
+              to: this.user.userId,
               text: message.content,
               sentAt: message.sentAt, //new Date().toISOString(),
               isSystemMessage: message?.isSystemMessage,
               messageId: message.messageId,
             } as ChatMessageModel,
-            this.user.id == message.from
+            this.user.userId == message.from
               ? this.selectedUser()?.id!
               : message.from,
             !(messages.length > 1)
@@ -123,7 +123,7 @@ export class ChatComponent implements OnInit {
           //send this to chat window
           this.chatService.storeChat(
             {
-              from: this.user.id,
+              from: this.user.userId,
               to: this.selectedUser()?.id!,
               text: message,
               sentAt: new Date().toISOString(),

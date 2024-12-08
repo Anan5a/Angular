@@ -1,5 +1,4 @@
-
-import {Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import {
   isAdminGuard,
   isAuthenticatedGuard,
@@ -84,6 +83,25 @@ export const routes: Routes = [
           import('./dashboard/user-list/user-list.component').then(
             (c) => c.UserListComponent
           ),
+      },
+      {
+        path: 'group',
+        children: [
+          {
+            path: 'list',
+            loadComponent: () =>
+              import('./dashboard/group/group-list/group-list.component').then(
+                (c) => c.GroupListComponent
+              ),
+          },
+          {
+            path: 'new',
+            loadComponent: () =>
+              import(
+                './dashboard/group/create-group/create-group.component'
+              ).then((c) => c.CreateGroupComponent),
+          },
+        ],
       },
       {
         path: 'system-files',

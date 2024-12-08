@@ -31,8 +31,8 @@
 
       <mat-card
         class="message"
-        [class.message-align-right]="message.from === fromUser.id"
-        [class.message-align-left]="message.from !== fromUser.id"
+        [class.message-align-right]="message.from === fromUser.userId"
+        [class.message-align-left]="message.from !== fromUser.userId"
         appearance="outlined"
       >
         <mat-card-content>{{ message.text }}</mat-card-content>

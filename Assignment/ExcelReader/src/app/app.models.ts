@@ -23,7 +23,7 @@ export interface DataUserLoginResponseModel {
 }
 
 export interface User {
-  id: number;
+  userId: number;
   name: string;
   email: string;
   createdAt: string;
@@ -48,7 +48,7 @@ export interface ChatMessageHistoryModel {
 }
 
 export interface Role {
-  id: number;
+  roleId: number;
   roleName: string;
 }
 export interface LoginRequestModel {
@@ -69,7 +69,7 @@ export interface DashboardDataModel {
 }
 
 export interface FileMetadataResponse {
-  id: number;
+  fileMetadataId: number;
   fileName: string;
   fileNameSystem: string;
   userId: number;
@@ -79,7 +79,22 @@ export interface FileMetadataResponse {
   filesizeBytes: number;
   user?: User;
 }
-
+export interface GroupModel {
+  groupId: number;
+  groupName: string;
+  createdAt: string;
+  deletedAt: string;
+  updatedAt: string;
+  members?: GroupMemberModel[];
+}
+export interface GroupMemberModel {
+  groupMembershipId: number;
+  groupId: number;
+  userId: number;
+  createdAt: string;
+  deletedAt: string;
+  userDetails?: User;
+}
 //models for realtime events
 export interface FileEvent {
   fileId: number;
@@ -155,7 +170,9 @@ export type OnlineUserListResponseModel = ResponseModelGeneric<
 >;
 export type SendMessageToUserResponseModel = ResponseModelGeneric<
   string | null | number
->;
+  >;
+export type GroupListResponseModel = ResponseModelGeneric<GroupModel[]>;
+export type GroupMembersListResponseModel = ResponseModelGeneric<GroupMemberModel[]>;
 
 export type CallbackFunction<TArgs extends unknown[]> = (
   ...args: TArgs

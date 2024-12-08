@@ -109,7 +109,7 @@ export class ChatService {
           id: message.metadata?.targetUserId,
           name: message.metadata?.targetUserName,
           agentInfo: {
-            id: this.authService.user()?.user.id,
+            id: this.authService.user()?.user.userId,
             name: this.authService.user()?.user.name,
           },
         } as ChatUserLimited);
@@ -156,7 +156,7 @@ export class ChatService {
     const repository = [...this.chatRepository()];
     chat.didView =
       this.selectedUser()?.id == chat.from ||
-      this.authService.user()?.user.id == chat.from;
+      this.authService.user()?.user.userId == chat.from;
     //find the receiver
     const recv = repository.findIndex((r) => r.recpId == recpId);
     if (recv == -1) {

@@ -52,7 +52,7 @@ export class EditFileDialogComponent implements AfterViewInit {
     this.showSpinner = true;
     this.userService
       .updateFile({
-        fileId: this.data.fileMeta.id,
+        fileId: this.data.fileMeta.fileMetadataId,
         fileName: this.form.value.fileName,
       })
       .subscribe({

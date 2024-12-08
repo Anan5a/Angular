@@ -1,4 +1,3 @@
-
 import {
   Component,
   computed,
@@ -31,11 +30,11 @@ import { UserService } from '../../../services/user.service';
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.css',
 })
-export class UserListComponent  {
+export class UserListComponent {
   @Input({ required: true }) users!: ChatUserLimited[];
   @Output() RefreshUserListEvent = new EventEmitter<boolean>();
   activityState = this.chatService.chatActivityState;
-  
+
   recentMessages = computed(() => {
     const chatHistory: ChatMessageModel[] = [];
     this.chatService.chats().forEach((chatRepository) => {
@@ -60,7 +59,7 @@ export class UserListComponent  {
     //actual selection is determined by the server
     if (
       user.agentInfo != null &&
-      user.agentInfo.id != this.authService.user()?.user.id
+      user.agentInfo.id != this.authService.user()?.user.userId
     ) {
       this.toastrService.error(
         'User already has agent assigned to them',
