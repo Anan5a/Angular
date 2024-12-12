@@ -101,6 +101,25 @@ export const routes: Routes = [
                 './dashboard/group/create-group/create-group.component'
               ).then((c) => c.CreateGroupComponent),
           },
+          {
+            path: 'details',
+            children: [
+              {
+                path: '',
+                loadComponent: () =>
+                  import(
+                    './dashboard/group/group-details/group-details.component'
+                  ).then((c) => c.GroupDetailsComponent),
+              },
+              {
+                path: ':groupId',
+                loadComponent: () =>
+                  import(
+                    './dashboard/group/group-details/group-details.component'
+                  ).then((c) => c.GroupDetailsComponent),
+              },
+            ],
+          },
         ],
       },
       {

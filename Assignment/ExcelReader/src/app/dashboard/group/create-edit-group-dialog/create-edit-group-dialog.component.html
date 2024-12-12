@@ -1,0 +1,40 @@
+<div class="dialog-container">
+  <h1 mat-dialog-title>{{ data.group ? 'Change group name' : 'Create new group' }}</h1>
+  <div mat-dialog-content>
+    <h4 *ngIf="errorMessage">
+      <mat-error>{{ errorMessage }}</mat-error>
+    </h4>
+
+    <form [formGroup]="form">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>New Group name</mat-label>
+        <input
+          matInput
+          formControlName="groupName"
+          type="text"
+          [value]="data.group?.groupName || ''"
+        />
+        <mat-hint
+          >Hint: CustomerSupport, No whitespace or special characters</mat-hint
+        >
+      </mat-form-field>
+    </form>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button
+      mat-button
+      [disabled]="form.invalid"
+      color="primary"
+      (click)="onSave()"
+    >
+      <span>Save</span>
+      <mat-spinner
+        *ngIf="showSpinner"
+        [diameter]="22"
+        class="inline-spinner"
+        color="accent"
+      ></mat-spinner>
+    </button>
+  </div>
+</div>

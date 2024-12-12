@@ -97,6 +97,11 @@ export class UserService extends BaseNetworkService {
     const errorMessage = 'Failed to delete file!';
     return this.delete<ResponseModelGeneric<string>>(url, errorMessage);
   }
+  deleteGroup(groupId: number) {
+    const url = `${ApiBaseUrl}/Group/delete/${groupId}`;
+    const errorMessage = 'Failed to delete group!';
+    return this.delete<ResponseModelGeneric<string>>(url, errorMessage);
+  }
 
   exportAll() {
     const url = `${ApiBaseUrl}/File/Export`;
@@ -201,7 +206,7 @@ export class UserService extends BaseNetworkService {
     );
   }
   createNewGroup(formData: {}) {
-    const url = `${ApiBaseUrl}/Group/create-group`;
+    const url = `${ApiBaseUrl}/Group/create-or-update-group`;
     const errorMessage = 'Failed to create new group!';
     return this.post<{}, ResponseModelGeneric<boolean | null>>(
       url,
